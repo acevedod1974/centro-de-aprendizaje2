@@ -22,7 +22,7 @@ const EvaluationSection: React.FC = () => {
     {
       id: 'mecanizado',
       title: 'Procesos de Mecanizado',
-      description: 'Torneado, fresado, taladrado y parámetros de corte',
+      description: 'Torneado, fresado, taladrado y parámetros de corte optimizados',
       questions: 20,
       duration: 25,
       difficulty: 'Intermedio',
@@ -35,7 +35,7 @@ const EvaluationSection: React.FC = () => {
     {
       id: 'conformado',
       title: 'Procesos de Conformado',
-      description: 'Forjado, estampado, laminado y deformación plástica',
+      description: 'Forjado, estampado, laminado y deformación plástica de metales',
       questions: 18,
       duration: 22,
       difficulty: 'Avanzado',
@@ -48,9 +48,9 @@ const EvaluationSection: React.FC = () => {
     {
       id: 'fundicion',
       title: 'Procesos de Fundición',
-      description: 'Moldeo, colado y solidificación de metales',
-      questions: 12,
-      duration: 15,
+      description: 'Moldeo, colado, solidificación y defectos en fundición',
+      questions: 16,
+      duration: 18,
       difficulty: 'Básico',
       category: 'Moldeo y Fundición',
       icon: '🔥',
@@ -61,9 +61,9 @@ const EvaluationSection: React.FC = () => {
     {
       id: 'calidad',
       title: 'Control de Calidad',
-      description: 'Inspección, tolerancias y aseguramiento de calidad',
-      questions: 16,
-      duration: 18,
+      description: 'Inspección, tolerancias, metrología y aseguramiento de calidad',
+      questions: 22,
+      duration: 25,
       difficulty: 'Intermedio',
       category: 'Control de Calidad',
       icon: '🔍',
@@ -74,8 +74,8 @@ const EvaluationSection: React.FC = () => {
     {
       id: 'materiales',
       title: 'Ciencia de Materiales',
-      description: 'Propiedades, estructura y selección de materiales',
-      questions: 22,
+      description: 'Propiedades, estructura cristalina y selección de materiales',
+      questions: 25,
       duration: 30,
       difficulty: 'Avanzado',
       category: 'Materiales',
@@ -83,6 +83,45 @@ const EvaluationSection: React.FC = () => {
       color: 'from-indigo-500 to-purple-600',
       completed: 720,
       avgScore: 73
+    },
+    {
+      id: 'automatizacion',
+      title: 'Automatización Industrial',
+      description: 'CNC, robótica, PLC y sistemas de manufactura automatizada',
+      questions: 20,
+      duration: 28,
+      difficulty: 'Avanzado',
+      category: 'Automatización',
+      icon: '🤖',
+      color: 'from-cyan-500 to-blue-600',
+      completed: 450,
+      avgScore: 79
+    },
+    {
+      id: 'seguridad',
+      title: 'Seguridad Industrial',
+      description: 'Normas de seguridad, prevención de riesgos y equipos de protección',
+      questions: 18,
+      duration: 20,
+      difficulty: 'Básico',
+      category: 'Seguridad',
+      icon: '🛡️',
+      color: 'from-yellow-500 to-orange-600',
+      completed: 1100,
+      avgScore: 88
+    },
+    {
+      id: 'mantenimiento',
+      title: 'Mantenimiento Industrial',
+      description: 'Mantenimiento preventivo, predictivo y gestión de activos',
+      questions: 16,
+      duration: 22,
+      difficulty: 'Intermedio',
+      category: 'Mantenimiento',
+      icon: '🔧',
+      color: 'from-emerald-500 to-green-600',
+      completed: 630,
+      avgScore: 76
     }
   ];
 
@@ -119,7 +158,7 @@ const EvaluationSection: React.FC = () => {
           🏆 Centro de Evaluación
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Pon a prueba tus conocimientos con cuestionarios especializados en procesos de fabricación.
+          Pon a prueba tus conocimientos con cuestionarios especializados en procesos de fabricación y tecnologías industriales.
         </p>
       </div>
 
@@ -128,7 +167,7 @@ const EvaluationSection: React.FC = () => {
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl">
           <div className="flex items-center justify-between mb-2">
             <Book size={24} />
-            <span className="text-2xl font-bold">6</span>
+            <span className="text-2xl font-bold">9</span>
           </div>
           <div className="text-sm opacity-90">Evaluaciones Disponibles</div>
         </div>
@@ -136,7 +175,7 @@ const EvaluationSection: React.FC = () => {
         <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
           <div className="flex items-center justify-between mb-2">
             <Users size={24} />
-            <span className="text-2xl font-bold">5,055</span>
+            <span className="text-2xl font-bold">7,235</span>
           </div>
           <div className="text-sm opacity-90">Estudiantes Evaluados</div>
         </div>
@@ -144,7 +183,7 @@ const EvaluationSection: React.FC = () => {
         <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl">
           <div className="flex items-center justify-between mb-2">
             <Target size={24} />
-            <span className="text-2xl font-bold">77%</span>
+            <span className="text-2xl font-bold">79%</span>
           </div>
           <div className="text-sm opacity-90">Puntuación Promedio</div>
         </div>
@@ -152,7 +191,7 @@ const EvaluationSection: React.FC = () => {
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl">
           <div className="flex items-center justify-between mb-2">
             <TrendingUp size={24} />
-            <span className="text-2xl font-bold">+15%</span>
+            <span className="text-2xl font-bold">+18%</span>
           </div>
           <div className="text-sm opacity-90">Mejora Mensual</div>
         </div>

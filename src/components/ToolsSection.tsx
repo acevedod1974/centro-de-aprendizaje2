@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Calculator, Zap, Hammer, ChevronRight } from 'lucide-react';
+import { Calculator, Zap, Hammer, ChevronRight, Search, Settings } from 'lucide-react';
 import VelocidadCorteCalculator from './tools/VelocidadCorteCalculator';
 import SoldaduraQuiz from './tools/SoldaduraQuiz';
 import ForjadoSimulator from './tools/ForjadoSimulator';
+import MecanizadoSimulator from './tools/MecanizadoSimulator';
+import CalidadInspector from './tools/CalidadInspector';
 
 const ToolsSection: React.FC = () => {
   const [activeTool, setActiveTool] = useState<string | null>(null);
@@ -11,18 +13,20 @@ const ToolsSection: React.FC = () => {
     {
       id: 'velocidad-corte',
       name: 'Calculadora de Velocidad de Corte',
-      description: 'Optimiza tus parámetros de mecanizado para diferentes materiales',
+      description: 'Optimiza tus parámetros de mecanizado para diferentes materiales y herramientas',
       icon: Calculator,
       color: 'from-blue-500 to-blue-600',
-      emoji: '🔧'
+      emoji: '🔧',
+      category: 'Cálculo'
     },
     {
       id: 'soldadura-quiz',
       name: 'Quiz de Soldadura',
-      description: 'Evalúa tus conocimientos sobre procesos de soldadura',
+      description: 'Evalúa tus conocimientos sobre procesos de soldadura industrial',
       icon: Zap,
       color: 'from-orange-500 to-red-600',
-      emoji: '⚡'
+      emoji: '⚡',
+      category: 'Evaluación'
     },
     {
       id: 'forjado-simulator',
@@ -30,7 +34,26 @@ const ToolsSection: React.FC = () => {
       description: 'Experimenta con diferentes parámetros de forjado en tiempo real',
       icon: Hammer,
       color: 'from-red-500 to-pink-600',
-      emoji: '🔨'
+      emoji: '🔨',
+      category: 'Simulación'
+    },
+    {
+      id: 'mecanizado-simulator',
+      name: 'Simulador de Mecanizado CNC',
+      description: 'Simula procesos de torneado y fresado con diferentes materiales',
+      icon: Settings,
+      color: 'from-indigo-500 to-purple-600',
+      emoji: '⚙️',
+      category: 'Simulación'
+    },
+    {
+      id: 'calidad-inspector',
+      name: 'Inspector de Control de Calidad',
+      description: 'Herramienta de verificación dimensional y análisis de tolerancias',
+      icon: Search,
+      color: 'from-green-500 to-teal-600',
+      emoji: '🔍',
+      category: 'Inspección'
     }
   ];
 
@@ -50,6 +73,8 @@ const ToolsSection: React.FC = () => {
         {activeTool === 'velocidad-corte' && <VelocidadCorteCalculator />}
         {activeTool === 'soldadura-quiz' && <SoldaduraQuiz />}
         {activeTool === 'forjado-simulator' && <ForjadoSimulator />}
+        {activeTool === 'mecanizado-simulator' && <MecanizadoSimulator />}
+        {activeTool === 'calidad-inspector' && <CalidadInspector />}
       </div>
     );
   }
@@ -61,45 +86,143 @@ const ToolsSection: React.FC = () => {
           🛠️ Herramientas Interactivas
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Utiliza estas herramientas especializadas para aplicar conocimientos teóricos en situaciones prácticas.
+          Utiliza estas herramientas especializadas para aplicar conocimientos teóricos en situaciones prácticas de ingeniería mecánica.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {tools.map((tool) => {
-          const Icon = tool.icon;
-          return (
-            <div
-              key={tool.id}
-              onClick={() => setActiveTool(tool.id)}
-              className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 overflow-hidden"
-            >
-              <div className={`bg-gradient-to-r ${tool.color} p-6 text-white`}>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-4xl">{tool.emoji}</span>
-                  <Icon size={28} className="opacity-80" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">{tool.name}</h3>
-              </div>
-              
-              <div className="p-6">
-                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                  {tool.description}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Herramienta Interactiva
-                  </span>
-                  <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-2 transition-transform">
-                    <span>Abrir</span>
-                    <ChevronRight size={16} className="ml-1" />
+      {/* Tools by Category */}
+      <div className="space-y-8">
+        {/* Simulation Tools */}
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+            <span className="text-2xl mr-2">🎮</span>
+            Simuladores Interactivos
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tools.filter(tool => tool.category === 'Simulación').map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <div
+                  key={tool.id}
+                  onClick={() => setActiveTool(tool.id)}
+                  className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 overflow-hidden"
+                >
+                  <div className={`bg-gradient-to-r ${tool.color} p-6 text-white`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-4xl">{tool.emoji}</span>
+                      <Icon size={28} className="opacity-80" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{tool.name}</h3>
+                  </div>
+                  
+                  <div className="p-6">
+                    <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                      {tool.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {tool.category}
+                      </span>
+                      <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-2 transition-transform">
+                        <span>Abrir</span>
+                        <ChevronRight size={16} className="ml-1" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Calculation Tools */}
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+            <span className="text-2xl mr-2">🧮</span>
+            Herramientas de Cálculo
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tools.filter(tool => tool.category === 'Cálculo').map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <div
+                  key={tool.id}
+                  onClick={() => setActiveTool(tool.id)}
+                  className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 overflow-hidden"
+                >
+                  <div className={`bg-gradient-to-r ${tool.color} p-6 text-white`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-4xl">{tool.emoji}</span>
+                      <Icon size={28} className="opacity-80" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{tool.name}</h3>
+                  </div>
+                  
+                  <div className="p-6">
+                    <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                      {tool.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {tool.category}
+                      </span>
+                      <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-2 transition-transform">
+                        <span>Abrir</span>
+                        <ChevronRight size={16} className="ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Quality & Evaluation Tools */}
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+            <span className="text-2xl mr-2">📊</span>
+            Evaluación y Control de Calidad
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tools.filter(tool => tool.category === 'Evaluación' || tool.category === 'Inspección').map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <div
+                  key={tool.id}
+                  onClick={() => setActiveTool(tool.id)}
+                  className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 overflow-hidden"
+                >
+                  <div className={`bg-gradient-to-r ${tool.color} p-6 text-white`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-4xl">{tool.emoji}</span>
+                      <Icon size={28} className="opacity-80" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{tool.name}</h3>
+                  </div>
+                  
+                  <div className="p-6">
+                    <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                      {tool.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {tool.category}
+                      </span>
+                      <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-2 transition-transform">
+                        <span>Abrir</span>
+                        <ChevronRight size={16} className="ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Additional Tools Coming Soon */}
@@ -109,24 +232,29 @@ const ToolsSection: React.FC = () => {
           Más Herramientas en Desarrollo
         </h3>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Estamos trabajando en nuevas herramientas interactivas para mejorar tu experiencia de aprendizaje.
+          Estamos trabajando en nuevas herramientas interactivas para mejorar tu experiencia de aprendizaje en ingeniería mecánica.
         </p>
         
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
+        <div className="grid md:grid-cols-4 gap-4 mt-8">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
             <div className="text-2xl mb-2">📐</div>
             <h4 className="font-semibold">Calculadora de Tolerancias</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Próximamente</p>
           </div>
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <div className="text-2xl mb-2">🔍</div>
-            <h4 className="font-semibold">Simulador de Control de Calidad</h4>
+            <div className="text-2xl mb-2">🔩</div>
+            <h4 className="font-semibold">Calculadora de Engranajes</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">En desarrollo</p>
           </div>
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
-            <div className="text-2xl mb-2">⚙️</div>
-            <h4 className="font-semibold">Calculadora de Engranajes</h4>
+            <div className="text-2xl mb-2">🌡️</div>
+            <h4 className="font-semibold">Simulador de Tratamientos Térmicos</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Planificado</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+            <div className="text-2xl mb-2">🤖</div>
+            <h4 className="font-semibold">Programador CNC Virtual</h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">En diseño</p>
           </div>
         </div>
       </div>

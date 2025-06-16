@@ -11,37 +11,37 @@ const Home: React.FC<HomeProps> = ({ setActiveSection }) => {
     {
       icon: BookOpen,
       title: 'Procesos de Fabricación',
-      description: 'Aprende sobre procesos primarios, secundarios y de acabado con contenido interactivo',
+      description: 'Aprende sobre procesos primarios, secundarios y de acabado con contenido interactivo actualizado',
       action: () => setActiveSection('procesos'),
       gradient: 'from-blue-500 via-blue-600 to-indigo-700',
       particles: '✨',
-      stats: '15+ Procesos'
+      stats: '16+ Procesos'
     },
     {
       icon: Calculator,
       title: 'Herramientas Interactivas',
-      description: 'Calculadoras avanzadas y simuladores para aplicar conocimientos en tiempo real',
+      description: 'Calculadoras avanzadas, simuladores CNC y herramientas de control de calidad',
       action: () => setActiveSection('herramientas'),
       gradient: 'from-emerald-500 via-green-600 to-teal-700',
       particles: '⚡',
-      stats: '8 Herramientas'
+      stats: '5 Herramientas'
     },
     {
       icon: Award,
       title: 'Centro de Evaluación',
-      description: 'Sistema de evaluación inteligente con retroalimentación personalizada',
+      description: 'Sistema de evaluación inteligente con 9 módulos especializados y retroalimentación',
       action: () => setActiveSection('evaluacion'),
       gradient: 'from-purple-500 via-violet-600 to-purple-700',
       particles: '🏆',
-      stats: '6 Evaluaciones'
+      stats: '9 Evaluaciones'
     },
   ];
 
   const stats = [
-    { icon: BookOpen, value: '15+', label: 'Procesos de Fabricación', color: 'text-blue-400' },
-    { icon: Calculator, value: '8', label: 'Herramientas Interactivas', color: 'text-green-400' },
-    { icon: Users, value: '5,000+', label: 'Estudiantes Activos', color: 'text-purple-400' },
-    { icon: TrendingUp, value: '95%', label: 'Tasa de Éxito', color: 'text-orange-400' },
+    { icon: BookOpen, value: '16+', label: 'Procesos de Fabricación', color: 'text-blue-400' },
+    { icon: Calculator, value: '5', label: 'Herramientas Interactivas', color: 'text-green-400' },
+    { icon: Users, value: '7,200+', label: 'Estudiantes Activos', color: 'text-purple-400' },
+    { icon: TrendingUp, value: '97%', label: 'Tasa de Éxito', color: 'text-orange-400' },
   ];
 
   const containerVariants = {
@@ -125,7 +125,7 @@ const Home: React.FC<HomeProps> = ({ setActiveSection }) => {
             variants={itemVariants}
           >
             Domina los procesos de fabricación industrial con contenido técnico de vanguardia, 
-            herramientas interactivas de última generación y recursos multimedia especializados.
+            herramientas interactivas de última generación y recursos multimedia especializados para el año 2025.
           </motion.p>
 
           <motion.div 
@@ -134,11 +134,11 @@ const Home: React.FC<HomeProps> = ({ setActiveSection }) => {
           >
             <div className="flex items-center space-x-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-4 py-2 rounded-full border border-blue-200 dark:border-blue-700">
               <Sparkles className="text-blue-500" size={16} />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Contenido Actualizado 2024</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Contenido Actualizado 2025</span>
             </div>
             <div className="flex items-center space-x-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-4 py-2 rounded-full border border-green-200 dark:border-green-700">
               <Zap className="text-green-500" size={16} />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Herramientas Interactivas</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Simuladores Avanzados</span>
             </div>
             <div className="flex items-center space-x-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-4 py-2 rounded-full border border-purple-200 dark:border-purple-700">
               <Target className="text-purple-500" size={16} />
@@ -226,7 +226,7 @@ const Home: React.FC<HomeProps> = ({ setActiveSection }) => {
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              🚀 Impacto Educativo en Números
+              🚀 Impacto Educativo en Números - 2025
             </motion.h2>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -286,8 +286,8 @@ const Home: React.FC<HomeProps> = ({ setActiveSection }) => {
                   <Wrench size={32} />
                 </div>
                 <div className="text-left">
-                  <div className="text-xl font-bold mb-2">Calculadora de Velocidad de Corte</div>
-                  <div className="text-sm opacity-90">Optimiza tus parámetros de mecanizado con IA</div>
+                  <div className="text-xl font-bold mb-2">Simuladores CNC Avanzados</div>
+                  <div className="text-sm opacity-90">Mecanizado, forjado y control de calidad con IA</div>
                   <div className="text-xs mt-2 bg-white/20 px-3 py-1 rounded-full inline-block">
                     ⚡ Más Popular
                   </div>
@@ -307,8 +307,8 @@ const Home: React.FC<HomeProps> = ({ setActiveSection }) => {
                   <Award size={32} />
                 </div>
                 <div className="text-left">
-                  <div className="text-xl font-bold mb-2">Sistema de Evaluación Inteligente</div>
-                  <div className="text-sm opacity-90">Evalúa tus conocimientos con retroalimentación IA</div>
+                  <div className="text-xl font-bold mb-2">Sistema de Evaluación 2025</div>
+                  <div className="text-sm opacity-90">9 módulos especializados con retroalimentación IA</div>
                   <div className="text-xs mt-2 bg-white/20 px-3 py-1 rounded-full inline-block">
                     🎯 Recomendado
                   </div>

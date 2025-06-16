@@ -51,15 +51,15 @@ const Footer: React.FC = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Mail size={16} className="text-blue-400" />
-                <span className="text-gray-400 text-sm">info@ingenieriacentro.edu</span>
+                <span className="text-gray-400 text-sm">info@ingenieriacentro.edu.ve</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone size={16} className="text-blue-400" />
-                <span className="text-gray-400 text-sm">+34 123 456 789</span>
+                <span className="text-gray-400 text-sm">+58 286 123 4567</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin size={16} className="text-blue-400" />
-                <span className="text-gray-400 text-sm">Madrid, España</span>
+                <span className="text-gray-400 text-sm">Ciudad Guayana, Venezuela</span>
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2024 Centro de Aprendizaje de Ingeniería Mecánica. Todos los derechos reservados.
+              © 2025 Centro de Aprendizaje de Ingeniería Mecánica. Todos los derechos reservados.
             </div>
             
             <div className="flex space-x-4">

@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                 Centro de Aprendizaje
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                Ingeniería Mecánica • 2024
+                Ingeniería Mecánica • 2025
               </p>
             </div>
           </motion.div>
