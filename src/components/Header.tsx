@@ -20,6 +20,11 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
     { id: 'evaluacion', label: 'Evaluación', icon: Award, color: 'text-purple-500' },
   ];
 
+  const handleThemeToggle = () => {
+    console.log('Theme toggle clicked, current isDark:', isDark);
+    toggleTheme();
+  };
+
   return (
     <motion.header 
       className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border-b border-blue-200/50 dark:border-blue-800/50 sticky top-0 z-50"
@@ -104,29 +109,30 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
           <div className="flex items-center space-x-4">
             {/* Theme Toggle */}
             <motion.button
-              onClick={toggleTheme}
-              className="p-3 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-md"
+              onClick={handleThemeToggle}
+              className="p-3 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 shadow-md border border-gray-200 dark:border-gray-700"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
             >
               <AnimatePresence mode="wait">
                 {isDark ? (
                   <motion.div
                     key="sun"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <Sun size={22} className="text-yellow-500" />
                   </motion.div>
                 ) : (
                   <motion.div
                     key="moon"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <Moon size={22} className="text-blue-600" />
                   </motion.div>
@@ -137,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
             {/* Mobile menu button */}
             <motion.button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-3 rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-md"
+              className="lg:hidden p-3 rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -150,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                     exit={{ rotate: 90, opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <X size={22} />
+                    <X size={22} className="text-gray-700 dark:text-gray-300" />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -160,7 +166,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                     exit={{ rotate: -90, opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Menu size={22} />
+                    <Menu size={22} className="text-gray-700 dark:text-gray-300" />
                   </motion.div>
                 )}
               </AnimatePresence>
