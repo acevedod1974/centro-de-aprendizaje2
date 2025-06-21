@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Moon, Sun, Menu, X, BookOpen, Calculator, Award, Image, Sparkles } from 'lucide-react';
+import { Moon, Sun, Menu, X, BookOpen, Calculator, Award, Image, Sparkles, Calendar, BarChart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -18,6 +18,8 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
     { id: 'herramientas', label: 'Herramientas', icon: Calculator, color: 'text-green-500' },
     { id: 'recursos', label: 'Recursos', icon: Image, color: 'text-orange-500' },
     { id: 'evaluacion', label: 'Evaluación', icon: Award, color: 'text-purple-500' },
+    { id: 'planificador', label: 'Planificador', icon: Calendar, color: 'text-pink-500' },
+    { id: 'progreso', label: 'Progreso', icon: BarChart, color: 'text-cyan-500' },
   ];
 
   const handleThemeToggle = () => {

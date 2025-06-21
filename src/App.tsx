@@ -6,7 +6,10 @@ import ProcessSection from './components/ProcessSection';
 import ToolsSection from './components/ToolsSection';
 import ResourcesSection from './components/ResourcesSection';
 import EvaluationSection from './components/EvaluationSection';
+import StudyPlanner from './components/StudyPlanner';
+import ProgressTracker from './components/ProgressTracker';
 import Footer from './components/Footer';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
   const [activeSection, setActiveSection] = useState('inicio');
@@ -23,18 +26,46 @@ function App() {
         return <ResourcesSection />;
       case 'evaluacion':
         return <EvaluationSection />;
+      case 'planificador':
+        return <StudyPlanner />;
+      case 'progreso':
+        return <ProgressTracker />;
       default:
         return <Home setActiveSection={setActiveSection} />;
     }
   };
 
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -20 }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.4
+  };
+
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/30 transition-colors">
         <Header activeSection={activeSection} setActiveSection={setActiveSection} />
-        <main className="min-h-screen">
-          {renderSection()}
-        </main>
+        
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={activeSection}
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="min-h-screen"
+          >
+            {renderSection()}
+          </motion.main>
+        </AnimatePresence>
+        
         <Footer />
       </div>
     </ThemeProvider>

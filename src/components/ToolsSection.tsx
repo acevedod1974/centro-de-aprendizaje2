@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calculator, Zap, Hammer, ChevronRight, Search, Settings, Ruler, Cog, Thermometer, Code } from 'lucide-react';
+import { Calculator, Zap, Hammer, ChevronRight, Search, Settings, Ruler, Cog, Thermometer, Code, Atom } from 'lucide-react';
 import VelocidadCorteCalculator from './tools/VelocidadCorteCalculator';
 import SoldaduraQuiz from './tools/SoldaduraQuiz';
 import ForjadoSimulator from './tools/ForjadoSimulator';
@@ -7,6 +7,7 @@ import MecanizadoSimulator from './tools/MecanizadoSimulator';
 import CalidadInspector from './tools/CalidadInspector';
 import ToleranciaCalculator from './tools/ToleranciaCalculator';
 import EngranajCalculator from './tools/EngranajCalculator';
+import MaterialesCalculator from './tools/MaterialesCalculator';
 
 const ToolsSection: React.FC = () => {
   const [activeTool, setActiveTool] = useState<string | null>(null);
@@ -39,6 +40,16 @@ const ToolsSection: React.FC = () => {
       icon: Cog,
       color: 'from-purple-500 to-pink-600',
       emoji: '⚙️',
+      category: 'Cálculo',
+      available: true
+    },
+    {
+      id: 'materiales-calculator',
+      name: 'Calculadora de Propiedades de Materiales',
+      description: 'Análisis comparativo y selección de materiales de ingeniería',
+      icon: Atom,
+      color: 'from-cyan-500 to-blue-500',
+      emoji: '🧪',
       category: 'Cálculo',
       available: true
     },
@@ -120,6 +131,7 @@ const ToolsSection: React.FC = () => {
         {activeTool === 'velocidad-corte' && <VelocidadCorteCalculator />}
         {activeTool === 'tolerancia-calculator' && <ToleranciaCalculator />}
         {activeTool === 'engranaj-calculator' && <EngranajCalculator />}
+        {activeTool === 'materiales-calculator' && <MaterialesCalculator />}
         {activeTool === 'soldadura-quiz' && <SoldaduraQuiz />}
         {activeTool === 'forjado-simulator' && <ForjadoSimulator />}
         {activeTool === 'mecanizado-simulator' && <MecanizadoSimulator />}
@@ -144,10 +156,10 @@ const ToolsSection: React.FC = () => {
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <Calculator size={24} />
-            <span className="text-2xl font-bold">7</span>
+            <span className="text-2xl font-bold">8</span>
           </div>
           <div className="text-sm opacity-90">Herramientas Disponibles</div>
-          <div className="text-xs opacity-75 mt-1">+3 nuevas este mes</div>
+          <div className="text-xs opacity-75 mt-1">+1 nueva este mes</div>
         </div>
         
         <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg">
@@ -162,7 +174,7 @@ const ToolsSection: React.FC = () => {
         <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <Ruler size={24} />
-            <span className="text-2xl font-bold">3</span>
+            <span className="text-2xl font-bold">4</span>
           </div>
           <div className="text-sm opacity-90">Calculadoras Técnicas</div>
           <div className="text-xs opacity-75 mt-1">Normas internacionales</div>
