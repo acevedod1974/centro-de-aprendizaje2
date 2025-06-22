@@ -83,6 +83,9 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
             onClick={() => setActiveSection("inicio")}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="Ir a inicio"
+            role="button"
+            tabIndex={0}
           >
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 p-3 rounded-2xl shadow-lg">
@@ -104,7 +107,11 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
           </motion.div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex space-x-1">
+          <nav
+            className="hidden lg:flex space-x-1"
+            role="navigation"
+            aria-label="Secciones principales"
+          >
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
@@ -119,6 +126,8 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  aria-label={item.label}
+                  role="tab"
                 >
                   {isActive && (
                     <motion.div
@@ -161,6 +170,10 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+              aria-label={
+                isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"
+              }
+              role="button"
             >
               <AnimatePresence mode="wait">
                 {isDark ? (
@@ -193,6 +206,8 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
               className="lg:hidden p-3 rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              aria-label="Abrir menú"
+              role="button"
             >
               <AnimatePresence mode="wait">
                 {isMenuOpen ? (
@@ -255,6 +270,8 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                       transition={{ delay: index * 0.1 }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
+                      aria-label={item.label}
+                      role="menuitem"
                     >
                       <Icon
                         size={24}

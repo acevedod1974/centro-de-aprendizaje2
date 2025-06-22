@@ -1,5 +1,5 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from 'lucide-react';
+import React from "react";
+import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from "lucide-react";
 
 const Footer: React.FC = () => {
   return (
@@ -18,8 +18,9 @@ const Footer: React.FC = () => {
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Plataforma educativa especializada en procesos de fabricación industrial 
-              con herramientas interactivas y recursos técnicos actualizados.
+              Plataforma educativa especializada en procesos de fabricación
+              industrial con herramientas interactivas y recursos técnicos
+              actualizados.
             </p>
           </div>
 
@@ -27,10 +28,38 @@ const Footer: React.FC = () => {
           <div className="col-span-1">
             <h4 className="text-lg font-semibold mb-4">Navegación</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Procesos de Fabricación</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Herramientas Interactivas</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Recursos Multimedia</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Centro de Evaluación</a></li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Procesos de Fabricación
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Herramientas Interactivas
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Recursos Multimedia
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Centro de Evaluación
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -38,10 +67,38 @@ const Footer: React.FC = () => {
           <div className="col-span-1">
             <h4 className="text-lg font-semibold mb-4">Recursos</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Manual Técnico</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Tablas de Referencia</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Galería de Imágenes</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Videos Educativos</a></li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Manual Técnico
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Tablas de Referencia
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Galería de Imágenes
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Videos Educativos
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -51,15 +108,29 @@ const Footer: React.FC = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Mail size={16} className="text-blue-400" />
-                <span className="text-gray-400 text-sm">info@ingenieriacentro.edu.ve</span>
+                <a
+                  href="mailto:info@ingenieriacentro.edu.ve"
+                  aria-label="Enviar correo a info@ingenieriacentro.edu.ve"
+                  className="text-gray-400 text-sm hover:text-white transition-colors"
+                >
+                  info@ingenieriacentro.edu.ve
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone size={16} className="text-blue-400" />
-                <span className="text-gray-400 text-sm">+58 286 123 4567</span>
+                <a
+                  href="tel:+582861234567"
+                  aria-label="Llamar al +58 286 123 4567"
+                  className="text-gray-400 text-sm hover:text-white transition-colors"
+                >
+                  +58 286 123 4567
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin size={16} className="text-blue-400" />
-                <span className="text-gray-400 text-sm">Ciudad Guayana, Venezuela</span>
+                <span className="text-gray-400 text-sm">
+                  Ciudad Guayana, Venezuela
+                </span>
               </div>
             </div>
           </div>
@@ -68,17 +139,36 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2025 Centro de Aprendizaje de Ingeniería Mecánica. Todos los derechos reservados.
+              © 2025 Centro de Aprendizaje de Ingeniería Mecánica. Todos los
+              derechos reservados.
             </div>
-            
+
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="https://github.com/yourprofile"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Github size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="https://linkedin.com/in/yourprofile"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="https://twitter.com/yourprofile"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Twitter size={20} />
               </a>
             </div>
