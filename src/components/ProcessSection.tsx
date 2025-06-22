@@ -9,7 +9,15 @@ import {
   Zap,
 } from "lucide-react";
 
-const ProcessSection: React.FC = () => {
+interface ProcessSectionProps {
+  setActiveSection: (section: string) => void;
+  setActiveTool: (toolId: string) => void;
+}
+
+const ProcessSection: React.FC<ProcessSectionProps> = ({
+  setActiveSection,
+  setActiveTool,
+}) => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(
     "remocion"
   );
@@ -1191,17 +1199,19 @@ const ProcessSection: React.FC = () => {
 
               <div className="mt-8 flex flex-wrap gap-4">
                 {selectedProcessData.simulator && (
-                  <a
-                    href={`/tools/${selectedProcessData.simulator}`}
+                  <button
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      setActiveSection("herramientas");
+                      setActiveTool(selectedProcessData.simulator!);
+                    }}
                     className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
                     aria-label="Abrir simulador"
                     tabIndex={0}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     <Play size={18} />
                     <span>Abrir Simulador</span>
-                  </a>
+                  </button>
                 )}
                 <a
                   href={`/manuales/${selectedProcess}.pdf`}

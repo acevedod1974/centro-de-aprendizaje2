@@ -11,18 +11,27 @@ import EvaluationSection from "./components/EvaluationSection";
 import ProgressTracker from "./components/ProgressTracker";
 import Footer from "./components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const [activeSection, setActiveSection] = useState("inicio");
+  const [activeTool, setActiveTool] = useState<string | null>(null);
 
   const renderSection = () => {
     switch (activeSection) {
       case "inicio":
         return <Home setActiveSection={setActiveSection} />;
       case "procesos":
-        return <ProcessSection />;
+        return (
+          <ProcessSection
+            setActiveSection={setActiveSection}
+            setActiveTool={setActiveTool}
+          />
+        );
       case "herramientas":
-        return <ToolsSection />;
+        return (
+          <ToolsSection activeTool={activeTool} setActiveTool={setActiveTool} />
+        );
       case "recursos":
         return <ResourcesSection />;
       case "evaluacion":
@@ -82,6 +91,9 @@ function App() {
             activeSection={activeSection}
             setActiveSection={setActiveSection}
           />
+
+          {/* Scroll to top on section/page change */}
+          <ScrollToTop />
 
           <AnimatePresence mode="wait">
             <motion.main
