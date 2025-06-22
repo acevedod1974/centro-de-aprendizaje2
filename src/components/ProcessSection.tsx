@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronRight,
@@ -9,6 +9,7 @@ import {
   Settings,
   Zap,
 } from "lucide-react";
+import { supabase } from "../supabaseClient"; // Adjust the import based on your project structure
 
 const ProcessSection: React.FC = () => {
   const navigate = useNavigate();
@@ -969,6 +970,17 @@ const ProcessSection: React.FC = () => {
       {processSVGs[processId || ""] || process.image}
     </span>
   );
+
+  useEffect(() => {
+    supabase
+      .from("resources")
+      .select("*")
+      .limit(1)
+      .then(({ data, error }) => {
+        if (error) alert("Supabase error: " + error.message);
+        else alert("Supabase working! Sample: " + JSON.stringify(data));
+      });
+  }, []); //remove after testing lines 973 to 979
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

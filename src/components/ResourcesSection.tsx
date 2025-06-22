@@ -191,7 +191,7 @@ const ResourcesSection: React.FC = () => {
 
               <div className="flex space-x-3">
                 <a
-                  href={resource.downloadUrl || resource.viewUrl || "#"}
+                  href={resource.download_url || resource.view_url || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1 justify-center focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -202,7 +202,7 @@ const ResourcesSection: React.FC = () => {
                   <span>Descargar</span>
                 </a>
                 <a
-                  href={resource.viewUrl || resource.downloadUrl || "#"}
+                  href={resource.view_url || resource.download_url || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
