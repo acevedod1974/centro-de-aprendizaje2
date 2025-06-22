@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 export interface Achievement {
   id: string;
@@ -62,19 +56,15 @@ const AchievementsContext = createContext<AchievementsContextType | undefined>(
   undefined
 );
 
-export const useAchievements = () => {
-  const ctx = useContext(AchievementsContext);
-  if (!ctx)
-    throw new Error("useAchievements must be used within AchievementsProvider");
-  return ctx;
-};
-
 const getInitialAchievements = () => {
   const stored = localStorage.getItem(ACHIEVEMENTS_STORAGE_KEY);
   if (stored) {
     try {
       return JSON.parse(stored);
-    } catch {}
+    } catch {
+      // fallback to default if corrupted
+      return defaultAchievements;
+    }
   }
   return defaultAchievements;
 };
@@ -145,3 +135,5 @@ export const AchievementsProvider = ({ children }: { children: ReactNode }) => {
     </AchievementsContext.Provider>
   );
 };
+
+export { AchievementsContext };

@@ -11,10 +11,10 @@ import {
   Trophy,
   Flame,
 } from "lucide-react";
-import { useProgress } from "../contexts/ProgressContext";
+import { useTasks } from "../contexts/TasksContext";
 
 const StudyPlanner: React.FC = () => {
-  const { studyTasks, setStudyTasks } = useProgress();
+  const { studyTasks, setStudyTasks } = useTasks();
   const [showAddTask, setShowAddTask] = useState(false);
   const [studyStreak] = useState<StudyStreak>({
     current: 7,

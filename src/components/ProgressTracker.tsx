@@ -9,10 +9,14 @@ import {
   Star,
   CheckCircle,
 } from "lucide-react";
-import { useProgress } from "../contexts/ProgressContext";
+import { useQuizProgress } from "../contexts/QuizProgressContext";
+import { useAchievements } from "../contexts/AchievementsContext";
+import { useActivityLog } from "../contexts/ActivityLogContext";
 
 const ProgressTracker: React.FC = () => {
-  const { userProgress, achievements, activityLog } = useProgress();
+  const { userProgress } = useQuizProgress();
+  const { achievements } = useAchievements();
+  const { activityLog } = useActivityLog();
 
   // Calculate stats from userProgress
   const quizIds = Object.keys(userProgress);

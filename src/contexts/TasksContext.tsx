@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 export interface StudyTask {
   id: string;
@@ -28,12 +22,6 @@ interface TasksContextType {
 const TASKS_STORAGE_KEY = "studyTasks";
 
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
-
-export const useTasks = () => {
-  const ctx = useContext(TasksContext);
-  if (!ctx) throw new Error("useTasks must be used within TasksProvider");
-  return ctx;
-};
 
 const getInitialTasks = () => {
   const stored = localStorage.getItem(TASKS_STORAGE_KEY);
@@ -60,3 +48,5 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
     </TasksContext.Provider>
   );
 };
+
+export { TasksContext };

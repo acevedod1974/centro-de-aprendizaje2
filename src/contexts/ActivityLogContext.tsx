@@ -29,7 +29,10 @@ const getInitialActivityLog = () => {
   if (stored) {
     try {
       return JSON.parse(stored);
-    } catch {}
+    } catch {
+      // fallback to empty log if corrupted
+      return {};
+    }
   }
   return {};
 };

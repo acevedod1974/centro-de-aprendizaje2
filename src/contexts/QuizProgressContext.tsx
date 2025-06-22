@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 export interface QuizProgress {
   completed: boolean;
@@ -24,19 +18,28 @@ const QuizProgressContext = createContext<QuizProgressContextType | undefined>(
   undefined
 );
 
-export const useQuizProgress = () => {
-  const ctx = useContext(QuizProgressContext);
-  if (!ctx)
-    throw new Error("useQuizProgress must be used within QuizProgressProvider");
-  return ctx;
-};
-
 const getInitialUserProgress = () => {
   const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (stored) {
     try {
       return JSON.parse(stored);
-    } catch {}
+    } catch {
+      // fallback to default if corrupted
+      return {
+        soldadura: { completed: false },
+        mecanizado: { completed: false },
+        conformado: { completed: false },
+        fundicion: { completed: false },
+        calidad: { completed: false },
+        materiales: { completed: false },
+        automatizacion: { completed: false },
+        seguridad: { completed: false },
+        mantenimiento: { completed: false },
+        termodinamica: { completed: false },
+        diseno: { completed: false },
+        fluidos: { completed: false },
+      };
+    }
   }
   return {
     soldadura: { completed: false },
@@ -69,3 +72,5 @@ export const QuizProgressProvider = ({ children }: { children: ReactNode }) => {
     </QuizProgressContext.Provider>
   );
 };
+
+export { QuizProgressContext };
