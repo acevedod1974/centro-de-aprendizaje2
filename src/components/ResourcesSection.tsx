@@ -1,101 +1,185 @@
-import React, { useState } from 'react';
-import { FileText, Image, Video, Download, ExternalLink, Search } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  FileText,
+  Image,
+  Video,
+  Download,
+  ExternalLink,
+  Search,
+} from "lucide-react";
+
+// Resource type definition for maintainability
+interface Resource {
+  id: number;
+  title: string;
+  description: string;
+  type: string;
+  category: string;
+  size?: string;
+  pages?: number;
+  items?: number;
+  duration?: string;
+  updated: string;
+  downloadUrl?: string;
+  viewUrl?: string;
+}
 
 const ResourcesSection: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const resources = [
+  // Example resources with real/placeholder links
+  const resources: Resource[] = [
     {
       id: 1,
-      title: 'Manual Técnico de Procesos de Fabricación',
-      description: 'Guía completa con especificaciones técnicas, parámetros y mejores prácticas',
-      type: 'pdf',
-      category: 'manual',
-      size: '15.2 MB',
+      title: "Manual Técnico de Procesos de Fabricación",
+      description:
+        "Guía completa con especificaciones técnicas, parámetros y mejores prácticas",
+      type: "pdf",
+      category: "manual",
+      size: "15.2 MB",
       pages: 324,
-      updated: '2024-01-15'
+      updated: "2024-01-15",
+      downloadUrl: "https://example.com/manual-tecnico.pdf",
+      viewUrl: "https://example.com/manual-tecnico.pdf",
     },
     {
       id: 2,
-      title: 'Galería de Procesos de Mecanizado',
-      description: 'Imágenes técnicas detalladas de operaciones de torneado, fresado y taladrado',
-      type: 'gallery',
-      category: 'images',
+      title: "Galería de Procesos de Mecanizado",
+      description:
+        "Imágenes técnicas detalladas de operaciones de torneado, fresado y taladrado",
+      type: "gallery",
+      category: "images",
       items: 45,
-      updated: '2024-01-20'
+      updated: "2024-01-20",
+      viewUrl: "https://example.com/galeria-mecanizado",
     },
     {
       id: 3,
-      title: 'Procesos de Soldadura Industrial',
-      description: 'Documentación especializada en soldadura MIG, TIG y por arco',
-      type: 'pdf',
-      category: 'soldadura',
-      size: '8.7 MB',
+      title: "Procesos de Soldadura Industrial",
+      description:
+        "Documentación especializada en soldadura MIG, TIG y por arco",
+      type: "pdf",
+      category: "soldadura",
+      size: "8.7 MB",
       pages: 156,
-      updated: '2024-01-18'
+      updated: "2024-01-18",
+      downloadUrl: "https://example.com/soldadura.pdf",
+      viewUrl: "https://example.com/soldadura.pdf",
     },
     {
       id: 4,
-      title: 'Videos Demostrativos de Forjado',
-      description: 'Serie de videos educativos sobre técnicas de forjado libre y en matriz',
-      type: 'video',
-      category: 'forjado',
-      duration: '2h 15min',
-      updated: '2024-01-22'
+      title: "Videos Demostrativos de Forjado",
+      description:
+        "Serie de videos educativos sobre técnicas de forjado libre y en matriz",
+      type: "video",
+      category: "forjado",
+      duration: "2h 15min",
+      updated: "2024-01-22",
+      viewUrl: "https://youtube.com/forjado-demo",
     },
     {
       id: 5,
-      title: 'Tablas de Velocidades de Corte',
-      description: 'Referencias rápidas para diferentes materiales y herramientas',
-      type: 'pdf',
-      category: 'referencias',
-      size: '2.1 MB',
+      title: "Tablas de Velocidades de Corte",
+      description:
+        "Referencias rápidas para diferentes materiales y herramientas",
+      type: "pdf",
+      category: "referencias",
+      size: "2.1 MB",
       pages: 28,
-      updated: '2024-01-10'
+      updated: "2024-01-10",
+      downloadUrl: "https://example.com/velocidades-corte.pdf",
+      viewUrl: "https://example.com/velocidades-corte.pdf",
     },
     {
       id: 6,
-      title: 'Procesos de Conformado de Metales',
-      description: 'Imágenes y diagramas de procesos de laminado, estampado y trefilado',
-      type: 'gallery',
-      category: 'images',
+      title: "Procesos de Conformado de Metales",
+      description:
+        "Imágenes y diagramas de procesos de laminado, estampado y trefilado",
+      type: "gallery",
+      category: "images",
       items: 32,
-      updated: '2024-01-25'
-    }
+      updated: "2024-01-25",
+      viewUrl: "https://example.com/conformado-metales",
+    },
+    // More realistic resources
+    {
+      id: 7,
+      title: "Video: Introducción al Torneado",
+      description:
+        "Video educativo sobre los fundamentos del torneado industrial",
+      type: "video",
+      category: "images",
+      duration: "18min",
+      updated: "2024-02-01",
+      viewUrl: "https://youtube.com/torneado-intro",
+    },
+    {
+      id: 8,
+      title: "Manual de Seguridad en Talleres",
+      description:
+        "Normas y recomendaciones para la seguridad en talleres de manufactura",
+      type: "pdf",
+      category: "manual",
+      size: "4.5 MB",
+      pages: 80,
+      updated: "2024-02-10",
+      downloadUrl: "https://example.com/manual-seguridad.pdf",
+      viewUrl: "https://example.com/manual-seguridad.pdf",
+    },
+    {
+      id: 9,
+      title: "Galería: Equipos de Medición",
+      description: "Imágenes de micrómetros, calibradores y otros instrumentos",
+      type: "gallery",
+      category: "images",
+      items: 20,
+      updated: "2024-02-15",
+      viewUrl: "https://example.com/galeria-medicion",
+    },
   ];
 
   const categories = [
-    { id: 'all', name: 'Todos los Recursos', icon: '📚' },
-    { id: 'manual', name: 'Manuales Técnicos', icon: '📖' },
-    { id: 'images', name: 'Galerías de Imágenes', icon: '🖼️' },
-    { id: 'soldadura', name: 'Soldadura', icon: '⚡' },
-    { id: 'forjado', name: 'Forjado', icon: '🔨' },
-    { id: 'referencias', name: 'Referencias', icon: '📋' },
+    { id: "all", name: "Todos los Recursos", icon: "📚" },
+    { id: "manual", name: "Manuales Técnicos", icon: "📖" },
+    { id: "images", name: "Galerías de Imágenes", icon: "🖼️" },
+    { id: "soldadura", name: "Soldadura", icon: "⚡" },
+    { id: "forjado", name: "Forjado", icon: "🔨" },
+    { id: "referencias", name: "Referencias", icon: "📋" },
   ];
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'pdf': return <FileText size={24} className="text-red-500" />;
-      case 'gallery': return <Image size={24} className="text-blue-500" />;
-      case 'video': return <Video size={24} className="text-green-500" />;
-      default: return <FileText size={24} className="text-gray-500" />;
+      case "pdf":
+        return <FileText size={24} className="text-red-500" />;
+      case "gallery":
+        return <Image size={24} className="text-blue-500" />;
+      case "video":
+        return <Video size={24} className="text-green-500" />;
+      default:
+        return <FileText size={24} className="text-gray-500" />;
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'pdf': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';
-      case 'gallery': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300';
-      case 'video': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300';
+      case "pdf":
+        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300";
+      case "gallery":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300";
+      case "video":
+        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
     }
   };
 
-  const filteredResources = resources.filter(resource => {
-    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resource.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || resource.category === selectedCategory;
+  const filteredResources = resources.filter((resource) => {
+    const matchesSearch =
+      resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      resource.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || resource.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -106,14 +190,18 @@ const ResourcesSection: React.FC = () => {
           📚 Recursos Multimedia
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Accede a manuales técnicos, galerías de imágenes y recursos especializados.
+          Accede a manuales técnicos, galerías de imágenes y recursos
+          especializados.
         </p>
       </div>
 
       {/* Search and Filter */}
       <div className="mb-8 space-y-4">
         <div className="relative">
-          <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Search
+            size={20}
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          />
           <input
             type="text"
             placeholder="Buscar recursos..."
@@ -130,8 +218,8 @@ const ResourcesSection: React.FC = () => {
               onClick={() => setSelectedCategory(category.id)}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                 selectedCategory === category.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               }`}
             >
               <span>{category.icon}</span>
@@ -152,44 +240,60 @@ const ResourcesSection: React.FC = () => {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   {getTypeIcon(resource.type)}
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(resource.type)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
+                      resource.type
+                    )}`}
+                  >
                     {resource.type.toUpperCase()}
                   </span>
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {new Date(resource.updated).toLocaleDateString('es-ES')}
+                  {new Date(resource.updated).toLocaleDateString("es-ES")}
                 </div>
               </div>
 
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
                 {resource.title}
               </h3>
-              
+
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">
                 {resource.description}
               </p>
 
               <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-6">
                 {resource.size && (
-                  <span>📄 {resource.pages} páginas • {resource.size}</span>
+                  <span>
+                    📄 {resource.pages} páginas • {resource.size}
+                  </span>
                 )}
-                {resource.items && (
-                  <span>🖼️ {resource.items} imágenes</span>
-                )}
-                {resource.duration && (
-                  <span>🎥 {resource.duration}</span>
-                )}
+                {resource.items && <span>🖼️ {resource.items} imágenes</span>}
+                {resource.duration && <span>🎥 {resource.duration}</span>}
               </div>
 
               <div className="flex space-x-3">
-                <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1 justify-center">
+                <a
+                  href={resource.downloadUrl || resource.viewUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1 justify-center focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  aria-label={`Descargar ${resource.title}`}
+                  tabIndex={0}
+                >
                   <Download size={16} />
                   <span>Descargar</span>
-                </button>
-                <button className="flex items-center space-x-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                </a>
+                <a
+                  href={resource.viewUrl || resource.downloadUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  aria-label={`Ver ${resource.title}`}
+                  tabIndex={0}
+                >
                   <ExternalLink size={16} />
                   <span>Ver</span>
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -213,7 +317,7 @@ const ResourcesSection: React.FC = () => {
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
           🚀 Acceso Rápido a Recursos Populares
         </h3>
-        
+
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg text-center">
             <div className="text-3xl mb-3">📖</div>
