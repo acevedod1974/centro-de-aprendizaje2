@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Target, TrendingUp, Users, Book, Brain } from "lucide-react";
 import SoldaduraQuiz from "./tools/SoldaduraQuiz";
 import QuizCard, { Quiz } from "./QuizCard";
+import { useProgress } from "../contexts/ProgressContext";
 
 const quizzes: Quiz[] = [
   {
@@ -188,43 +189,33 @@ const quizzes: Quiz[] = [
 
 const LOCAL_STORAGE_KEY = "quizUserProgress";
 
-const getInitialUserProgress = () => {
-  const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch {
-      // fallback to default if corrupted
-    }
-  }
-  return {
-    soldadura: { completed: false },
-    mecanizado: { completed: false },
-    conformado: { completed: false },
-    fundicion: { completed: false },
-    calidad: { completed: false },
-    materiales: { completed: false },
-    automatizacion: { completed: false },
-    seguridad: { completed: false },
-    mantenimiento: { completed: false },
-    termodinamica: { completed: false },
-    diseno: { completed: false },
-    fluidos: { completed: false },
-  };
-};
-
 const EvaluationSection: React.FC = () => {
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
-  const [userProgress, setUserProgress] = useState<
-    Record<string, { completed: boolean; bestScore?: number }>
-  >(getInitialUserProgress());
+  const { userProgress, setUserProgress, unlockAchievements } = useProgress();
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
   }, [userProgress]);
 
   const renderQuizComponent = (quizId: string) => {
-    if (quizId === "soldadura") return <SoldaduraQuiz />;
+    if (quizId === "soldadura")
+      return (
+        <SoldaduraQuiz
+          onComplete={(score: number) => {
+            setUserProgress((prev) => ({
+              ...prev,
+              [quizId]: {
+                completed: true,
+                bestScore:
+                  typeof prev[quizId]?.bestScore === "number"
+                    ? Math.max(prev[quizId].bestScore || 0, score)
+                    : score,
+              },
+            }));
+            unlockAchievements(quizId, score);
+          }}
+        />
+      );
     return (
       <div className="text-center py-16 text-gray-500 dark:text-gray-400">
         <h2 className="text-2xl font-bold mb-4">Próximamente</h2>

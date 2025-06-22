@@ -1,129 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Calendar, Clock, Target, Plus, CheckCircle, AlertCircle, BookOpen, Star, Trophy, Flame } from 'lucide-react';
-
-interface StudyTask {
-  id: string;
-  title: string;
-  description: string;
-  dueDate: string;
-  priority: 'high' | 'medium' | 'low';
-  completed: boolean;
-  estimatedTime: number;
-  category: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  points: number;
-}
-
-interface StudyStreak {
-  current: number;
-  longest: number;
-  lastStudyDate: string;
-}
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  Calendar,
+  Clock,
+  Target,
+  Plus,
+  CheckCircle,
+  BookOpen,
+  Star,
+  Trophy,
+  Flame,
+} from "lucide-react";
+import { useProgress } from "../contexts/ProgressContext";
 
 const StudyPlanner: React.FC = () => {
-  const [tasks, setTasks] = useState<StudyTask[]>([
-    {
-      id: '1',
-      title: 'Completar Quiz de Soldadura',
-      description: 'Repasar conceptos de soldadura MIG, TIG y por arco',
-      dueDate: '2024-01-25',
-      priority: 'high',
-      completed: false,
-      estimatedTime: 30,
-      category: 'Evaluación',
-      difficulty: 'medium',
-      points: 50
-    },
-    {
-      id: '2',
-      title: 'Estudiar Procesos de Mecanizado',
-      description: 'Revisar torneado, fresado y parámetros de corte',
-      dueDate: '2024-01-26',
-      priority: 'medium',
-      completed: false,
-      estimatedTime: 45,
-      category: 'Teoría',
-      difficulty: 'hard',
-      points: 75
-    },
-    {
-      id: '3',
-      title: 'Práctica con Calculadora de Velocidad',
-      description: 'Resolver 5 ejercicios diferentes con la herramienta',
-      dueDate: '2024-01-24',
-      priority: 'medium',
-      completed: true,
-      estimatedTime: 20,
-      category: 'Práctica',
-      difficulty: 'easy',
-      points: 25
-    },
-    {
-      id: '4',
-      title: 'Leer Manual de Conformado',
-      description: 'Capítulos 3-5: Forjado y estampado',
-      dueDate: '2024-01-28',
-      priority: 'low',
-      completed: false,
-      estimatedTime: 60,
-      category: 'Lectura',
-      difficulty: 'medium',
-      points: 40
-    }
-  ]);
-
+  const { studyTasks, setStudyTasks } = useProgress();
   const [showAddTask, setShowAddTask] = useState(false);
-  const [studyStreak, setStudyStreak] = useState<StudyStreak>({
+  const [studyStreak] = useState<StudyStreak>({
     current: 7,
     longest: 12,
-    lastStudyDate: new Date().toISOString().split('T')[0]
+    lastStudyDate: new Date().toISOString().split("T")[0],
   });
   const [totalPoints, setTotalPoints] = useState(125);
   const [level, setLevel] = useState(3);
   const [newTask, setNewTask] = useState({
-    title: '',
-    description: '',
-    dueDate: '',
-    priority: 'medium' as 'high' | 'medium' | 'low',
+    title: "",
+    description: "",
+    dueDate: "",
+    priority: "medium" as "high" | "medium" | "low",
     estimatedTime: 30,
-    category: 'Teoría',
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard'
+    category: "Teoría",
+    difficulty: "medium" as "easy" | "medium" | "hard",
   });
 
   const toggleTask = (id: string) => {
-    setTasks(tasks.map(task => {
-      if (task.id === id) {
-        const updatedTask = { ...task, completed: !task.completed };
-        if (updatedTask.completed && !task.completed) {
-          setTotalPoints(prev => prev + task.points);
-        } else if (!updatedTask.completed && task.completed) {
-          setTotalPoints(prev => prev - task.points);
+    setStudyTasks(
+      studyTasks.map((task) => {
+        if (task.id === id) {
+          const updatedTask = { ...task, completed: !task.completed };
+          if (updatedTask.completed && !task.completed) {
+            setTotalPoints((prev) => prev + task.points);
+          } else if (!updatedTask.completed && task.completed) {
+            setTotalPoints((prev) => prev - task.points);
+          }
+          return updatedTask;
         }
-        return updatedTask;
-      }
-      return task;
-    }));
+        return task;
+      })
+    );
   };
 
   const addTask = () => {
     if (newTask.title && newTask.dueDate) {
-      const points = newTask.difficulty === 'easy' ? 25 : newTask.difficulty === 'medium' ? 50 : 75;
+      const points =
+        newTask.difficulty === "easy"
+          ? 25
+          : newTask.difficulty === "medium"
+          ? 50
+          : 75;
       const task: StudyTask = {
         id: Date.now().toString(),
         ...newTask,
         completed: false,
-        points
+        points,
       };
-      setTasks([...tasks, task]);
+      setStudyTasks([...studyTasks, task]);
       setNewTask({
-        title: '',
-        description: '',
-        dueDate: '',
-        priority: 'medium',
+        title: "",
+        description: "",
+        dueDate: "",
+        priority: "medium",
         estimatedTime: 30,
-        category: 'Teoría',
-        difficulty: 'medium'
+        category: "Teoría",
+        difficulty: "medium",
       });
       setShowAddTask(false);
     }
@@ -131,50 +80,73 @@ const StudyPlanner: React.FC = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'border-red-500 bg-red-50 dark:bg-red-900/20';
-      case 'medium': return 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20';
-      case 'low': return 'border-green-500 bg-green-50 dark:bg-green-900/20';
-      default: return 'border-gray-300 bg-gray-50 dark:bg-gray-700';
+      case "high":
+        return "border-red-500 bg-red-50 dark:bg-red-900/20";
+      case "medium":
+        return "border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20";
+      case "low":
+        return "border-green-500 bg-green-50 dark:bg-green-900/20";
+      default:
+        return "border-gray-300 bg-gray-50 dark:bg-gray-700";
     }
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return 'text-green-600 bg-green-100 dark:bg-green-900/20';
-      case 'medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20';
-      case 'hard': return 'text-red-600 bg-red-100 dark:bg-red-900/20';
-      default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/20';
+      case "easy":
+        return "text-green-600 bg-green-100 dark:bg-green-900/20";
+      case "medium":
+        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
+      case "hard":
+        return "text-red-600 bg-red-100 dark:bg-red-900/20";
+      default:
+        return "text-gray-600 bg-gray-100 dark:bg-gray-900/20";
     }
   };
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'high': return '🔴';
-      case 'medium': return '🟡';
-      case 'low': return '🟢';
-      default: return '⚪';
+      case "high":
+        return "🔴";
+      case "medium":
+        return "🟡";
+      case "low":
+        return "🟢";
+      default:
+        return "⚪";
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'Evaluación': return '📝';
-      case 'Teoría': return '📚';
-      case 'Práctica': return '🔧';
-      case 'Lectura': return '📖';
-      default: return '📋';
+      case "Evaluación":
+        return "📝";
+      case "Teoría":
+        return "📚";
+      case "Práctica":
+        return "🔧";
+      case "Lectura":
+        return "📖";
+      default:
+        return "📋";
     }
   };
 
-  const completedTasks = tasks.filter(task => task.completed).length;
-  const totalTasks = tasks.length;
-  const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const completedTasks = studyTasks.filter((task) => task.completed).length;
+  const totalTasks = studyTasks.length;
+  const completionPercentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  const upcomingTasks = tasks
-    .filter(task => !task.completed)
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+  const upcomingTasks = studyTasks
+    .filter((task) => !task.completed)
+    .sort(
+      (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+    );
 
-  const totalEstimatedTime = upcomingTasks.reduce((sum, task) => sum + task.estimatedTime, 0);
+  const totalEstimatedTime = upcomingTasks.reduce(
+    (sum, task) => sum + task.estimatedTime,
+    0
+  );
 
   // Calculate level based on points
   useEffect(() => {
@@ -182,7 +154,7 @@ const StudyPlanner: React.FC = () => {
     setLevel(newLevel);
   }, [totalPoints]);
 
-  const pointsToNextLevel = (level * 100) - totalPoints;
+  const pointsToNextLevel = level * 100 - totalPoints;
   const levelProgress = ((totalPoints % 100) / 100) * 100;
 
   return (
@@ -223,7 +195,9 @@ const StudyPlanner: React.FC = () => {
               transition={{ delay: 0.5, duration: 1 }}
             />
           </div>
-          <p className="text-sm opacity-90">{pointsToNextLevel} pts para Nv.{level + 1}</p>
+          <p className="text-sm opacity-90">
+            {pointsToNextLevel} pts para Nv.{level + 1}
+          </p>
         </motion.div>
 
         <motion.div
@@ -237,7 +211,13 @@ const StudyPlanner: React.FC = () => {
             <span className="text-3xl font-bold">{totalPoints}</span>
           </div>
           <h3 className="text-lg font-semibold mb-2">Puntos Totales</h3>
-          <p className="text-sm opacity-90">+{tasks.filter(t => t.completed).reduce((sum, t) => sum + t.points, 0)} esta semana</p>
+          <p className="text-sm opacity-90">
+            +
+            {studyTasks
+              .filter((t) => t.completed)
+              .reduce((sum, t) => sum + t.points, 0)}{" "}
+            esta semana
+          </p>
         </motion.div>
 
         <motion.div
@@ -251,7 +231,9 @@ const StudyPlanner: React.FC = () => {
             <span className="text-3xl font-bold">{studyStreak.current}</span>
           </div>
           <h3 className="text-lg font-semibold mb-2">Racha Actual</h3>
-          <p className="text-sm opacity-90">Máximo: {studyStreak.longest} días</p>
+          <p className="text-sm opacity-90">
+            Máximo: {studyStreak.longest} días
+          </p>
         </motion.div>
 
         <motion.div
@@ -265,7 +247,9 @@ const StudyPlanner: React.FC = () => {
             <span className="text-3xl font-bold">{completionPercentage}%</span>
           </div>
           <h3 className="text-lg font-semibold mb-2">Progreso Semanal</h3>
-          <p className="text-sm opacity-90">{completedTasks} de {totalTasks} tareas</p>
+          <p className="text-sm opacity-90">
+            {completedTasks} de {totalTasks} tareas
+          </p>
         </motion.div>
 
         <motion.div
@@ -276,10 +260,14 @@ const StudyPlanner: React.FC = () => {
         >
           <div className="flex items-center justify-between mb-4">
             <Clock size={32} />
-            <span className="text-3xl font-bold">{Math.floor(totalEstimatedTime / 60)}h</span>
+            <span className="text-3xl font-bold">
+              {Math.floor(totalEstimatedTime / 60)}h
+            </span>
           </div>
           <h3 className="text-lg font-semibold mb-2">Tiempo Restante</h3>
-          <p className="text-sm opacity-90">{totalEstimatedTime % 60}min adicionales</p>
+          <p className="text-sm opacity-90">
+            {totalEstimatedTime % 60}min adicionales
+          </p>
         </motion.div>
       </div>
 
@@ -303,11 +291,13 @@ const StudyPlanner: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {tasks.map((task, index) => (
+            {studyTasks.map((task, index) => (
               <motion.div
                 key={task.id}
-                className={`p-6 rounded-2xl border-l-4 ${getPriorityColor(task.priority)} ${
-                  task.completed ? 'opacity-60' : ''
+                className={`p-6 rounded-2xl border-l-4 ${getPriorityColor(
+                  task.priority
+                )} ${
+                  task.completed ? "opacity-60" : ""
                 } shadow-md hover:shadow-lg transition-all`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -318,8 +308,8 @@ const StudyPlanner: React.FC = () => {
                     onClick={() => toggleTask(task.id)}
                     className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                       task.completed
-                        ? 'bg-green-500 border-green-500 text-white'
-                        : 'border-gray-300 hover:border-green-500'
+                        ? "bg-green-500 border-green-500 text-white"
+                        : "border-gray-300 hover:border-green-500"
                     }`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -329,31 +319,43 @@ const StudyPlanner: React.FC = () => {
 
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className={`text-lg font-semibold ${
-                        task.completed 
-                          ? 'line-through text-gray-500 dark:text-gray-400' 
-                          : 'text-gray-900 dark:text-white'
-                      }`}>
+                      <h3
+                        className={`text-lg font-semibold ${
+                          task.completed
+                            ? "line-through text-gray-500 dark:text-gray-400"
+                            : "text-gray-900 dark:text-white"
+                        }`}
+                      >
                         {task.title}
                       </h3>
-                      <span className="text-lg">{getPriorityIcon(task.priority)}</span>
-                      <span className="text-sm">{getCategoryIcon(task.category)}</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(task.difficulty)}`}>
+                      <span className="text-lg">
+                        {getPriorityIcon(task.priority)}
+                      </span>
+                      <span className="text-sm">
+                        {getCategoryIcon(task.category)}
+                      </span>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
+                          task.difficulty
+                        )}`}
+                      >
                         {task.difficulty}
                       </span>
                       <span className="bg-purple-100 dark:bg-purple-900/20 text-purple-600 px-2 py-1 rounded-full text-xs font-bold">
                         +{task.points} pts
                       </span>
                     </div>
-                    
+
                     <p className="text-gray-600 dark:text-gray-300 mb-3">
                       {task.description}
                     </p>
-                    
+
                     <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center space-x-1">
                         <Calendar size={16} />
-                        <span>{new Date(task.dueDate).toLocaleDateString('es-ES')}</span>
+                        <span>
+                          {new Date(task.dueDate).toLocaleDateString("es-ES")}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Clock size={16} />
@@ -383,7 +385,7 @@ const StudyPlanner: React.FC = () => {
             <h3 className="text-lg font-bold text-yellow-800 dark:text-yellow-200 mb-4 flex items-center">
               🏆 Logros Recientes
             </h3>
-            
+
             <div className="space-y-3">
               <div className="flex items-center space-x-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
                 <div className="text-2xl">🔥</div>
@@ -392,7 +394,7 @@ const StudyPlanner: React.FC = () => {
                   <div className="text-xs text-gray-500">¡Sigue así!</div>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
                 <div className="text-2xl">⚡</div>
                 <div>
@@ -413,32 +415,52 @@ const StudyPlanner: React.FC = () => {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               📊 Estadísticas Rápidas
             </h3>
-            
+
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-300">Tareas de alta prioridad:</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Tareas de alta prioridad:
+                </span>
                 <span className="font-bold text-red-500">
-                  {tasks.filter(t => t.priority === 'high' && !t.completed).length}
+                  {
+                    studyTasks.filter(
+                      (t) => t.priority === "high" && !t.completed
+                    ).length
+                  }
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-300">Vencen hoy:</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Vencen hoy:
+                </span>
                 <span className="font-bold text-orange-500">
-                  {tasks.filter(t => 
-                    new Date(t.dueDate).toDateString() === new Date().toDateString() && !t.completed
-                  ).length}
+                  {
+                    studyTasks.filter(
+                      (t) =>
+                        new Date(t.dueDate).toDateString() ===
+                          new Date().toDateString() && !t.completed
+                    ).length
+                  }
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-300">Puntos esta semana:</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Puntos esta semana:
+                </span>
                 <span className="font-bold text-purple-500">
-                  +{tasks.filter(t => t.completed).reduce((sum, t) => sum + t.points, 0)}
+                  +
+                  {studyTasks
+                    .filter((t) => t.completed)
+                    .reduce((sum, t) => sum + t.points, 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-300">Tiempo total estimado:</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Tiempo total estimado:
+                </span>
                 <span className="font-bold text-blue-500">
-                  {Math.floor(totalEstimatedTime / 60)}h {totalEstimatedTime % 60}m
+                  {Math.floor(totalEstimatedTime / 60)}h{" "}
+                  {totalEstimatedTime % 60}m
                 </span>
               </div>
             </div>
@@ -454,7 +476,7 @@ const StudyPlanner: React.FC = () => {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               💡 Consejos Inteligentes
             </h3>
-            
+
             <div className="space-y-3 text-sm">
               <div className="flex items-start space-x-2">
                 <span>🎯</span>
@@ -477,7 +499,8 @@ const StudyPlanner: React.FC = () => {
               <div className="flex items-start space-x-2">
                 <span>🏆</span>
                 <span className="text-gray-600 dark:text-gray-300">
-                  Alcanza el nivel {level + 1} completando {Math.ceil(pointsToNextLevel / 50)} tareas más
+                  Alcanza el nivel {level + 1} completando{" "}
+                  {Math.ceil(pointsToNextLevel / 50)} tareas más
                 </span>
               </div>
             </div>
@@ -500,44 +523,60 @@ const StudyPlanner: React.FC = () => {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               ➕ Nueva Tarea de Estudio
             </h3>
-            
+
             <div className="space-y-4">
               <input
                 type="text"
                 placeholder="Título de la tarea"
                 value={newTask.title}
-                onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, title: e.target.value })
+                }
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
               />
-              
+
               <textarea
                 placeholder="Descripción (opcional)"
                 value={newTask.description}
-                onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, description: e.target.value })
+                }
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 h-20"
               />
-              
+
               <input
                 type="date"
                 value={newTask.dueDate}
-                onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, dueDate: e.target.value })
+                }
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
               />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <select
                   value={newTask.priority}
-                  onChange={(e) => setNewTask({...newTask, priority: e.target.value as any})}
+                  onChange={(e) =>
+                    setNewTask({
+                      ...newTask,
+                      priority: e.target.value as "high" | "medium" | "low",
+                    })
+                  }
                   className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="low">Baja prioridad</option>
                   <option value="medium">Media prioridad</option>
                   <option value="high">Alta prioridad</option>
                 </select>
-                
+
                 <select
                   value={newTask.difficulty}
-                  onChange={(e) => setNewTask({...newTask, difficulty: e.target.value as any})}
+                  onChange={(e) =>
+                    setNewTask({
+                      ...newTask,
+                      difficulty: e.target.value as "easy" | "medium" | "hard",
+                    })
+                  }
                   className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="easy">Fácil (+25 pts)</option>
@@ -545,10 +584,12 @@ const StudyPlanner: React.FC = () => {
                   <option value="hard">Difícil (+75 pts)</option>
                 </select>
               </div>
-              
+
               <select
                 value={newTask.category}
-                onChange={(e) => setNewTask({...newTask, category: e.target.value})}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, category: e.target.value })
+                }
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
               >
                 <option value="Teoría">Teoría</option>
@@ -556,7 +597,7 @@ const StudyPlanner: React.FC = () => {
                 <option value="Evaluación">Evaluación</option>
                 <option value="Lectura">Lectura</option>
               </select>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Tiempo estimado: {newTask.estimatedTime} minutos
@@ -567,12 +608,17 @@ const StudyPlanner: React.FC = () => {
                   max="120"
                   step="15"
                   value={newTask.estimatedTime}
-                  onChange={(e) => setNewTask({...newTask, estimatedTime: Number(e.target.value)})}
+                  onChange={(e) =>
+                    setNewTask({
+                      ...newTask,
+                      estimatedTime: Number(e.target.value),
+                    })
+                  }
                   className="w-full"
                 />
               </div>
             </div>
-            
+
             <div className="flex space-x-4 mt-6">
               <button
                 onClick={addTask}
