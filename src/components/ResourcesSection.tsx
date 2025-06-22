@@ -14,14 +14,26 @@ const ResourcesSection: React.FC = () => {
   const [resources, setResources] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchResources() {
+      setLoading(true);
+      setError(null);
       const { data, error } = await supabase
         .from("resources")
         .select("*")
         .order("id", { ascending: true });
-      if (!error) setResources(data);
+      if (error) {
+        setError(
+          "No se pudieron cargar los recursos. Intenta de nuevo más tarde."
+        );
+        setResources([]);
+      } else {
+        setResources(data || []);
+      }
+      setLoading(false);
     }
     fetchResources();
   }, []);
@@ -60,6 +72,34 @@ const ResourcesSection: React.FC = () => {
       selectedCategory === "all" || resource.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
+        <span className="text-lg text-gray-700 dark:text-gray-200">
+          Cargando recursos...
+        </span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="text-6xl mb-4">⚠️</div>
+        <h3 className="text-xl font-semibold text-red-700 dark:text-red-400 mb-2">
+          {error}
+        </h3>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
