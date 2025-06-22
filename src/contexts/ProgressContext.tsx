@@ -1,3 +1,6 @@
+// This file is now obsolete after context refactor. All logic has been migrated to separate context providers.
+// You can safely delete this file.
+
 import React, {
   createContext,
   useContext,

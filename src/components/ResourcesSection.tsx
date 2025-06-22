@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FileText,
   Image,
@@ -7,146 +7,36 @@ import {
   ExternalLink,
   Search,
 } from "lucide-react";
-
-// Resource type definition for maintainability
-interface Resource {
-  id: number;
-  title: string;
-  description: string;
-  type: string;
-  category: string;
-  size?: string;
-  pages?: number;
-  items?: number;
-  duration?: string;
-  updated: string;
-  downloadUrl?: string;
-  viewUrl?: string;
-}
+import { supabase } from "../supabaseClient";
+import { categories } from "./resourcesData";
 
 const ResourcesSection: React.FC = () => {
+  const [resources, setResources] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Example resources with real/placeholder links
-  const resources: Resource[] = [
-    {
-      id: 1,
-      title: "Manual Técnico de Procesos de Fabricación",
-      description:
-        "Guía completa con especificaciones técnicas, parámetros y mejores prácticas",
-      type: "pdf",
-      category: "manual",
-      size: "15.2 MB",
-      pages: 324,
-      updated: "2024-01-15",
-      downloadUrl: "https://example.com/manual-tecnico.pdf",
-      viewUrl: "https://example.com/manual-tecnico.pdf",
-    },
-    {
-      id: 2,
-      title: "Galería de Procesos de Mecanizado",
-      description:
-        "Imágenes técnicas detalladas de operaciones de torneado, fresado y taladrado",
-      type: "gallery",
-      category: "images",
-      items: 45,
-      updated: "2024-01-20",
-      viewUrl: "https://example.com/galeria-mecanizado",
-    },
-    {
-      id: 3,
-      title: "Procesos de Soldadura Industrial",
-      description:
-        "Documentación especializada en soldadura MIG, TIG y por arco",
-      type: "pdf",
-      category: "soldadura",
-      size: "8.7 MB",
-      pages: 156,
-      updated: "2024-01-18",
-      downloadUrl: "https://example.com/soldadura.pdf",
-      viewUrl: "https://example.com/soldadura.pdf",
-    },
-    {
-      id: 4,
-      title: "Videos Demostrativos de Forjado",
-      description:
-        "Serie de videos educativos sobre técnicas de forjado libre y en matriz",
-      type: "video",
-      category: "forjado",
-      duration: "2h 15min",
-      updated: "2024-01-22",
-      viewUrl: "https://youtube.com/forjado-demo",
-    },
-    {
-      id: 5,
-      title: "Tablas de Velocidades de Corte",
-      description:
-        "Referencias rápidas para diferentes materiales y herramientas",
-      type: "pdf",
-      category: "referencias",
-      size: "2.1 MB",
-      pages: 28,
-      updated: "2024-01-10",
-      downloadUrl: "https://example.com/velocidades-corte.pdf",
-      viewUrl: "https://example.com/velocidades-corte.pdf",
-    },
-    {
-      id: 6,
-      title: "Procesos de Conformado de Metales",
-      description:
-        "Imágenes y diagramas de procesos de laminado, estampado y trefilado",
-      type: "gallery",
-      category: "images",
-      items: 32,
-      updated: "2024-01-25",
-      viewUrl: "https://example.com/conformado-metales",
-    },
-    // More realistic resources
-    {
-      id: 7,
-      title: "Video: Introducción al Torneado",
-      description:
-        "Video educativo sobre los fundamentos del torneado industrial",
-      type: "video",
-      category: "images",
-      duration: "18min",
-      updated: "2024-02-01",
-      viewUrl: "https://youtube.com/torneado-intro",
-    },
-    {
-      id: 8,
-      title: "Manual de Seguridad en Talleres",
-      description:
-        "Normas y recomendaciones para la seguridad en talleres de manufactura",
-      type: "pdf",
-      category: "manual",
-      size: "4.5 MB",
-      pages: 80,
-      updated: "2024-02-10",
-      downloadUrl: "https://example.com/manual-seguridad.pdf",
-      viewUrl: "https://example.com/manual-seguridad.pdf",
-    },
-    {
-      id: 9,
-      title: "Galería: Equipos de Medición",
-      description: "Imágenes de micrómetros, calibradores y otros instrumentos",
-      type: "gallery",
-      category: "images",
-      items: 20,
-      updated: "2024-02-15",
-      viewUrl: "https://example.com/galeria-medicion",
-    },
-  ];
-
-  const categories = [
-    { id: "all", name: "Todos los Recursos", icon: "📚" },
-    { id: "manual", name: "Manuales Técnicos", icon: "📖" },
-    { id: "images", name: "Galerías de Imágenes", icon: "🖼️" },
-    { id: "soldadura", name: "Soldadura", icon: "⚡" },
-    { id: "forjado", name: "Forjado", icon: "🔨" },
-    { id: "referencias", name: "Referencias", icon: "📋" },
-  ];
+  useEffect(() => {
+    async function fetchResources() {
+      setLoading(true);
+      setError(null);
+      const { data, error } = await supabase
+        .from("resources")
+        .select("*")
+        .order("id", { ascending: true });
+      if (error) {
+        setError(
+          "No se pudieron cargar los recursos. Intenta de nuevo más tarde."
+        );
+        setResources([]);
+      } else {
+        setResources(data || []);
+      }
+      setLoading(false);
+    }
+    fetchResources();
+  }, []);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -182,6 +72,34 @@ const ResourcesSection: React.FC = () => {
       selectedCategory === "all" || resource.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
+        <span className="text-lg text-gray-700 dark:text-gray-200">
+          Cargando recursos...
+        </span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="text-6xl mb-4">⚠️</div>
+        <h3 className="text-xl font-semibold text-red-700 dark:text-red-400 mb-2">
+          {error}
+        </h3>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -273,7 +191,7 @@ const ResourcesSection: React.FC = () => {
 
               <div className="flex space-x-3">
                 <a
-                  href={resource.downloadUrl || resource.viewUrl || "#"}
+                  href={resource.download_url || resource.view_url || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1 justify-center focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -284,7 +202,7 @@ const ResourcesSection: React.FC = () => {
                   <span>Descargar</span>
                 </a>
                 <a
-                  href={resource.viewUrl || resource.downloadUrl || "#"}
+                  href={resource.view_url || resource.download_url || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"

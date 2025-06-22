@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Target, TrendingUp, Users, Book, Brain } from "lucide-react";
 import SoldaduraQuiz from "./tools/SoldaduraQuiz";
 import QuizCard, { Quiz } from "./QuizCard";
-import { useProgress } from "../contexts/ProgressContext";
+import { useQuizProgress } from "../contexts/useQuizProgress";
+import { useAchievements } from "../contexts/useAchievements";
+import { useActivityLog } from "../contexts/ActivityLogContext";
 
 const quizzes: Quiz[] = [
   {
@@ -191,33 +193,96 @@ const LOCAL_STORAGE_KEY = "quizUserProgress";
 
 const EvaluationSection: React.FC = () => {
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
-  const { userProgress, setUserProgress, unlockAchievements, logActivity } =
-    useProgress();
+  const { userProgress, setUserProgress } = useQuizProgress();
+  const { unlockAchievements } = useAchievements();
+  const { logActivity } = useActivityLog();
+  const [loading, setLoading] = useState(false); // For future backend integration
+  const [error, setError] = useState<string | null>(null); // For future backend integration
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
   }, [userProgress]);
 
-  const renderQuizComponent = (quizId: string) => {
-    if (quizId === "soldadura")
+  // Example: If you fetch quizzes or user data from backend in the future
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setError(null);
+  //   fetchDataFromBackend()
+  //     .then(() => setLoading(false))
+  //     .catch(() => { setError('Error al cargar datos.'); setLoading(false); });
+  // }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
+        <span className="text-lg text-gray-700 dark:text-gray-200">
+          Cargando evaluaciones...
+        </span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="text-6xl mb-4">⚠️</div>
+        <h3 className="text-xl font-semibold text-red-700 dark:text-red-400 mb-2">
+          {error}
+        </h3>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
+
+  if (activeQuiz) {
+    if (activeQuiz === "soldadura") {
       return (
-        <SoldaduraQuiz
-          onComplete={(score: number) => {
-            setUserProgress((prev) => ({
-              ...prev,
-              [quizId]: {
-                completed: true,
-                bestScore:
-                  typeof prev[quizId]?.bestScore === "number"
-                    ? Math.max(prev[quizId].bestScore || 0, score)
-                    : score,
-              },
-            }));
-            unlockAchievements(quizId, score);
-            logActivity();
-          }}
-        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-6">
+            <button
+              onClick={() => setActiveQuiz(null)}
+              className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+              aria-label="Volver a Evaluaciones"
+            >
+              <span>←</span>
+              <span>Volver a Evaluaciones</span>
+            </button>
+          </div>
+          <SoldaduraQuiz
+            onComplete={(score: number) => {
+              setUserProgress((prev) => ({
+                ...prev,
+                [activeQuiz]: {
+                  completed: true,
+                  bestScore:
+                    typeof prev[activeQuiz]?.bestScore === "number"
+                      ? Math.max(prev[activeQuiz].bestScore || 0, score)
+                      : score,
+                },
+              }));
+              unlockAchievements(activeQuiz, score, {
+                ...userProgress,
+                [activeQuiz]: {
+                  completed: true,
+                  bestScore:
+                    typeof userProgress[activeQuiz]?.bestScore === "number"
+                      ? Math.max(userProgress[activeQuiz].bestScore || 0, score)
+                      : score,
+                },
+              });
+              logActivity();
+            }}
+          />
+        </div>
       );
+    }
+    // Not available quiz fallback
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl shadow-xl p-10 relative overflow-hidden animate-fade-in">
         {/* Animated SVG Illustration */}
@@ -304,24 +369,6 @@ const EvaluationSection: React.FC = () => {
         {/* Subtle floating shapes for extra flair */}
         <div className="absolute top-4 left-8 w-8 h-8 bg-pink-400 opacity-20 rounded-full blur-2xl animate-float-slow" />
         <div className="absolute bottom-8 right-10 w-12 h-12 bg-purple-400 opacity-20 rounded-full blur-2xl animate-float-slower" />
-      </div>
-    );
-  };
-
-  if (activeQuiz) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <button
-            onClick={() => setActiveQuiz(null)}
-            className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-            aria-label="Volver a Evaluaciones"
-          >
-            <span>←</span>
-            <span>Volver a Evaluaciones</span>
-          </button>
-        </div>
-        {renderQuizComponent(activeQuiz)}
       </div>
     );
   }
