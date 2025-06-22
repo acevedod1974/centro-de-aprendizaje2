@@ -32,6 +32,8 @@ const StudyPlanner: React.FC = () => {
     category: "Teoría",
     difficulty: "medium" as "easy" | "medium" | "hard",
   });
+  const [loading, setLoading] = useState(false); // For future backend integration
+  const [error, setError] = useState<string | null>(null); // For future backend integration
 
   const toggleTask = (id: string) => {
     setStudyTasks(
@@ -156,6 +158,43 @@ const StudyPlanner: React.FC = () => {
 
   const pointsToNextLevel = level * 100 - totalPoints;
   const levelProgress = ((totalPoints % 100) / 100) * 100;
+
+  // Example: If you fetch study tasks from backend in the future
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setError(null);
+  //   fetchDataFromBackend()
+  //     .then(() => setLoading(false))
+  //     .catch(() => { setError('Error al cargar datos.'); setLoading(false); });
+  // }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
+        <span className="text-lg text-gray-700 dark:text-gray-200">
+          Cargando planificador...
+        </span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="text-6xl mb-4">⚠️</div>
+        <h3 className="text-xl font-semibold text-red-700 dark:text-red-400 mb-2">
+          {error}
+        </h3>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
