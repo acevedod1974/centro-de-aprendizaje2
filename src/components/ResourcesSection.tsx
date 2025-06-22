@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FileText,
   Image,
@@ -7,11 +7,23 @@ import {
   ExternalLink,
   Search,
 } from "lucide-react";
-import { resources, categories } from "./resourcesData";
+import { supabase } from "../supabaseClient";
 
 const ResourcesSection: React.FC = () => {
+  const [resources, setResources] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  useEffect(() => {
+    async function fetchResources() {
+      const { data, error } = await supabase
+        .from("resources")
+        .select("*")
+        .order("id", { ascending: true });
+      if (!error) setResources(data);
+    }
+    fetchResources();
+  }, []);
 
   const getTypeIcon = (type: string) => {
     switch (type) {

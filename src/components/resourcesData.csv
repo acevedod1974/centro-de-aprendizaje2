@@ -1,0 +1,10 @@
+id,title,description,type,category,size,pages,items,duration,updated,download_url,view_url
+1,Manual Técnico de Procesos de Fabricación,"Guía completa con especificaciones técnicas, parámetros y mejores prácticas",pdf,manual,"15.2 MB",324,,,2024-01-15,https://example.com/manual-tecnico.pdf,https://example.com/manual-tecnico.pdf
+2,Galería de Procesos de Mecanizado,"Imágenes técnicas detalladas de operaciones de torneado, fresado y taladrado",gallery,images,,,"45",,2024-01-20,,https://example.com/galeria-mecanizado
+3,Procesos de Soldadura Industrial,"Documentación especializada en soldadura MIG, TIG y por arco",pdf,soldadura,"8.7 MB",156,,,2024-01-18,https://example.com/soldadura.pdf,https://example.com/soldadura.pdf
+4,Videos Demostrativos de Forjado,"Serie de videos educativos sobre técnicas de forjado libre y en matriz",video,forjado,,,,2h 15min,2024-01-22,,https://youtube.com/forjado-demo
+5,Tablas de Velocidades de Corte,"Referencias rápidas para diferentes materiales y herramientas",pdf,referencias,"2.1 MB",28,,,2024-01-10,https://example.com/velocidades-corte.pdf,https://example.com/velocidades-corte.pdf
+6,Procesos de Conformado de Metales,"Imágenes y diagramas de procesos de laminado, estampado y trefilado",gallery,images,,,"32",,2024-01-25,,https://example.com/conformado-metales
+7,Video: Introducción al Torneado,"Video educativo sobre los fundamentos del torneado industrial",video,images,,,,18min,2024-02-01,,https://youtube.com/torneado-intro
+8,Manual de Seguridad en Talleres,"Normas y recomendaciones para la seguridad en talleres de manufactura",pdf,manual,"4.5 MB",80,,,2024-02-10,https://example.com/manual-seguridad.pdf,https://example.com/manual-seguridad.pdf
+9,Galería: Equipos de Medición,"Imágenes de micrómetros, calibradores y otros instrumentos",gallery,images,,,"20",,2024-02-15,,https://example.com/galeria-medicion

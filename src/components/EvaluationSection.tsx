@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Target, TrendingUp, Users, Book, Brain } from "lucide-react";
 import SoldaduraQuiz from "./tools/SoldaduraQuiz";
 import QuizCard, { Quiz } from "./QuizCard";
-import { useQuizProgress } from "../contexts/QuizProgressContext";
-import { useAchievements } from "../contexts/AchievementsContext";
+import { useQuizProgress } from "../contexts/useQuizProgress";
+import { useAchievements } from "../contexts/useAchievements";
 import { useActivityLog } from "../contexts/ActivityLogContext";
 
 const quizzes: Quiz[] = [
