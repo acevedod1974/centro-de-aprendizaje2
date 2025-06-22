@@ -27,3 +27,13 @@
 .animate-fade-in-up {
   animation: fade-in-up 0.4s ease;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus {
+  outline: 2px solid #6366f1; /* Tailwind indigo-500 */
+  outline-offset: 2px;
+  transition: outline 0.2s;
+}
