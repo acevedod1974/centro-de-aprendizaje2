@@ -43,11 +43,15 @@ export interface ProgressContextType {
   setStudyTasks: React.Dispatch<React.SetStateAction<StudyTask[]>>;
   achievements: Achievement[];
   setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>;
+  unlockAchievements: (quizId: string, score: number) => void;
+  activityLog: Record<string, number>; // date string (YYYY-MM-DD) -> count
+  logActivity: () => void;
 }
 
 const LOCAL_STORAGE_KEY = "quizUserProgress";
 const TASKS_STORAGE_KEY = "studyTasks";
 const ACHIEVEMENTS_STORAGE_KEY = "achievements";
+const ACTIVITY_LOG_KEY = "activityLog";
 
 const defaultAchievements: Achievement[] = [
   {
@@ -139,6 +143,18 @@ const getInitialAchievements = () => {
   return defaultAchievements;
 };
 
+const getInitialActivityLog = () => {
+  const stored = localStorage.getItem(ACTIVITY_LOG_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      // intentionally empty: fallback to default if corrupted
+    }
+  }
+  return {};
+};
+
 export const ProgressProvider = ({ children }: { children: ReactNode }) => {
   const [userProgress, setUserProgress] = useState<
     Record<string, QuizProgress>
@@ -147,6 +163,17 @@ export const ProgressProvider = ({ children }: { children: ReactNode }) => {
   const [achievements, setAchievements] = useState<Achievement[]>(
     getInitialAchievements()
   );
+  const [activityLog, setActivityLog] = useState<Record<string, number>>(
+    getInitialActivityLog()
+  );
+
+  const logActivity = () => {
+    const today = new Date().toISOString().split("T")[0];
+    setActivityLog((prev) => ({
+      ...prev,
+      [today]: (prev[today] || 0) + 1,
+    }));
+  };
 
   // --- Achievement Unlock Logic ---
   const unlockAchievements = (quizId: string, score: number) => {
@@ -210,6 +237,10 @@ export const ProgressProvider = ({ children }: { children: ReactNode }) => {
     );
   }, [achievements]);
 
+  useEffect(() => {
+    localStorage.setItem(ACTIVITY_LOG_KEY, JSON.stringify(activityLog));
+  }, [activityLog]);
+
   return (
     <ProgressContext.Provider
       value={{
@@ -220,6 +251,8 @@ export const ProgressProvider = ({ children }: { children: ReactNode }) => {
         achievements,
         setAchievements,
         unlockAchievements,
+        activityLog,
+        logActivity,
       }}
     >
       {children}

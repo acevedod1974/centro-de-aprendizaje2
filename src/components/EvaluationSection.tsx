@@ -191,7 +191,8 @@ const LOCAL_STORAGE_KEY = "quizUserProgress";
 
 const EvaluationSection: React.FC = () => {
   const [activeQuiz, setActiveQuiz] = useState<string | null>(null);
-  const { userProgress, setUserProgress, unlockAchievements } = useProgress();
+  const { userProgress, setUserProgress, unlockAchievements, logActivity } =
+    useProgress();
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
@@ -213,20 +214,96 @@ const EvaluationSection: React.FC = () => {
               },
             }));
             unlockAchievements(quizId, score);
+            logActivity();
           }}
         />
       );
     return (
-      <div className="text-center py-16 text-gray-500 dark:text-gray-400">
-        <h2 className="text-2xl font-bold mb-4">Próximamente</h2>
-        <p>El módulo de evaluación para este tema estará disponible pronto.</p>
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl shadow-xl p-10 relative overflow-hidden animate-fade-in">
+        {/* Animated SVG Illustration */}
+        <div className="mb-6 animate-bounce-slow">
+          <svg
+            width="120"
+            height="120"
+            viewBox="0 0 120 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="60" cy="60" r="54" fill="url(#grad1)" opacity="0.15" />
+            <ellipse
+              cx="60"
+              cy="60"
+              rx="38"
+              ry="38"
+              fill="url(#grad2)"
+              opacity="0.25"
+            />
+            <g>
+              <rect
+                x="35"
+                y="50"
+                width="50"
+                height="30"
+                rx="8"
+                fill="#fff"
+                stroke="#a78bfa"
+                strokeWidth="2"
+              />
+              <rect
+                x="45"
+                y="60"
+                width="30"
+                height="6"
+                rx="3"
+                fill="#a78bfa"
+                opacity="0.7"
+              />
+              <circle cx="60" cy="65" r="2.5" fill="#6366f1" />
+            </g>
+            <defs>
+              <linearGradient
+                id="grad1"
+                x1="0"
+                y1="0"
+                x2="120"
+                y2="120"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="#a78bfa" />
+                <stop offset="1" stopColor="#f472b6" />
+              </linearGradient>
+              <linearGradient
+                id="grad2"
+                x1="22"
+                y1="22"
+                x2="98"
+                y2="98"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="#6366f1" />
+                <stop offset="1" stopColor="#f472b6" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-2 drop-shadow-lg animate-fade-in-up">
+          Próximamente
+        </h2>
+        <p className="text-lg text-gray-700 dark:text-gray-300 mb-8 animate-fade-in-up delay-100 text-center max-w-md">
+          El módulo de evaluación para este tema estará disponible pronto.
+          <br />
+          ¡Estamos trabajando para traerte nuevos desafíos!
+        </p>
         <button
           onClick={() => setActiveQuiz(null)}
-          className="mt-8 px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:scale-105 hover:from-purple-600 hover:to-pink-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 animate-fade-in-up delay-200"
           aria-label="Volver a Evaluaciones"
         >
           ← Volver a Evaluaciones
         </button>
+        {/* Subtle floating shapes for extra flair */}
+        <div className="absolute top-4 left-8 w-8 h-8 bg-pink-400 opacity-20 rounded-full blur-2xl animate-float-slow" />
+        <div className="absolute bottom-8 right-10 w-12 h-12 bg-purple-400 opacity-20 rounded-full blur-2xl animate-float-slower" />
       </div>
     );
   };

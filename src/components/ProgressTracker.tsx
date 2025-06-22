@@ -12,7 +12,7 @@ import {
 import { useProgress } from "../contexts/ProgressContext";
 
 const ProgressTracker: React.FC = () => {
-  const { userProgress, achievements } = useProgress();
+  const { userProgress, achievements, activityLog } = useProgress();
 
   // Calculate stats from userProgress
   const quizIds = Object.keys(userProgress);
@@ -79,6 +79,17 @@ const ProgressTracker: React.FC = () => {
           : "bg-gray-400",
     };
   });
+
+  // --- Weekly Activity ---
+  // Get last 7 days (Mon-Sun)
+  const daysOfWeek = ["L", "M", "X", "J", "V", "S", "D"];
+  const today = new Date();
+  const weekDates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - ((today.getDay() + 6) % 7) + i); // Monday as first day
+    return d.toISOString().split("T")[0];
+  });
+  const weekActivity = weekDates.map((date) => activityLog[date] || 0);
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -300,25 +311,24 @@ const ProgressTracker: React.FC = () => {
         </h3>
 
         <div className="grid grid-cols-7 gap-2">
-          {["L", "M", "X", "J", "V", "S", "D"].map((day, index) => (
+          {daysOfWeek.map((day, index) => (
             <div key={index} className="text-center">
               <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                 {day}
               </div>
               <motion.div
-                className={`h-20 rounded-lg ${
-                  index < 5
+                className={`rounded-lg ${
+                  weekActivity[index] > 0
                     ? "bg-gradient-to-t from-blue-400 to-blue-600"
                     : "bg-gray-200 dark:bg-gray-700"
                 }`}
                 initial={{ height: 0 }}
-                animate={{
-                  height: index < 5 ? `${60 + Math.random() * 40}px` : "20px",
-                }}
+                animate={{ height: `${20 + weekActivity[index] * 20}px` }}
                 transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
+                style={{ minHeight: 20 }}
               />
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                {index < 5 ? `${Math.floor(1 + Math.random() * 3)}h` : "0h"}
+                {weekActivity[index] > 0 ? `${weekActivity[index]} quiz` : "0"}
               </div>
             </div>
           ))}
