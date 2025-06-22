@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Calculator,
   Zap,
@@ -21,15 +22,10 @@ import ToleranciaCalculator from "./tools/ToleranciaCalculator";
 import EngranajCalculator from "./tools/EngranajCalculator";
 import MaterialesCalculator from "./tools/MaterialesCalculator";
 
-interface ToolsSectionProps {
-  activeTool: string | null;
-  setActiveTool: (toolId: string | null) => void;
-}
+const ToolsSection: React.FC = () => {
+  const { toolId } = useParams<{ toolId?: string }>();
+  const navigate = useNavigate();
 
-const ToolsSection: React.FC<ToolsSectionProps> = ({
-  activeTool,
-  setActiveTool,
-}) => {
   const tools = [
     {
       id: "velocidad-corte",
@@ -142,12 +138,12 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
     },
   ];
 
-  if (activeTool) {
+  if (toolId) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <button
-            onClick={() => setActiveTool(null)}
+            onClick={() => navigate("/herramientas")}
             className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
           >
             <span>←</span>
@@ -155,14 +151,14 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
           </button>
         </div>
 
-        {activeTool === "velocidad-corte" && <VelocidadCorteCalculator />}
-        {activeTool === "tolerancia-calculator" && <ToleranciaCalculator />}
-        {activeTool === "engranaj-calculator" && <EngranajCalculator />}
-        {activeTool === "materiales-calculator" && <MaterialesCalculator />}
-        {activeTool === "soldadura-quiz" && <SoldaduraQuiz />}
-        {activeTool === "forjado-simulator" && <ForjadoSimulator />}
-        {activeTool === "mecanizado-simulator" && <MecanizadoSimulator />}
-        {activeTool === "calidad-inspector" && <CalidadInspector />}
+        {toolId === "velocidad-corte" && <VelocidadCorteCalculator />}
+        {toolId === "tolerancia-calculator" && <ToleranciaCalculator />}
+        {toolId === "engranaj-calculator" && <EngranajCalculator />}
+        {toolId === "materiales-calculator" && <MaterialesCalculator />}
+        {toolId === "soldadura-quiz" && <SoldaduraQuiz />}
+        {toolId === "forjado-simulator" && <ForjadoSimulator />}
+        {toolId === "mecanizado-simulator" && <MecanizadoSimulator />}
+        {toolId === "calidad-inspector" && <CalidadInspector />}
       </div>
     );
   }
@@ -236,7 +232,9 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
                   <div
                     key={tool.id}
                     onClick={() =>
-                      tool.available ? setActiveTool(tool.id) : null
+                      tool.available
+                        ? navigate(`/herramientas/${tool.id}`)
+                        : null
                     }
                     className={`group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden ${
                       tool.available
@@ -306,7 +304,9 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
                   <div
                     key={tool.id}
                     onClick={() =>
-                      tool.available ? setActiveTool(tool.id) : null
+                      tool.available
+                        ? navigate(`/herramientas/${tool.id}`)
+                        : null
                     }
                     className={`group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden ${
                       tool.available
@@ -380,7 +380,9 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
                   <div
                     key={tool.id}
                     onClick={() =>
-                      tool.available ? setActiveTool(tool.id) : null
+                      tool.available
+                        ? navigate(`/herramientas/${tool.id}`)
+                        : null
                     }
                     className={`group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden ${
                       tool.available

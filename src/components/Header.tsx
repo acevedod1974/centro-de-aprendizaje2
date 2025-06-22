@@ -8,63 +8,58 @@ import {
   Calculator,
   Award,
   Image,
-  Calendar,
   BarChart,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
+import { Link, useLocation } from "react-router-dom";
 
-interface HeaderProps {
-  activeSection: string;
-  setActiveSection: (section: string) => void;
-}
+const navigation = [
+  { path: "/", label: "Inicio", icon: BookOpen, color: "text-blue-500" },
+  {
+    path: "/procesos",
+    label: "Procesos",
+    icon: BookOpen,
+    color: "text-indigo-500",
+  },
+  {
+    path: "/herramientas",
+    label: "Herramientas",
+    icon: Calculator,
+    color: "text-green-500",
+  },
+  {
+    path: "/recursos",
+    label: "Recursos",
+    icon: Image,
+    color: "text-orange-500",
+  },
+  {
+    path: "/evaluacion",
+    label: "Evaluación",
+    icon: Award,
+    color: "text-purple-500",
+  },
+  // {
+  //   path: "/planificador",
+  //   label: "Planificador",
+  //   icon: Calendar,
+  //   color: "text-pink-500",
+  // },
+  {
+    path: "/progreso",
+    label: "Progreso",
+    icon: BarChart,
+    color: "text-cyan-500",
+  },
+];
 
-const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
+const Header: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const navigation = [
-    { id: "inicio", label: "Inicio", icon: BookOpen, color: "text-blue-500" },
-    {
-      id: "procesos",
-      label: "Procesos",
-      icon: BookOpen,
-      color: "text-indigo-500",
-    },
-    {
-      id: "herramientas",
-      label: "Herramientas",
-      icon: Calculator,
-      color: "text-green-500",
-    },
-    {
-      id: "recursos",
-      label: "Recursos",
-      icon: Image,
-      color: "text-orange-500",
-    },
-    {
-      id: "evaluacion",
-      label: "Evaluación",
-      icon: Award,
-      color: "text-purple-500",
-    },
-    {
-      id: "planificador",
-      label: "Planificador",
-      icon: Calendar,
-      color: "text-pink-500",
-    },
-    {
-      id: "progreso",
-      label: "Progreso",
-      icon: BarChart,
-      color: "text-cyan-500",
-    },
-  ];
+  const location = useLocation();
 
   const handleThemeToggle = () => {
-    console.log("Theme toggle clicked, current isDark:", isDark);
     toggleTheme();
   };
 
@@ -78,13 +73,10 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Enhanced Logo */}
-          <motion.div
+          <Link
+            to="/"
             className="flex items-center space-x-4 cursor-pointer"
-            onClick={() => setActiveSection("inicio")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             aria-label="Ir a inicio"
-            role="button"
             tabIndex={0}
           >
             <div className="relative">
@@ -104,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                 Centro de <br /> Aprendizaje
               </h1>
             </div>
-          </motion.div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav
@@ -114,18 +106,18 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
           >
             {navigation.map((item) => {
               const Icon = item.icon;
-              const isActive = activeSection === item.id;
+              const isActive =
+                location.pathname === item.path ||
+                (item.path !== "/" && location.pathname.startsWith(item.path));
               return (
-                <motion.button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id)}
+                <Link
+                  key={item.path}
+                  to={item.path}
                   className={`relative flex items-center space-x-2 px-3 py-3 rounded-2xl font-semibold transition-all duration-300 ${
                     isActive
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50"
                   }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   aria-label={item.label}
                   role="tab"
                 >
@@ -156,7 +148,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                       ✨
                     </motion.div>
                   )}
-                </motion.button>
+                </Link>
               );
             })}
           </nav>
@@ -250,26 +242,23 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
               transition={{ duration: 0.3 }}
             >
               <nav className="space-y-3">
-                {navigation.map((item, index) => {
+                {navigation.map((item) => {
                   const Icon = item.icon;
-                  const isActive = activeSection === item.id;
+                  const isActive =
+                    location.pathname === item.path ||
+                    (item.path !== "/" &&
+                      location.pathname.startsWith(item.path));
                   return (
-                    <motion.button
-                      key={item.id}
-                      onClick={() => {
-                        setActiveSection(item.id);
-                        setIsMenuOpen(false);
-                      }}
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
                       className={`flex items-center space-x-4 w-full px-6 py-4 rounded-2xl transition-all font-semibold ${
                         isActive
                           ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                           : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50"
                       }`}
-                      initial={{ x: -50, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      style={{ display: "flex", alignItems: "center" }}
                       aria-label={item.label}
                       role="menuitem"
                     >
@@ -287,7 +276,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, setActiveSection }) => {
                           ✨
                         </motion.div>
                       )}
-                    </motion.button>
+                    </Link>
                   );
                 })}
               </nav>

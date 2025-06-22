@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChevronRight,
   ChevronDown,
@@ -9,15 +10,8 @@ import {
   Zap,
 } from "lucide-react";
 
-interface ProcessSectionProps {
-  setActiveSection: (section: string) => void;
-  setActiveTool: (toolId: string) => void;
-}
-
-const ProcessSection: React.FC<ProcessSectionProps> = ({
-  setActiveSection,
-  setActiveTool,
-}) => {
+const ProcessSection: React.FC = () => {
+  const navigate = useNavigate();
   const [expandedCategory, setExpandedCategory] = useState<string | null>(
     "remocion"
   );
@@ -1202,8 +1196,9 @@ const ProcessSection: React.FC<ProcessSectionProps> = ({
                   <button
                     onClick={() => {
                       window.scrollTo({ top: 0, behavior: "smooth" });
-                      setActiveSection("herramientas");
-                      setActiveTool(selectedProcessData.simulator!);
+                      navigate(
+                        `/herramientas/${selectedProcessData.simulator}`
+                      );
                     }}
                     className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
                     aria-label="Abrir simulador"
