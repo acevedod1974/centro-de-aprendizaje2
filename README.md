@@ -13,6 +13,7 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - **Planificador de Estudio:** Organiza tu ruta de aprendizaje y guarda tu progreso.
 - **Seguimiento de Progreso:** Visualización y log de avance en los diferentes módulos y temas.
 - **Recursos Multimedia:** Materiales de estudio, guías y enlaces externos.
+- **Integración con Supabase:** Recursos y datos clave gestionados desde una base de datos cloud.
 - **Tema Claro/Oscuro:** Interfaz adaptable a las preferencias del usuario.
 - **Accesibilidad y Responsividad:** UI optimizada para todos los dispositivos y usuarios.
 
@@ -32,6 +33,7 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - Tailwind CSS
 - React Router DOM
 - ESLint, PostCSS
+- **Supabase** (backend y base de datos)
 
 ## ⚡ Empezando
 
@@ -50,7 +52,23 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
    yarn install
    ```
 
-3. **Ejecutar la aplicación en modo desarrollo:**
+3. **Configurar Supabase:**
+
+   - Crea un proyecto en [Supabase](https://supabase.com/).
+   - Crea la tabla `resources` con las columnas del archivo CSV proporcionado o usa el SQL generado.
+   - Copia tu URL de proyecto y anon key desde la sección API de Supabase.
+   - Crea un archivo `src/supabaseClient.ts`:
+
+     ```ts
+     import { createClient } from "@supabase/supabase-js";
+     const supabaseUrl = "https://TU_PROYECTO.supabase.co";
+     const supabaseKey = "TU_ANON_KEY";
+     export const supabase = createClient(supabaseUrl, supabaseKey);
+     ```
+
+   - Asegúrate de que tu tabla y columnas coincidan con los datos esperados por la app.
+
+4. **Ejecutar la aplicación en modo desarrollo:**
 
    ```bash
    npm run dev
@@ -58,7 +76,7 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
    yarn dev
    ```
 
-4. Abre [http://localhost:5173](http://localhost:5173) en tu navegador.
+5. Abre [http://localhost:5173](http://localhost:5173) en tu navegador.
 
 ## 📦 Scripts Disponibles
 
@@ -66,6 +84,13 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - `npm run build` — Compila la aplicación para producción en la carpeta `dist/`.
 - `npm run lint` — Ejecuta ESLint para analizar el código.
 - `npm run preview` — Sirve la build de producción localmente.
+
+## 🗄️ Arquitectura y Notas Técnicas
+
+- **Recursos**: Ahora se obtienen desde Supabase (`resources`), no desde archivos estáticos.
+- **Categorías**: Por defecto siguen siendo estáticas, pero pueden migrarse a Supabase si se requiere mayor flexibilidad.
+- **Hooks y Contextos**: El estado de progreso, log de actividad y logros está modularizado en hooks/contextos separados.
+- **Accesibilidad**: Se están implementando mejoras continuas (focus, roles, ARIA, etc).
 
 ## 🤝 Contribuir
 
