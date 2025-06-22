@@ -8,6 +8,7 @@ import {
   Search,
 } from "lucide-react";
 import { supabase } from "../supabaseClient";
+import { categories } from "./resourcesData";
 
 const ResourcesSection: React.FC = () => {
   const [resources, setResources] = useState([]);
