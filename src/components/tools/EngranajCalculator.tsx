@@ -522,14 +522,6 @@ const EngranajCalculator: React.FC = () => {
                   Análisis de Resistencia
                 </h3>
 
-                {/* Debug visual: muestra los datos crudos para diagnóstico */}
-                <div className="mb-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-700 dark:text-gray-300">
-                  <strong>DEBUG:</strong>
-                  <pre>
-                    {JSON.stringify({ materialData, appData }, null, 2)}
-                  </pre>
-                </div>
-
                 <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
