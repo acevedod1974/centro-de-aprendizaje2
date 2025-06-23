@@ -78,13 +78,32 @@ const EngranajCalculator: React.FC = () => {
   const [materialId, setMaterialId] = useState<string>("");
   const [applicationId, setApplicationId] = useState<string>("");
 
+  // Set default materialId and applicationId after data loads
+  useEffect(() => {
+    if (materials.length && !materialId) {
+      setMaterialId(materials[0].id);
+    }
+  }, [materials, materialId]);
+
+  useEffect(() => {
+    if (applications.length && !applicationId) {
+      setApplicationId(applications[0].id);
+    }
+  }, [applications, applicationId]);
+
   // --- Find selected material/application ---
-  const materialData =
-    materials.find((m) => m.id === materialId) || materials[0];
-  const appData =
-    applications.find((a) => a.id === applicationId) || applications[0];
+  const materialData = materials.find((m) => m.id === materialId);
+  const appData = applications.find((a) => a.id === applicationId);
 
   // --- Calculations (only if materialData exists) ---
+  const validYield =
+    materialData &&
+    typeof materialData.yield_strength === "number" &&
+    materialData.yield_strength > 0;
+  const validService =
+    appData &&
+    typeof appData.service_factor === "number" &&
+    appData.service_factor > 0;
   const gearRatio = teethGear / teethPinion;
   const pitchDiameterPinion = module * teethPinion;
   const pitchDiameterGear = module * teethGear;
@@ -96,13 +115,13 @@ const EngranajCalculator: React.FC = () => {
   const circularPitch = Math.PI * module;
   const lewisFormFactor = 0.154 - 0.912 / teethPinion;
   const allowableLoad =
-    materialData && appData
-      ? ((materialData.yield_strength || 200) *
+    validYield && validService
+      ? ((materialData.yield_strength as number) *
           faceWidth *
           module *
           lewisFormFactor) /
-        appData.service_factor
-      : 0;
+        (appData.service_factor as number)
+      : null;
   const assumedRPM = 1000;
   const tangentialVelocity =
     (Math.PI * pitchDiameterPinion * assumedRPM) / (60 * 1000);
@@ -462,7 +481,9 @@ const EngranajCalculator: React.FC = () => {
                         Carga Admisible
                       </div>
                       <div className="text-xl font-bold text-green-600">
-                        {allowableLoad.toFixed(0)} N
+                        {allowableLoad === null
+                          ? "No disponible"
+                          : allowableLoad.toFixed(0) + " N"}
                       </div>
                     </div>
 
@@ -492,7 +513,10 @@ const EngranajCalculator: React.FC = () => {
                           applicationId
                         )}`}
                       >
-                        Factor de Servicio: {appData.service_factor}
+                        Factor de Servicio:{" "}
+                        {validService
+                          ? appData.service_factor
+                          : "No disponible"}
                       </span>
                     </div>
                   </div>
