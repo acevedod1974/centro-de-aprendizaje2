@@ -100,4 +100,14 @@ export const fallbackQuizzes: Quiz[] = [
     available: false,
     category: "Ciencias Aplicadas",
   },
+  {
+    id: "soldadura",
+    title: "Soldadura",
+    description: "Evaluación sobre procesos de soldadura.",
+    icon: "⚡",
+    color: "from-yellow-400 to-orange-500",
+    available: true,
+    category: "Ingeniería Fundamental",
+    process_id: 1,
+  },
 ];
