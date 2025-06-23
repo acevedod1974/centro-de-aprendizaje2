@@ -26,11 +26,27 @@ interface ProcessData {
   image: string;
   simulator: string | null;
 }
+interface ResourceManual {
+  id: number;
+  title: string;
+  download_url?: string;
+  view_url?: string;
+  process_name?: string;
+}
 interface Category {
   title: string;
   icon: string;
   color: string;
   processes: Record<string, ProcessData>;
+}
+interface ToolResource {
+  id: number;
+  title: string;
+  type: string; // 'calculator' or 'simulator'
+  process_name: string;
+  url: string;
+  icon?: string;
+  available?: boolean;
 }
 
 const ProcessSection: React.FC = () => {
@@ -42,6 +58,10 @@ const ProcessSection: React.FC = () => {
   const [processCategories, setProcessCategories] = useState<
     Record<string, Category>
   >({});
+  const [manualResource, setManualResource] = useState<ResourceManual | null>(
+    null
+  );
+  const [toolResources, setToolResources] = useState<ToolResource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -125,6 +145,49 @@ const ProcessSection: React.FC = () => {
     fetchProcesses();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    async function fetchManual() {
+      if (!selectedProcess) {
+        setManualResource(null);
+        return;
+      }
+      const { data, error } = await supabase
+        .from("resources")
+        .select("id, title, download_url, view_url, process_name")
+        .eq("type", "pdf")
+        .eq("process_name", selectedProcess)
+        .limit(1)
+        .single();
+      if (error) {
+        setManualResource(null);
+        console.log("No manual found for process:", selectedProcess);
+      } else {
+        setManualResource(data);
+        console.log("Manual resource for process:", selectedProcess, data);
+      }
+    }
+    async function fetchTools() {
+      if (!selectedProcess) {
+        setToolResources([]);
+        return;
+      }
+      const { data, error } = await supabase
+        .from("tools")
+        .select("id, title, type, process_name, url, icon, available")
+        .eq("process_name", selectedProcess)
+        .eq("available", true);
+      if (error) {
+        setToolResources([]);
+        console.log("No tools found for process:", selectedProcess);
+      } else {
+        setToolResources(data || []);
+        console.log("Tools for process:", selectedProcess, data);
+      }
+    }
+    fetchManual();
+    fetchTools();
+  }, [selectedProcess]);
 
   const toggleCategory = (category: string) => {
     setExpandedCategory(expandedCategory === category ? null : category);
@@ -607,44 +670,68 @@ const ProcessSection: React.FC = () => {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-4">
-                {selectedProcessData.simulator && (
-                  <button
-                    onClick={() => {
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                      navigate(
-                        `/herramientas/${selectedProcessData.simulator}`
-                      );
-                    }}
-                    className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
-                    aria-label="Abrir simulador"
+                {toolResources
+                  .filter((tool) => tool.type === "simulator")
+                  .map((tool) => (
+                    <button
+                      key={tool.id}
+                      onClick={() => {
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                        navigate(tool.url);
+                      }}
+                      className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
+                      aria-label={`Abrir ${tool.title}`}
+                      tabIndex={0}
+                    >
+                      <Play size={18} />
+                      <span>{tool.title}</span>
+                    </button>
+                  ))}
+                {manualResource ? (
+                  <a
+                    href={
+                      manualResource.download_url ||
+                      manualResource.view_url ||
+                      "#"
+                    }
+                    className="flex items-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
+                    aria-label="Abrir manual técnico"
                     tabIndex={0}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    <Play size={18} />
-                    <span>Abrir Simulador</span>
-                  </button>
+                    <BookOpen size={18} />
+                    <span>{manualResource.title || "Manual Técnico"}</span>
+                  </a>
+                ) : (
+                  <a
+                    href={`/manuales/${selectedProcess}.pdf`}
+                    className="flex items-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
+                    aria-label="Abrir manual técnico"
+                    tabIndex={0}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <BookOpen size={18} />
+                    <span>Manual Técnico</span>
+                  </a>
                 )}
-                <a
-                  href={`/manuales/${selectedProcess}.pdf`}
-                  className="flex items-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
-                  aria-label="Abrir manual técnico"
-                  tabIndex={0}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <BookOpen size={18} />
-                  <span>Manual Técnico</span>
-                </a>
-                <a
-                  href={`/tools/${selectedProcess}-calculator`}
-                  className="flex items-center space-x-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
-                  aria-label="Abrir calculadora"
-                  tabIndex={0}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Settings size={18} />
-                  <span>Calculadora</span>
-                </a>
+                {toolResources
+                  .filter((tool) => tool.type === "calculator")
+                  .map((tool) => (
+                    <a
+                      key={tool.id}
+                      href={tool.url}
+                      className="flex items-center space-x-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400 focus:z-10 shadow-sm hover:shadow-lg active:scale-[0.98]"
+                      aria-label={`Abrir ${tool.title}`}
+                      tabIndex={0}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Settings size={18} />
+                      <span>{tool.title}</span>
+                    </a>
+                  ))}
               </div>
             </div>
           ) : (
