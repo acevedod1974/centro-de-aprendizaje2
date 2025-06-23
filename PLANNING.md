@@ -73,3 +73,9 @@
 - Recopilar feedback y corregir bugs.
 - Añadir contenido y nuevas funcionalidades según demanda.
 - Mantener dependencias y documentación al día.
+
+## Roadmap
+
+- [x] Migrate all material data to Supabase and refactor MaterialesCalculator.
+- [ ] Review and migrate other hardcoded data (tools, achievements, etc.) to Supabase.
+- [ ] Expand dynamic content and improve error handling.

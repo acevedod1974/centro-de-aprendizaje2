@@ -44,3 +44,7 @@
 - [x] Modularización de tarjetas de quiz.
 - [x] Scroll-to-top automático en navegación y apertura de simuladores.
 - [x] Refactorización de navegación y enlaces internos.
+- [x] Migrate materials data to Supabase and refactor MaterialesCalculator to use dynamic fetch.
+- [ ] Test MaterialesCalculator with new materials and edge cases.
+- [ ] Review other calculators for hardcoded data.
+- [ ] Update documentation as new migrations are completed.

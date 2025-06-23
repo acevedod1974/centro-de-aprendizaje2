@@ -242,4 +242,26 @@ See `TODO.md` and `PLANNING.md` for detailed tasks. Key items:
 
 ---
 
+### Materials Data
+
+- All material properties for calculators and simulators are now fetched dynamically from the Supabase `materials` table.
+- To add or update materials, log in to Supabase, go to the `materials` table, and insert or edit records.
+- The frontend automatically reflects any changes made in Supabase.
+
+#### Example: Adding a Material
+
+1. Open Supabase dashboard.
+2. Go to the `materials` table.
+3. Click "Insert Row" and fill in the fields (id, name, category, density, etc.).
+4. Save. The new material will appear in the MaterialesCalculator UI.
+
+---
+
+#### Roadmap & Current State (update)
+
+- [x] Materials migrated to Supabase and loaded dynamically.
+- [ ] Migrate other hardcoded data (tools, achievements, etc.) as needed.
+
+---
+
 **Keep this manual updated as the project evolves!**
