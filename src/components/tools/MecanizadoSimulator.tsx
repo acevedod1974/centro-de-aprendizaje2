@@ -1,7 +1,37 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Play, Pause, RotateCcw, Settings, Gauge, Timer } from "lucide-react";
+import { supabase } from "../../supabaseClient";
+
+interface MachiningMaterial {
+  id: string;
+  name: string;
+  hardness: number;
+  machinability: number;
+}
+
+interface ToolMaterial {
+  id: string;
+  name: string;
+  durability: number;
+  speed: number;
+}
+
+interface MachineType {
+  id: string;
+  name: string;
+  efficiency: number;
+  precision: number;
+}
 
 const MecanizadoSimulator: React.FC = () => {
+  // --- Dynamic Data State ---
+  const [materials, setMaterials] = useState<MachiningMaterial[]>([]);
+  const [toolMaterials, setToolMaterials] = useState<ToolMaterial[]>([]);
+  const [machineTypes, setMachineTypes] = useState<MachineType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // --- UI State ---
   const [isRunning, setIsRunning] = useState(false);
   const [spindleSpeed, setSpindleSpeed] = useState(1000);
   const [feedRate, setFeedRate] = useState(100);
@@ -9,44 +39,64 @@ const MecanizadoSimulator: React.FC = () => {
   const [time, setTime] = useState(0);
   const [materialRemoved, setMaterialRemoved] = useState(0);
   const [toolWear, setToolWear] = useState(0);
-  const [machineType, setMachineType] = useState("torno");
-  const [material, setMaterial] = useState("acero");
-  const [toolMaterial, setToolMaterial] = useState("carburo");
+  const [machineType, setMachineType] = useState<string>("");
+  const [material, setMaterial] = useState<string>("");
+  const [toolMaterial, setToolMaterial] = useState<string>("");
 
-  // Wrap static objects in useMemo to avoid changing dependencies
-  const materials = useMemo(
-    () => ({
-      acero: { name: "Acero al Carbono", hardness: 1.0, machinability: 0.8 },
-      inoxidable: {
-        name: "Acero Inoxidable",
-        hardness: 1.3,
-        machinability: 0.6,
-      },
-      aluminio: { name: "Aluminio", hardness: 0.3, machinability: 1.2 },
-      titanio: { name: "Titanio", hardness: 1.8, machinability: 0.4 },
-      hierro: { name: "Hierro Fundido", hardness: 0.9, machinability: 0.9 },
-    }),
-    []
-  );
+  // --- Fetch all data from Supabase ---
+  useEffect(() => {
+    const fetchAll = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        console.log("Connecting to Supabase to fetch machining materials...");
+        const { data: matData, error: matError } = await supabase
+          .from("machining_materials")
+          .select("*");
+        if (matError)
+          throw new Error("No se pudieron cargar los materiales de pieza.");
+        setMaterials(matData || []);
+        console.log("Materials:", matData);
 
-  const toolMaterials = useMemo(
-    () => ({
-      hss: { name: "Acero Rápido (HSS)", durability: 0.6, speed: 0.7 },
-      carburo: { name: "Carburo de Tungsteno", durability: 1.0, speed: 1.0 },
-      ceramica: { name: "Cerámica", durability: 0.8, speed: 1.3 },
-      diamante: { name: "Diamante PCD", durability: 1.5, speed: 1.5 },
-    }),
-    []
-  );
+        console.log("Connecting to Supabase to fetch tool materials...");
+        const { data: toolData, error: toolError } = await supabase
+          .from("machining_tool_materials")
+          .select("*");
+        if (toolError)
+          throw new Error(
+            "No se pudieron cargar los materiales de herramienta."
+          );
+        setToolMaterials(toolData || []);
+        console.log("Tool Materials:", toolData);
 
-  const machineTypes = useMemo(
-    () => ({
-      torno: { name: "Torno CNC", efficiency: 0.9, precision: 0.8 },
-      fresadora: { name: "Fresadora CNC", efficiency: 0.8, precision: 0.9 },
-      taladro: { name: "Taladro Radial", efficiency: 0.7, precision: 0.7 },
-    }),
-    []
-  );
+        console.log("Connecting to Supabase to fetch machine types...");
+        const { data: machineData, error: machineError } = await supabase
+          .from("machining_machines")
+          .select("*");
+        if (machineError)
+          throw new Error("No se pudieron cargar los tipos de máquina.");
+        setMachineTypes(machineData || []);
+        console.log("Machine Types:", machineData);
+
+        // Set defaults if not already set
+        setMaterial((prev) => prev || (matData && matData[0]?.id) || "");
+        setToolMaterial((prev) => prev || (toolData && toolData[0]?.id) || "");
+        setMachineType(
+          (prev) => prev || (machineData && machineData[0]?.id) || ""
+        );
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message || "Error al cargar los datos de Supabase.");
+          console.error("Supabase fetch error:", err);
+        } else {
+          setError("Error desconocido al cargar los datos de Supabase.");
+          console.error("Supabase fetch error:", err);
+        }
+      }
+      setLoading(false);
+    };
+    fetchAll();
+  }, []);
 
   // --- Input validation helpers ---
   const validateInputs = () => {
@@ -56,25 +106,28 @@ const MecanizadoSimulator: React.FC = () => {
       return "El avance debe estar entre 10 y 1000 mm/min.";
     if (depthOfCut < 0.1 || depthOfCut > 5)
       return "La profundidad de corte debe estar entre 0.1 y 5 mm.";
+    if (!materials.find((m) => m.id === material))
+      return "Selecciona un material de pieza válido.";
+    if (!toolMaterials.find((t) => t.id === toolMaterial))
+      return "Selecciona un material de herramienta válido.";
+    if (!machineTypes.find((m) => m.id === machineType))
+      return "Selecciona un tipo de máquina válido.";
     return null;
   };
   const inputError = validateInputs();
 
+  // --- Simulation Logic ---
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
     if (isRunning) {
       interval = setInterval(() => {
         setTime((prev) => prev + 1);
-
-        const materialData = materials[material as keyof typeof materials];
-        const toolData =
-          toolMaterials[toolMaterial as keyof typeof toolMaterials];
-
+        const materialData = materials.find((m) => m.id === material);
+        const toolData = toolMaterials.find((t) => t.id === toolMaterial);
+        if (!materialData || !toolData) return;
         // Calculate material removal rate (cm³ per 0.1s)
         const mrr = (spindleSpeed * feedRate * depthOfCut) / 600000; // cm³ per 0.1s
         setMaterialRemoved((prev) => Math.max(prev + mrr, 0));
-
         // Calculate tool wear
         const wearRate =
           ((spindleSpeed / 10000) * materialData.hardness) /
@@ -82,7 +135,6 @@ const MecanizadoSimulator: React.FC = () => {
         setToolWear((prev) => Math.min(Math.max(prev + wearRate, 0), 100));
       }, 100);
     }
-
     return () => clearInterval(interval);
   }, [
     isRunning,
@@ -111,10 +163,11 @@ const MecanizadoSimulator: React.FC = () => {
   };
 
   const getEfficiencyRating = () => {
-    const materialData = materials[material as keyof typeof materials];
-    const toolData = toolMaterials[toolMaterial as keyof typeof toolMaterials];
+    const materialData = materials.find((m) => m.id === material);
+    const toolData = toolMaterials.find((t) => t.id === toolMaterial);
+    if (!materialData || !toolData)
+      return { rating: "-", color: "text-gray-400" };
     const efficiency = materialData.machinability * toolData.speed;
-
     if (efficiency > 1.2)
       return { rating: "Excelente", color: "text-green-600" };
     if (efficiency > 0.8) return { rating: "Buena", color: "text-blue-600" };
@@ -124,6 +177,11 @@ const MecanizadoSimulator: React.FC = () => {
   };
 
   const efficiency = getEfficiencyRating();
+
+  if (loading) return <div>Cargando datos de mecanizado...</div>;
+  if (error) return <div>{error}</div>;
+  if (!materials.length || !toolMaterials.length || !machineTypes.length)
+    return <div>No hay datos de mecanizado disponibles.</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -166,8 +224,8 @@ const MecanizadoSimulator: React.FC = () => {
                   disabled={isRunning}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                 >
-                  {Object.entries(machineTypes).map(([key, machine]) => (
-                    <option key={key} value={key}>
+                  {machineTypes.map((machine) => (
+                    <option key={machine.id} value={machine.id}>
                       {machine.name}
                     </option>
                   ))}
@@ -184,8 +242,8 @@ const MecanizadoSimulator: React.FC = () => {
                   disabled={isRunning}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                 >
-                  {Object.entries(materials).map(([key, mat]) => (
-                    <option key={key} value={key}>
+                  {materials.map((mat) => (
+                    <option key={mat.id} value={mat.id}>
                       {mat.name}
                     </option>
                   ))}
@@ -202,8 +260,8 @@ const MecanizadoSimulator: React.FC = () => {
                   disabled={isRunning}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                 >
-                  {Object.entries(toolMaterials).map(([key, tool]) => (
-                    <option key={key} value={key}>
+                  {toolMaterials.map((tool) => (
+                    <option key={tool.id} value={tool.id}>
                       {tool.name}
                     </option>
                   ))}
@@ -386,10 +444,7 @@ const MecanizadoSimulator: React.FC = () => {
                       Máquina:
                     </span>
                     <span className="font-medium ml-2">
-                      {
-                        machineTypes[machineType as keyof typeof machineTypes]
-                          .name
-                      }
+                      {machineTypes.find((m) => m.id === machineType)?.name}
                     </span>
                   </div>
                   <div>
@@ -397,7 +452,7 @@ const MecanizadoSimulator: React.FC = () => {
                       Material:
                     </span>
                     <span className="font-medium ml-2">
-                      {materials[material as keyof typeof materials].name}
+                      {materials.find((m) => m.id === material)?.name}
                     </span>
                   </div>
                   <div>
@@ -405,11 +460,7 @@ const MecanizadoSimulator: React.FC = () => {
                       Herramienta:
                     </span>
                     <span className="font-medium ml-2">
-                      {
-                        toolMaterials[
-                          toolMaterial as keyof typeof toolMaterials
-                        ].name
-                      }
+                      {toolMaterials.find((t) => t.id === toolMaterial)?.name}
                     </span>
                   </div>
                   <div>
