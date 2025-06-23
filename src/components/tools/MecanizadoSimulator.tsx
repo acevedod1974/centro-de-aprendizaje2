@@ -51,20 +51,26 @@ const MecanizadoSimulator: React.FC = () => {
       try {
         console.log("Connecting to Supabase to fetch machining materials...");
         const { data: matData, error: matError } = await supabase
-          .from("machining_materials")
+          .from("materials")
           .select("*");
-        if (matError)
-          throw new Error("No se pudieron cargar los materiales de pieza.");
+        if (matError) {
+          console.error("Supabase materials fetch error:", matError);
+          throw new Error(
+            "No se pudieron cargar los materiales de pieza. Detalle: " +
+              matError.message
+          );
+        }
         setMaterials(matData || []);
         console.log("Materials:", matData);
 
         console.log("Connecting to Supabase to fetch tool materials...");
         const { data: toolData, error: toolError } = await supabase
-          .from("machining_tool_materials")
+          .from("machining_tools")
           .select("*");
         if (toolError)
           throw new Error(
-            "No se pudieron cargar los materiales de herramienta."
+            "No se pudieron cargar los materiales de herramienta. Detalle: " +
+              toolError.message
           );
         setToolMaterials(toolData || []);
         console.log("Tool Materials:", toolData);
