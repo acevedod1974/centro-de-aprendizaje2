@@ -1,4 +1,4 @@
-@startuml
+@startuml Diagrama-de-Aprendizaje
 ' Centro de Aprendizaje - Arquitectura General
 
 package "Frontend (React/Vite)" {
