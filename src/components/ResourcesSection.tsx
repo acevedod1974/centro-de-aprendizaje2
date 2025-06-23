@@ -8,10 +8,13 @@ import {
   Search,
 } from "lucide-react";
 import { supabase } from "../supabaseClient";
-import { categories } from "./resourcesData";
+import { Resource } from "./resourcesData";
 
 const ResourcesSection: React.FC = () => {
-  const [resources, setResources] = useState([]);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [categories, setCategories] = useState<
+    { id: string; name: string; icon: string }[]
+  >([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -31,11 +34,36 @@ const ResourcesSection: React.FC = () => {
         );
         setResources([]);
       } else {
-        setResources(data || []);
+        const mapped = (data || []).map(
+          (r: Resource & { downloadUrl?: string; viewUrl?: string }) => ({
+            ...r,
+            download_url: r.download_url || r.downloadUrl,
+            view_url: r.view_url || r.viewUrl,
+          })
+        ) as Resource[];
+        console.log("Supabase connection OK. Resources:", mapped);
+        setResources(mapped);
       }
       setLoading(false);
     }
+    async function fetchCategories() {
+      const { data, error } = await supabase
+        .from("resource_categories")
+        .select("id, name, icon")
+        .order("id", { ascending: true });
+      if (error) {
+        console.error(
+          "No se pudieron cargar las categorías de recursos.",
+          error
+        );
+        setCategories([]);
+      } else {
+        setCategories(data || []);
+        console.log("Supabase connection OK. Resource categories:", data);
+      }
+    }
     fetchResources();
+    fetchCategories();
   }, []);
 
   const getTypeIcon = (type: string) => {
@@ -130,6 +158,18 @@ const ResourcesSection: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
+          <button
+            key="all"
+            onClick={() => setSelectedCategory("all")}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              selectedCategory === "all"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+            }`}
+          >
+            <span>📚</span>
+            <span className="font-medium">Todos los Recursos</span>
+          </button>
           {categories.map((category) => (
             <button
               key={category.id}
