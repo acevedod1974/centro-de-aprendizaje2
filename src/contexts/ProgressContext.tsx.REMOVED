@@ -1,1 +1,0 @@
-This file was removed as part of the context refactor. All progress-related logic is now handled by QuizProgressContext, TasksContext, AchievementsContext, and ActivityLogContext.
