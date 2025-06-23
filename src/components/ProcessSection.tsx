@@ -75,9 +75,23 @@ const ProcessSection: React.FC = () => {
       : [];
 
   useEffect(() => {
-    async function fetchProcesses() {
+    async function fetchProcessesAndCategories() {
       setLoading(true);
       setError(null);
+      // Fetch categories from Supabase
+      const { data: catData, error: catError } = await supabase
+        .from("resource_categories")
+        .select("id, name, icon")
+        .order("id");
+      if (catError) {
+        setError(
+          "No se pudieron cargar las categorías. Intenta de nuevo más tarde."
+        );
+        setProcessCategories({});
+        setLoading(false);
+        return;
+      }
+      // Fetch processes from Supabase
       const { data, error } = await supabase
         .from("processes")
         .select("*")
@@ -92,34 +106,33 @@ const ProcessSection: React.FC = () => {
       }
       // Log para verificar conexión y datos
       console.log("Supabase connection OK. Data:", data);
+      // Build a map of category metadata from DB
+      const categoryMeta: Record<
+        string,
+        { title: string; icon: string; color: string }
+      > = {};
+      (catData || []).forEach((cat) => {
+        categoryMeta[cat.id] = {
+          title: cat.name,
+          icon: cat.icon,
+          color: "bg-blue-500", // Default color, can be extended with a color field in DB
+        };
+      });
       // Agrupa por categoría y estructura igual que antes
       const grouped: Record<string, Category> = {};
       data.forEach((proc: ProcessData) => {
         if (!grouped[proc.category]) {
+          const cat = categoryMeta[proc.category] || {
+            title: proc.category,
+            icon: "❓",
+            color: "bg-gray-400",
+          };
           grouped[proc.category] = {
-            title: "",
-            icon: "",
-            color: "",
+            title: cat.title,
+            icon: cat.icon,
+            color: cat.color,
             processes: {},
           };
-        }
-        // Personaliza títulos, iconos y colores por categoría
-        if (proc.category === "remocion") {
-          grouped[proc.category].title = "Procesos de Remoción de Material";
-          grouped[proc.category].icon = "🔧";
-          grouped[proc.category].color = "bg-red-500";
-        } else if (proc.category === "conformado") {
-          grouped[proc.category].title = "Procesos de Conformado";
-          grouped[proc.category].icon = "🔨";
-          grouped[proc.category].color = "bg-blue-500";
-        } else if (proc.category === "union") {
-          grouped[proc.category].title = "Procesos de Unión";
-          grouped[proc.category].icon = "🔗";
-          grouped[proc.category].color = "bg-green-500";
-        } else if (proc.category === "moldeo") {
-          grouped[proc.category].title = "Procesos de Moldeo";
-          grouped[proc.category].icon = "🏺";
-          grouped[proc.category].color = "bg-purple-500";
         }
         grouped[proc.category].processes[proc.name.toLowerCase()] = {
           ...proc,
@@ -142,7 +155,7 @@ const ProcessSection: React.FC = () => {
       }
       setLoading(false);
     }
-    fetchProcesses();
+    fetchProcessesAndCategories();
     // eslint-disable-next-line
   }, []);
 

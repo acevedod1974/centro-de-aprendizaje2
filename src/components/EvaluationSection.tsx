@@ -5,189 +5,7 @@ import QuizCard, { Quiz } from "./QuizCard";
 import { useQuizProgress } from "../contexts/useQuizProgress";
 import { useAchievements } from "../contexts/useAchievements";
 import { useActivityLog } from "../contexts/ActivityLogContext";
-
-const quizzes: Quiz[] = [
-  {
-    id: "soldadura",
-    title: "Procesos de Soldadura",
-    description:
-      "Evalúa tus conocimientos sobre soldadura MIG, TIG, por arco eléctrico y soldadura fuerte",
-    questions: 15,
-    duration: 20,
-    difficulty: "Intermedio",
-    category: "Unión de Materiales",
-    icon: "⚡",
-    color: "from-orange-500 to-red-600",
-    completed: 1250,
-    avgScore: 78,
-    available: true,
-  },
-  {
-    id: "mecanizado",
-    title: "Procesos de Mecanizado",
-    description:
-      "Torneado, fresado, taladrado, rectificado y parámetros de corte optimizados",
-    questions: 25,
-    duration: 30,
-    difficulty: "Intermedio",
-    category: "Remoción de Material",
-    icon: "🔧",
-    color: "from-blue-500 to-blue-600",
-    completed: 980,
-    avgScore: 82,
-    available: true,
-  },
-  {
-    id: "conformado",
-    title: "Procesos de Conformado",
-    description:
-      "Forjado, estampado, laminado, extrusión y deformación plástica de metales",
-    questions: 20,
-    duration: 25,
-    difficulty: "Avanzado",
-    category: "Conformado de Metales",
-    icon: "🔨",
-    color: "from-purple-500 to-pink-600",
-    completed: 675,
-    avgScore: 75,
-    available: true,
-  },
-  {
-    id: "fundicion",
-    title: "Procesos de Fundición",
-    description:
-      "Moldeo, colado, solidificación, defectos en fundición y metalurgia extractiva",
-    questions: 18,
-    duration: 22,
-    difficulty: "Básico",
-    category: "Moldeo y Fundición",
-    icon: "🔥",
-    color: "from-red-500 to-orange-600",
-    completed: 540,
-    avgScore: 71,
-    available: true,
-  },
-  {
-    id: "calidad",
-    title: "Control de Calidad",
-    description:
-      "Inspección, tolerancias, metrología, SPC y aseguramiento de calidad ISO 9001",
-    questions: 22,
-    duration: 25,
-    difficulty: "Intermedio",
-    category: "Control de Calidad",
-    icon: "🔍",
-    color: "from-green-500 to-teal-600",
-    completed: 890,
-    avgScore: 85,
-    available: true,
-  },
-  {
-    id: "materiales",
-    title: "Ciencia de Materiales",
-    description:
-      "Propiedades mecánicas, estructura cristalina, diagramas de fase y selección de materiales",
-    questions: 28,
-    duration: 35,
-    difficulty: "Avanzado",
-    category: "Materiales",
-    icon: "⚗️",
-    color: "from-indigo-500 to-purple-600",
-    completed: 720,
-    avgScore: 73,
-    available: true,
-  },
-  {
-    id: "automatizacion",
-    title: "Automatización Industrial",
-    description:
-      "CNC, robótica, PLC, sistemas SCADA y manufactura automatizada Industry 4.0",
-    questions: 24,
-    duration: 30,
-    difficulty: "Avanzado",
-    category: "Automatización",
-    icon: "🤖",
-    color: "from-cyan-500 to-blue-600",
-    completed: 450,
-    avgScore: 79,
-    available: true,
-  },
-  {
-    id: "seguridad",
-    title: "Seguridad Industrial",
-    description:
-      "Normas OSHA, prevención de riesgos, equipos de protección y análisis de peligros",
-    questions: 20,
-    duration: 22,
-    difficulty: "Básico",
-    category: "Seguridad",
-    icon: "🛡️",
-    color: "from-yellow-500 to-orange-600",
-    completed: 1100,
-    avgScore: 88,
-    available: true,
-  },
-  {
-    id: "mantenimiento",
-    title: "Mantenimiento Industrial",
-    description:
-      "Mantenimiento preventivo, predictivo, TPM y gestión de activos industriales",
-    questions: 19,
-    duration: 24,
-    difficulty: "Intermedio",
-    category: "Mantenimiento",
-    icon: "🔧",
-    color: "from-emerald-500 to-green-600",
-    completed: 630,
-    avgScore: 76,
-    available: true,
-  },
-  {
-    id: "termodinamica",
-    title: "Termodinámica Aplicada",
-    description:
-      "Ciclos termodinámicos, transferencia de calor y sistemas energéticos industriales",
-    questions: 26,
-    duration: 32,
-    difficulty: "Avanzado",
-    category: "Energía",
-    icon: "🌡️",
-    color: "from-red-400 to-pink-500",
-    completed: 385,
-    avgScore: 74,
-    available: true,
-  },
-  {
-    id: "diseno",
-    title: "Diseño Mecánico",
-    description:
-      "Elementos de máquinas, análisis de esfuerzos, fatiga y diseño asistido por computadora",
-    questions: 30,
-    duration: 40,
-    difficulty: "Avanzado",
-    category: "Diseño",
-    icon: "📐",
-    color: "from-violet-500 to-purple-600",
-    completed: 295,
-    avgScore: 81,
-    available: true,
-  },
-  {
-    id: "fluidos",
-    title: "Mecánica de Fluidos",
-    description:
-      "Hidrostática, hidrodinámica, bombas, compresores y sistemas de tuberías",
-    questions: 23,
-    duration: 28,
-    difficulty: "Intermedio",
-    category: "Fluidos",
-    icon: "💧",
-    color: "from-blue-400 to-cyan-500",
-    completed: 520,
-    avgScore: 77,
-    available: true,
-  },
-];
+import { supabase } from "../supabaseClient";
 
 const LOCAL_STORAGE_KEY = "quizUserProgress";
 
@@ -196,21 +14,37 @@ const EvaluationSection: React.FC = () => {
   const { userProgress, setUserProgress } = useQuizProgress();
   const { unlockAchievements } = useAchievements();
   const { logActivity } = useActivityLog();
-  const [loading, setLoading] = useState(false); // For future backend integration
-  const [error, setError] = useState<string | null>(null); // For future backend integration
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
   }, [userProgress]);
 
-  // Example: If you fetch quizzes or user data from backend in the future
-  // useEffect(() => {
-  //   setLoading(true);
-  //   setError(null);
-  //   fetchDataFromBackend()
-  //     .then(() => setLoading(false))
-  //     .catch(() => { setError('Error al cargar datos.'); setLoading(false); });
-  // }, []);
+  useEffect(() => {
+    async function fetchQuizzes() {
+      setLoading(true);
+      setError(null);
+      const { data, error } = await supabase
+        .from("quizzes")
+        .select(
+          "id, title, description, category, icon, color, available, questions, duration, difficulty, completed, avgScore"
+        )
+        .order("id");
+      if (error) {
+        setError(
+          "No se pudieron cargar las evaluaciones. Intenta de nuevo más tarde."
+        );
+        setQuizzes([]);
+      } else {
+        setQuizzes(data || []);
+        console.log("Supabase connection OK. Quizzes:", data);
+      }
+      setLoading(false);
+    }
+    fetchQuizzes();
+  }, []);
 
   if (loading) {
     return (
@@ -222,7 +56,6 @@ const EvaluationSection: React.FC = () => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
