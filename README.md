@@ -112,6 +112,37 @@ Si la clave fue expuesta, rota la clave en el panel de Supabase después de desp
 - MaterialesCalculator now loads all material properties dynamically from Supabase.
 - To add or edit materials, use the Supabase dashboard and update the `materials` table.
 
+## 🛠️ Cambios recientes y migración a Supabase
+
+- Todos los datos de procesos, recursos, materiales, aplicaciones de engranajes, herramientas y quizzes han sido migrados a Supabase.
+- El frontend ahora obtiene dinámicamente estos datos desde Supabase, eliminando arrays hardcodeados.
+- Se implementó manejo robusto de errores y loading, y se eliminó el uso de `any` en todo el código.
+- Se agregó logging para diagnosticar la conectividad y los datos recibidos de Supabase.
+- Se corrigió el mapeo de campos para aceptar tanto `service_factor` como `servicefactor` en la tabla `gear_applications`.
+- Se recomienda renombrar la columna en Supabase a `service_factor` (ver instrucciones en el Developer Manual).
+
+## 📝 Instrucciones para migrar/ajustar Supabase
+
+1. Renombra la columna `servicefactor` a `service_factor`:
+
+   ```sql
+   ALTER TABLE gear_applications RENAME COLUMN servicefactor TO service_factor;
+   ```
+
+2. Asegúrate de que el tipo de dato sea numérico:
+
+   ```sql
+   ALTER TABLE gear_applications ALTER COLUMN service_factor TYPE float8 USING service_factor::float8;
+   ```
+
+3. Verifica los datos:
+
+   ```sql
+   SELECT id, name, service_factor FROM gear_applications;
+   ```
+
+4. Si tienes dudas, consulta el `DEVELOPER_MANUAL.md`.
+
 ## 🤝 Contribuir
 
 ¡Las contribuciones son bienvenidas! Por favor, abre un issue para discutir cambios mayores o envía un Pull Request.

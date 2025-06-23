@@ -7,6 +7,11 @@
 - [ ] **Accesibilidad (a11y):** Mejorar la accesibilidad de todos los componentes.
 - [ ] **Diseño Responsivo:** Asegurar que la aplicación se vea bien en todos los dispositivos.
 - [ ] **Autenticación de Usuarios:** Implementar sistema de registro e inicio de sesión (si aplica).
+- [x] **Migración total de datos a Supabase:** Todos los datos de procesos, recursos, materiales, aplicaciones de engranajes, herramientas y quizzes migrados y consumidos dinámicamente desde Supabase. Eliminados arrays hardcodeados.
+- [x] **Refactor de calculadoras y simuladores:** Materiales, aplicaciones y parámetros ahora se obtienen de Supabase. Manejo robusto de errores y loading.
+- [x] **Eliminación de any:** Todo el código usa tipado estricto TypeScript.
+- [x] **Logging y diagnóstico Supabase:** Se agregó logging para diagnosticar conectividad y datos recibidos.
+- [x] **Compatibilidad de campos Supabase:** El código acepta temporalmente `service_factor` y `servicefactor` en gear_applications. Se recomienda renombrar la columna a `service_factor` (ver README y Developer Manual).
 
 ## 🛠️ Funcionalidades y Mejoras
 
@@ -28,6 +33,7 @@
 
 ## 📝 Documentación
 
+- [x] **Actualizar documentación tras migración Supabase:** README y Developer Manual actualizados con instrucciones y SQL para migrar/renombrar columnas.
 - [ ] **Comentarios en Código:** Mejorar la documentación interna del código.
 - [ ] **Guía de Usuario:** Crear una guía básica para los usuarios finales.
 - [ ] **Documentación de API (si aplica):** Documentar los endpoints del backend.
@@ -45,6 +51,6 @@
 - [x] Scroll-to-top automático en navegación y apertura de simuladores.
 - [x] Refactorización de navegación y enlaces internos.
 - [x] Migrate materials data to Supabase and refactor MaterialesCalculator to use dynamic fetch.
-- [ ] Test MaterialesCalculator with new materials and edge cases.
-- [ ] Review other calculators for hardcoded data.
-- [ ] Update documentation as new migrations are completed.
+- [x] Test MaterialesCalculator with new materials and edge cases.
+- [x] Review other calculators for hardcoded data.
+- [x] Update documentación tras migraciones Supabase.

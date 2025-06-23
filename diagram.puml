@@ -1,0 +1,45 @@
+@startuml
+' Centro de Aprendizaje - Arquitectura General
+
+package "Frontend (React/Vite)" {
+  [App.tsx] --> [Home.tsx]
+  [App.tsx] --> [ProcessSection.tsx]
+  [App.tsx] --> [ToolsSection.tsx]
+  [App.tsx] --> [ResourcesSection.tsx]
+  [App.tsx] --> [EvaluationSection.tsx]
+  [App.tsx] --> [ProgressTracker.tsx]
+  [App.tsx] --> [StudyPlanner.tsx]
+  [ToolsSection.tsx] --> [tools/MaterialesCalculator.tsx]
+  [ToolsSection.tsx] --> [tools/MecanizadoSimulator.tsx]
+  [ToolsSection.tsx] --> [tools/ForjadoSimulator.tsx]
+  [ToolsSection.tsx] --> [tools/EngranajCalculator.tsx]
+  [ToolsSection.tsx] --> [tools/VelocidadCorteCalculator.tsx]
+  [ToolsSection.tsx] --> [tools/SoldaduraQuiz.tsx]
+  [ToolsSection.tsx] --> [tools/ToleranciaCalculator.tsx]
+  [ToolsSection.tsx] --> [tools/CalidadInspector.tsx]
+  [App.tsx] --> [contexts/ThemeContext.tsx]
+  [App.tsx] --> [contexts/ToastContext.tsx]
+  [App.tsx] --> [contexts/QuizProgressContext.tsx]
+  [App.tsx] --> [contexts/TasksContext.tsx]
+  [App.tsx] --> [contexts/AchievementsContext.tsx]
+  [App.tsx] --> [contexts/ActivityLogContext.tsx]
+}
+
+package "Backend (Supabase)" {
+  database "Supabase DB" as DB
+  DB -- "materials"
+  DB -- "gear_applications"
+  DB -- "resources"
+  DB -- "quizzes"
+  DB -- "machining_tools"
+  DB -- "machining_machines"
+}
+
+[tools/MaterialesCalculator.tsx] ..> DB : fetch materials
+[tools/EngranajCalculator.tsx] ..> DB : fetch materials, gear_applications
+[tools/MecanizadoSimulator.tsx] ..> DB : fetch materials, machining_tools, machining_machines
+[ResourcesSection.tsx] ..> DB : fetch resources
+[ProcessSection.tsx] ..> DB : fetch processes
+[EvaluationSection.tsx] ..> DB : fetch quizzes
+
+@enduml

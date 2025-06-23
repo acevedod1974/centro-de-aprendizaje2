@@ -93,6 +93,24 @@ root/
 
 ---
 
+## 3. Supabase Integration & Data Model
+
+- **Todos los datos clave** (materiales, procesos, recursos, aplicaciones de engranajes, herramientas, quizzes) se gestionan en Supabase.
+- El frontend obtiene los datos dinámicamente y los mapea con validación de tipo y manejo de errores.
+- **IMPORTANTE:**
+
+  - El campo de factor de servicio en la tabla `gear_applications` debe llamarse `service_factor` (no `servicefactor`).
+  - Si migraste desde una versión anterior, ejecuta:
+
+    ```sql
+    ALTER TABLE gear_applications RENAME COLUMN servicefactor TO service_factor;
+    ALTER TABLE gear_applications ALTER COLUMN service_factor TYPE float8 USING service_factor::float8;
+    ```
+
+- El código es compatible temporalmente con ambos nombres, pero se recomienda unificar a `service_factor`.
+
+---
+
 ## 4. Current State of Development
 
 - **Completed:**

@@ -77,5 +77,9 @@
 ## Roadmap
 
 - [x] Migrate all material data to Supabase and refactor MaterialesCalculator.
-- [ ] Review and migrate other hardcoded data (tools, achievements, etc.) to Supabase.
-- [ ] Expand dynamic content and improve error handling.
+- [x] Review and migrate all other hardcoded data (tools, gear applications, quizzes, resources, etc.) to Supabase. Refactor frontend para consumir todo dinámicamente.
+- [x] Expand dynamic content and improve error handling (robusto loading/error UI, fallback, validación de tipos, logging Supabase).
+- [x] Eliminar uso de `any` y forzar tipado estricto en todo el código.
+- [x] Documentar migración y SQL para renombrar columnas en Supabase (`service_factor`).
+- [ ] QA final, pulido UI, y pruebas E2E.
+- [ ] Mejorar documentación de usuario y API.
