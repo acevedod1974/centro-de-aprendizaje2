@@ -1,47 +1,84 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "../../supabaseClient";
 import { Settings, Calculator, Info, RotateCcw, Cog } from "lucide-react";
 
+interface Material {
+  id: string;
+  name: string;
+  density: number;
+  yield_strength?: number;
+  ultimate_strength?: number;
+  hardness?: number;
+}
+
 const EngranajCalculator: React.FC = () => {
+  // --- Dynamic Materials from Supabase ---
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      setLoading(true);
+      setError(null);
+      console.log("Connecting to Supabase to fetch materials...");
+      const { data, error } = await supabase.from("materials").select("*");
+      if (error) {
+        setError("No se pudieron cargar los materiales.");
+        console.error("Supabase materials fetch error:", error);
+      } else {
+        setMaterials(data || []);
+        console.log("Supabase connection OK. Materials:", data);
+      }
+      setLoading(false);
+    };
+    fetchMaterials();
+  }, []);
+
+  // --- Application types (can be migrated to Supabase in the future) ---
+  const applications = [
+    {
+      id: "general",
+      name: "Uso General",
+      serviceFactor: 1.0,
+      description: "Aplicaciones estándar",
+    },
+    {
+      id: "pesado",
+      name: "Servicio Pesado",
+      serviceFactor: 1.5,
+      description: "Cargas altas continuas",
+    },
+    {
+      id: "intermitente",
+      name: "Servicio Intermitente",
+      serviceFactor: 0.8,
+      description: "Operación ocasional",
+    },
+    {
+      id: "precision",
+      name: "Alta Precisión",
+      serviceFactor: 1.2,
+      description: "Tolerancias estrechas",
+    },
+  ];
+
+  // --- UI State ---
   const [module, setModule] = useState<number>(2);
   const [teethPinion, setTeethPinion] = useState<number>(20);
   const [teethGear, setTeethGear] = useState<number>(60);
   const [pressureAngle, setPressureAngle] = useState<number>(20);
   const [faceWidth, setFaceWidth] = useState<number>(25);
-  const [material, setMaterial] = useState<string>("acero");
-  const [application, setApplication] = useState<string>("general");
+  const [materialId, setMaterialId] = useState<string>("");
+  const [applicationId, setApplicationId] = useState<string>("general");
 
-  const materials = {
-    acero: { name: "Acero al Carbono", allowableStress: 200, density: 7.85 },
-    aleado: { name: "Acero Aleado", allowableStress: 300, density: 7.85 },
-    fundicion: { name: "Hierro Fundido", allowableStress: 120, density: 7.2 },
-    bronce: { name: "Bronce", allowableStress: 80, density: 8.9 },
-    plastico: { name: "Plástico Técnico", allowableStress: 40, density: 1.4 },
-  };
+  // --- Find selected material/application ---
+  const materialData =
+    materials.find((m) => m.id === materialId) || materials[0];
+  const appData =
+    applications.find((a) => a.id === applicationId) || applications[0];
 
-  const applications = {
-    general: {
-      name: "Uso General",
-      serviceFactor: 1.0,
-      description: "Aplicaciones estándar",
-    },
-    pesado: {
-      name: "Servicio Pesado",
-      serviceFactor: 1.5,
-      description: "Cargas altas continuas",
-    },
-    intermitente: {
-      name: "Servicio Intermitente",
-      serviceFactor: 0.8,
-      description: "Operación ocasional",
-    },
-    precision: {
-      name: "Alta Precisión",
-      serviceFactor: 1.2,
-      description: "Tolerancias estrechas",
-    },
-  };
-
-  // Cálculos básicos
+  // --- Calculations (only if materialData exists) ---
   const gearRatio = teethGear / teethPinion;
   const pitchDiameterPinion = module * teethPinion;
   const pitchDiameterGear = module * teethGear;
@@ -51,31 +88,29 @@ const EngranajCalculator: React.FC = () => {
   const rootDiameterGear = pitchDiameterGear - 2.5 * module;
   const centerDistance = (pitchDiameterPinion + pitchDiameterGear) / 2;
   const circularPitch = Math.PI * module;
-
-  // Cálculos de resistencia
-  const materialData = materials[material as keyof typeof materials];
-  const appData = applications[application as keyof typeof applications];
-  const lewisFormFactor = 0.154 - 0.912 / teethPinion; // Aproximación para ángulo de 20°
-  const allowableLoad =
-    (materialData.allowableStress * faceWidth * module * lewisFormFactor) /
-    appData.serviceFactor;
-
-  // Velocidad tangencial (asumiendo 1000 RPM para el piñón)
+  const lewisFormFactor = 0.154 - 0.912 / teethPinion;
+  const allowableLoad = materialData
+    ? ((materialData.yield_strength || 200) *
+        faceWidth *
+        module *
+        lewisFormFactor) /
+      appData.serviceFactor
+    : 0;
   const assumedRPM = 1000;
   const tangentialVelocity =
-    (Math.PI * pitchDiameterPinion * assumedRPM) / (60 * 1000); // m/s
-
-  // Volumen y peso aproximado
-  // --- Fix unit conversion for volume/weight ---
-  // Use mm^3 to m^3: divide by 1_000_000_000 (not 1_000_000)
+    (Math.PI * pitchDiameterPinion * assumedRPM) / (60 * 1000);
   const volumePinion =
     (Math.PI * Math.pow(outsideDiameterPinion / 2, 2) * faceWidth) /
-    1_000_000_000; // m³
+    1_000_000_000;
   const volumeGear =
     (Math.PI * Math.pow(outsideDiameterGear / 2, 2) * faceWidth) /
-    1_000_000_000; // m³
-  const weightPinion = volumePinion * materialData.density * 1000; // kg (density in g/cm³, so *1000 for kg/m³)
-  const weightGear = volumeGear * materialData.density * 1000; // kg
+    1_000_000_000;
+  const weightPinion = materialData
+    ? volumePinion * materialData.density * 1000
+    : 0;
+  const weightGear = materialData
+    ? volumeGear * materialData.density * 1000
+    : 0;
 
   const resetCalculator = () => {
     setModule(2);
@@ -83,8 +118,8 @@ const EngranajCalculator: React.FC = () => {
     setTeethGear(60);
     setPressureAngle(20);
     setFaceWidth(25);
-    setMaterial("acero");
-    setApplication("general");
+    setMaterialId(materials[0]?.id || "");
+    setApplicationId("general");
   };
 
   const getApplicationColor = (app: string) => {
@@ -116,9 +151,14 @@ const EngranajCalculator: React.FC = () => {
       return "Ángulo de presión no válido.";
     if (teethGear <= teethPinion)
       return "El engranaje debe tener más dientes que el piñón.";
+    if (!materialData) return "Selecciona un material válido.";
     return null;
   };
   const inputError = validateInputs();
+
+  if (loading) return <div>Cargando materiales...</div>;
+  if (error) return <div>{error}</div>;
+  if (!materialData) return <div>No hay materiales disponibles.</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -244,12 +284,12 @@ const EngranajCalculator: React.FC = () => {
                       Material
                     </label>
                     <select
-                      value={material}
-                      onChange={(e) => setMaterial(e.target.value)}
+                      value={materialId}
+                      onChange={(e) => setMaterialId(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                     >
-                      {Object.entries(materials).map(([key, mat]) => (
-                        <option key={key} value={key}>
+                      {materials.map((mat) => (
+                        <option key={mat.id} value={mat.id}>
                           {mat.name}
                         </option>
                       ))}
@@ -261,12 +301,12 @@ const EngranajCalculator: React.FC = () => {
                       Tipo de Aplicación
                     </label>
                     <select
-                      value={application}
-                      onChange={(e) => setApplication(e.target.value)}
+                      value={applicationId}
+                      onChange={(e) => setApplicationId(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                     >
-                      {Object.entries(applications).map(([key, app]) => (
-                        <option key={key} value={key}>
+                      {applications.map((app) => (
+                        <option key={app.id} value={app.id}>
                           {app.name}
                         </option>
                       ))}
@@ -438,7 +478,7 @@ const EngranajCalculator: React.FC = () => {
                       </span>
                       <span
                         className={`font-medium ${getApplicationColor(
-                          application
+                          applicationId
                         )}`}
                       >
                         Factor de Servicio: {appData.serviceFactor}
