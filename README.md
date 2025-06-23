@@ -92,6 +92,11 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - **Hooks y Contextos**: El estado de progreso, log de actividad y logros está modularizado en hooks/contextos separados.
 - **Accesibilidad**: Se están implementando mejoras continuas (focus, roles, ARIA, etc).
 
+### Materials Data
+
+- MaterialesCalculator now loads all material properties dynamically from Supabase.
+- To add or edit materials, use the Supabase dashboard and update the `materials` table.
+
 ## 🤝 Contribuir
 
 ¡Las contribuciones son bienvenidas! Por favor, abre un issue para discutir cambios mayores o envía un Pull Request.
