@@ -78,6 +78,21 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 
 5. Abre [http://localhost:5173](http://localhost:5173) en tu navegador.
 
+### Configuración de Supabase y Variables de Entorno
+
+Para desarrollo local, crea un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+
+```env
+VITE_SUPABASE_URL="https://jpozkwbusowbpyebqfaw.supabase.co"
+VITE_SUPABASE_ANON_KEY="<tu-clave-anon-aqui>"
+```
+
+Asegúrate de que `.env` esté en `.gitignore` para evitar exponer credenciales.
+
+La aplicación usará estas variables automáticamente gracias a Vite (`import.meta.env`).
+
+Si la clave fue expuesta, rota la clave en el panel de Supabase después de desplegar el cambio.
+
 ## 📦 Scripts Disponibles
 
 - `npm run dev` — Inicia la aplicación en modo desarrollo.
