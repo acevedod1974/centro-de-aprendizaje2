@@ -133,25 +133,25 @@ const MaterialesCalculator: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
-          <div className="flex items-center space-x-3">
-            <Atom size={28} />
-            <div>
-              <h2 className="text-2xl font-bold">
-                Calculadora de Propiedades de Materiales
-              </h2>
-              <p className="opacity-90">
-                Análisis comparativo y selección de materiales de ingeniería
-              </p>
-            </div>
+    <div className="max-w-2xl mx-auto p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 rounded-t-xl">
+        <div className="flex items-center space-x-3">
+          <Atom size={28} className="text-white" />
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              Calculadora de Propiedades de Materiales
+            </h2>
+            <p className="opacity-90 text-white">
+              Análisis comparativo y selección de materiales de ingeniería
+            </p>
           </div>
         </div>
+      </div>
 
-        <div className="p-8">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Input Panel */}
+      <div className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Material selection and input form */}
+          <div className="col-span-1">
             <div className="space-y-6">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-4">
@@ -248,260 +248,256 @@ const MaterialesCalculator: React.FC = () => {
                 <span>Reiniciar</span>
               </button>
             </div>
+          </div>
 
-            {/* Results Panel */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Material Comparison */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-6 border border-purple-200 dark:border-purple-700">
-                <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-4 flex items-center">
-                  <Calculator size={20} className="mr-2" />
-                  Comparación de Materiales
-                </h3>
+          {/* Results/Comparison */}
+          <div className="col-span-1">
+            {/* Material Comparison */}
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-6 border border-purple-200 dark:border-purple-700">
+              <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-4 flex items-center">
+                <Calculator size={20} className="mr-2" />
+                Comparación de Materiales
+              </h3>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-gray-900 dark:text-white">
-                      {material1?.name}
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Peso:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            calculateWeight(material2),
-                            calculateWeight(material1),
-                            false
-                          )}`}
-                        >
-                          {calculateWeight(material1).toFixed(2)} kg
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Costo:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            calculateCost(material2),
-                            calculateCost(material1),
-                            false
-                          )}`}
-                        >
-                          ${calculateCost(material1).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Resistencia/Peso:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            getStrengthToWeightRatio(material1),
-                            getStrengthToWeightRatio(material2)
-                          )}`}
-                        >
-                          {getStrengthToWeightRatio(material1).toFixed(1)}{" "}
-                          MPa/(g/cm³)
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Costo-Efectividad:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            getCostEffectiveness(material1),
-                            getCostEffectiveness(material2)
-                          )}`}
-                        >
-                          {getCostEffectiveness(material1).toFixed(1)} MPa/USD
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-gray-900 dark:text-white">
-                      {material2?.name}
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Peso:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            calculateWeight(material1),
-                            calculateWeight(material2),
-                            false
-                          )}`}
-                        >
-                          {calculateWeight(material2).toFixed(2)} kg
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Costo:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            calculateCost(material1),
-                            calculateCost(material2),
-                            false
-                          )}`}
-                        >
-                          ${calculateCost(material2).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Resistencia/Peso:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            getStrengthToWeightRatio(material2),
-                            getStrengthToWeightRatio(material1)
-                          )}`}
-                        >
-                          {getStrengthToWeightRatio(material2).toFixed(1)}{" "}
-                          MPa/(g/cm³)
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Costo-Efectividad:</span>
-                        <span
-                          className={`font-bold ${getComparisonColor(
-                            getCostEffectiveness(material2),
-                            getCostEffectiveness(material1)
-                          )}`}
-                        >
-                          {getCostEffectiveness(material2).toFixed(1)} MPa/USD
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Detailed Properties */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-6 border border-blue-200 dark:border-blue-700">
-                <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-4 flex items-center">
-                  <Info size={20} className="mr-2" />
-                  Propiedades Detalladas - {material1?.name}
-                </h3>
-
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                    <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                      Mecánicas
-                    </h4>
-                    <div className="space-y-1 text-sm">
-                      <div>Módulo de Young: {material1?.young_modulus} GPa</div>
-                      <div>
-                        Límite Elástico: {material1?.yield_strength} MPa
-                      </div>
-                      <div>
-                        Resistencia Última: {material1?.ultimate_strength} MPa
-                      </div>
-                      <div>Elongación: {material1?.elongation}%</div>
-                      <div>Dureza: {material1?.hardness} HB</div>
-                    </div>
-                  </div>
-
-                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">
-                      Térmicas
-                    </h4>
-                    <div className="space-y-1 text-sm">
-                      <div>
-                        Conductividad: {material1?.thermal_conductivity} W/m·K
-                      </div>
-                      <div>
-                        Calor Específico: {material1?.specific_heat} J/kg·K
-                      </div>
-                      <div>Punto de Fusión: {material1?.melting_point}°C</div>
-                      <div>
-                        Expansión Térmica:{" "}
-                        {getThermalExpansion(
-                          material1,
-                          temperature - 20
-                        ).toFixed(3)}{" "}
-                        mm/m
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
-                    <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">
-                      Físicas
-                    </h4>
-                    <div className="space-y-1 text-sm">
-                      <div>Densidad: {material1?.density} g/cm³</div>
-                      <div>Categoría: {material1?.category}</div>
-                      <div>Costo: ${material1?.cost}/kg</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Applications and Recommendations */}
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
-                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3">
-                    ✅ Aplicaciones Típicas
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-900 dark:text-white">
+                    {material1?.name}
                   </h4>
-                  <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
-                    {material1?.applications?.map((app, index) => (
-                      <li key={index}>• {app}</li>
-                    ))}
-                  </ul>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Peso:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          calculateWeight(material2),
+                          calculateWeight(material1),
+                          false
+                        )}`}
+                      >
+                        {calculateWeight(material1).toFixed(2)} kg
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Costo:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          calculateCost(material2),
+                          calculateCost(material1),
+                          false
+                        )}`}
+                      >
+                        ${calculateCost(material1).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Resistencia/Peso:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          getStrengthToWeightRatio(material1),
+                          getStrengthToWeightRatio(material2)
+                        )}`}
+                      >
+                        {getStrengthToWeightRatio(material1).toFixed(1)}{" "}
+                        MPa/(g/cm³)
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Costo-Efectividad:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          getCostEffectiveness(material1),
+                          getCostEffectiveness(material2)
+                        )}`}
+                      >
+                        {getCostEffectiveness(material1).toFixed(1)} MPa/USD
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-lg">
-                  <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-3">
-                    💡 Recomendación de Selección
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-900 dark:text-white">
+                    {material2?.name}
                   </h4>
-                  <div className="text-sm text-yellow-700 dark:text-yellow-300">
-                    {getStrengthToWeightRatio(material1) >
-                    getStrengthToWeightRatio(material2) ? (
-                      <p>
-                        ✅ {material1?.name} ofrece mejor relación
-                        resistencia/peso
-                      </p>
-                    ) : (
-                      <p>
-                        ⚠️ {material2?.name} tiene mejor relación
-                        resistencia/peso
-                      </p>
-                    )}
-                    {getCostEffectiveness(material1) >
-                    getCostEffectiveness(material2) ? (
-                      <p>✅ {material1?.name} es más costo-efectivo</p>
-                    ) : (
-                      <p>⚠️ {material2?.name} es más costo-efectivo</p>
-                    )}
-                    <p className="mt-2 font-medium">
-                      Para {loadType}: {material1?.name}{" "}
-                      {(material1?.ultimate_strength ?? 0) >
-                      (material2?.ultimate_strength ?? 0)
-                        ? "recomendado"
-                        : "evaluar alternativas"}
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Peso:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          calculateWeight(material1),
+                          calculateWeight(material2),
+                          false
+                        )}`}
+                      >
+                        {calculateWeight(material2).toFixed(2)} kg
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Costo:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          calculateCost(material1),
+                          calculateCost(material2),
+                          false
+                        )}`}
+                      >
+                        ${calculateCost(material2).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Resistencia/Peso:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          getStrengthToWeightRatio(material2),
+                          getStrengthToWeightRatio(material1)
+                        )}`}
+                      >
+                        {getStrengthToWeightRatio(material2).toFixed(1)}{" "}
+                        MPa/(g/cm³)
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Costo-Efectividad:</span>
+                      <span
+                        className={`font-bold ${getComparisonColor(
+                          getCostEffectiveness(material2),
+                          getCostEffectiveness(material1)
+                        )}`}
+                      >
+                        {getCostEffectiveness(material2).toFixed(1)} MPa/USD
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Properties */}
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-6 border border-blue-200 dark:border-blue-700">
+              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-4 flex items-center">
+                <Info size={20} className="mr-2" />
+                Propiedades Detalladas - {material1?.name}
+              </h3>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                    Mecánicas
+                  </h4>
+                  <div className="space-y-1 text-sm">
+                    <div>Módulo de Young: {material1?.young_modulus} GPa</div>
+                    <div>Límite Elástico: {material1?.yield_strength} MPa</div>
+                    <div>
+                      Resistencia Última: {material1?.ultimate_strength} MPa
+                    </div>
+                    <div>Elongación: {material1?.elongation}%</div>
+                    <div>Dureza: {material1?.hardness} HB</div>
+                  </div>
+                </div>
+
+                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">
+                    Térmicas
+                  </h4>
+                  <div className="space-y-1 text-sm">
+                    <div>
+                      Conductividad: {material1?.thermal_conductivity} W/m·K
+                    </div>
+                    <div>
+                      Calor Específico: {material1?.specific_heat} J/kg·K
+                    </div>
+                    <div>Punto de Fusión: {material1?.melting_point}°C</div>
+                    <div>
+                      Expansión Térmica:{" "}
+                      {getThermalExpansion(material1, temperature - 20).toFixed(
+                        3
+                      )}{" "}
+                      mm/m
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
+                  <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">
+                    Físicas
+                  </h4>
+                  <div className="space-y-1 text-sm">
+                    <div>Densidad: {material1?.density} g/cm³</div>
+                    <div>Categoría: {material1?.category}</div>
+                    <div>Costo: ${material1?.cost}/kg</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Applications and Recommendations */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
+                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3">
+                  ✅ Aplicaciones Típicas
+                </h4>
+                <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                  {material1?.applications?.map((app, index) => (
+                    <li key={index}>• {app}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-lg">
+                <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-3">
+                  💡 Recomendación de Selección
+                </h4>
+                <div className="text-sm text-yellow-700 dark:text-yellow-300">
+                  {getStrengthToWeightRatio(material1) >
+                  getStrengthToWeightRatio(material2) ? (
+                    <p>
+                      ✅ {material1?.name} ofrece mejor relación
+                      resistencia/peso
                     </p>
-                  </div>
+                  ) : (
+                    <p>
+                      ⚠️ {material2?.name} tiene mejor relación resistencia/peso
+                    </p>
+                  )}
+                  {getCostEffectiveness(material1) >
+                  getCostEffectiveness(material2) ? (
+                    <p>✅ {material1?.name} es más costo-efectivo</p>
+                  ) : (
+                    <p>⚠️ {material2?.name} es más costo-efectivo</p>
+                  )}
+                  <p className="mt-2 font-medium">
+                    Para {loadType}: {material1?.name}{" "}
+                    {(material1?.ultimate_strength ?? 0) >
+                    (material2?.ultimate_strength ?? 0)
+                      ? "recomendado"
+                      : "evaluar alternativas"}
+                  </p>
                 </div>
               </div>
+            </div>
 
-              {/* Advantages and Disadvantages */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3">
-                    👍 Ventajas
-                  </h4>
-                  <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-                    {material1?.advantages?.map((advantage, index) => (
-                      <li key={index}>• {advantage}</li>
-                    ))}
-                  </ul>
-                </div>
+            {/* Advantages and Disadvantages */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
+                <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3">
+                  👍 Ventajas
+                </h4>
+                <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                  {material1?.advantages?.map((advantage, index) => (
+                    <li key={index}>• {advantage}</li>
+                  ))}
+                </ul>
+              </div>
 
-                <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg">
-                  <h4 className="font-semibold text-red-800 dark:text-red-200 mb-3">
-                    👎 Desventajas
-                  </h4>
-                  <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                    {material1?.disadvantages?.map((disadvantage, index) => (
-                      <li key={index}>• {disadvantage}</li>
-                    ))}
-                  </ul>
-                </div>
+              <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg">
+                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-3">
+                  👎 Desventajas
+                </h4>
+                <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                  {material1?.disadvantages?.map((disadvantage, index) => (
+                    <li key={index}>• {disadvantage}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>

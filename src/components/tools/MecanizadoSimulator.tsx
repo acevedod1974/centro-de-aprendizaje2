@@ -190,7 +190,7 @@ const MecanizadoSimulator: React.FC = () => {
     return <div>No hay datos de mecanizado disponibles.</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-2xl mx-auto p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
       <div className="mb-4 p-3 bg-yellow-100 text-yellow-800 rounded-lg border border-yellow-300 text-center text-sm">
         ⚠️ Este simulador es solo para fines educativos y de referencia. Los
         resultados no deben usarse para procesos industriales reales sin
@@ -217,9 +217,9 @@ const MecanizadoSimulator: React.FC = () => {
         </div>
 
         <div className="p-8">
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Control Panel */}
-            <div className="space-y-6">
+            <div className="col-span-1 space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Tipo de Máquina
@@ -344,7 +344,7 @@ const MecanizadoSimulator: React.FC = () => {
             </div>
 
             {/* Simulation Display */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="col-span-1 lg:col-span-2 space-y-6">
               {/* Status Indicators */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-lg">

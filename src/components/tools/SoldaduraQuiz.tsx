@@ -223,131 +223,129 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-orange-600 to-red-600 p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Zap size={28} />
-              <div>
-                <h2 className="text-2xl font-bold">{quiz.title}</h2>
-                <p className="opacity-90">{quiz.description}</p>
-              </div>
+    <div className="max-w-lg w-full mx-auto p-4 sm:p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
+      <div className="bg-gradient-to-r from-orange-600 to-red-600 p-6 text-white rounded-t-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Zap size={28} />
+            <div>
+              <h2 className="text-2xl font-bold">{quiz.title}</h2>
+              <p className="opacity-90">{quiz.description}</p>
             </div>
-            <div className="text-right">
-              <div className="text-sm opacity-90">Pregunta</div>
-              <div className="text-xl font-bold">
-                {currentQuestion + 1}/{questions.length}
-              </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm opacity-90">Pregunta</div>
+            <div className="text-xl font-bold">
+              {currentQuestion + 1}/{questions.length}
             </div>
           </div>
         </div>
-        <div className="p-8">
-          {/* Progress Bar */}
-          <div className="mb-8">
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
-              <span>Progreso</span>
-              <span>
-                {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-300"
-                style={{
-                  width: `${((currentQuestion + 1) / questions.length) * 100}%`,
-                }}
-              ></div>
-            </div>
+      </div>
+      <div className="p-8">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <span>Progreso</span>
+            <span>
+              {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
+            </span>
           </div>
-          {/* Question */}
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-              {questions[currentQuestion].question_text}
-            </h3>
-            <div className="space-y-3">
-              {questions[currentQuestion].options.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleAnswerSelect(index)}
-                  disabled={showResult}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                    showResult
-                      ? index === questions[currentQuestion].correct_option
-                        ? "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300"
-                        : index === selectedAnswer &&
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div
+              className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-300"
+              style={{
+                width: `${((currentQuestion + 1) / questions.length) * 100}%`,
+              }}
+            ></div>
+          </div>
+        </div>
+        {/* Question */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            {questions[currentQuestion].question_text}
+          </h3>
+          <div className="space-y-3">
+            {questions[currentQuestion].options.map((option, index) => (
+              <button
+                key={index}
+                onClick={() => handleAnswerSelect(index)}
+                disabled={showResult}
+                className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                  showResult
+                    ? index === questions[currentQuestion].correct_option
+                      ? "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300"
+                      : index === selectedAnswer &&
+                        selectedAnswer !==
+                          questions[currentQuestion].correct_option
+                      ? "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300"
+                      : "border-gray-200 dark:border-gray-600"
+                    : selectedAnswer === index
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-200 dark:border-gray-600 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/10"
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <div
+                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                      showResult &&
+                      index === questions[currentQuestion].correct_option
+                        ? "border-green-500 bg-green-500"
+                        : showResult &&
+                          index === selectedAnswer &&
                           selectedAnswer !==
                             questions[currentQuestion].correct_option
-                        ? "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300"
-                        : "border-gray-200 dark:border-gray-600"
-                      : selectedAnswer === index
-                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                      : "border-gray-200 dark:border-gray-600 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/10"
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                        showResult &&
-                        index === questions[currentQuestion].correct_option
-                          ? "border-green-500 bg-green-500"
-                          : showResult &&
-                            index === selectedAnswer &&
-                            selectedAnswer !==
-                              questions[currentQuestion].correct_option
-                          ? "border-red-500 bg-red-500"
-                          : selectedAnswer === index
-                          ? "border-blue-500 bg-blue-500"
-                          : "border-gray-300"
-                      }`}
-                    >
-                      {showResult &&
-                        index === questions[currentQuestion].correct_option && (
-                          <CheckCircle size={16} className="text-white" />
-                        )}
-                      {showResult &&
-                        index === selectedAnswer &&
-                        selectedAnswer !==
-                          questions[currentQuestion].correct_option && (
-                          <XCircle size={16} className="text-white" />
-                        )}
-                    </div>
-                    <span className="font-medium">{option}</span>
+                        ? "border-red-500 bg-red-500"
+                        : selectedAnswer === index
+                        ? "border-blue-500 bg-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {showResult &&
+                      index === questions[currentQuestion].correct_option && (
+                        <CheckCircle size={16} className="text-white" />
+                      )}
+                    {showResult &&
+                      index === selectedAnswer &&
+                      selectedAnswer !==
+                        questions[currentQuestion].correct_option && (
+                        <XCircle size={16} className="text-white" />
+                      )}
                   </div>
-                </button>
-              ))}
-            </div>
+                  <span className="font-medium">{option}</span>
+                </div>
+              </button>
+            ))}
           </div>
-          {/* Explanation */}
-          {showResult && (
-            <div className="mb-6 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                💡 Explicación
-              </h4>
-              <p className="text-blue-700 dark:text-blue-300">
-                {questions[currentQuestion].explanation}
-              </p>
-            </div>
-          )}
-          {/* Action Button */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
-              <Award size={20} />
-              <span>
-                Puntuación actual: {score}/
-                {currentQuestion + (showResult ? 1 : 0)}
-              </span>
-            </div>
-            <button
-              onClick={handleNextQuestion}
-              disabled={selectedAnswer === null || showResult}
-              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {currentQuestion === questions.length - 1
-                ? "Finalizar Quiz"
-                : "Siguiente Pregunta"}
-            </button>
+        </div>
+        {/* Explanation */}
+        {showResult && (
+          <div className="mb-6 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
+              💡 Explicación
+            </h4>
+            <p className="text-blue-700 dark:text-blue-300">
+              {questions[currentQuestion].explanation}
+            </p>
           </div>
+        )}
+        {/* Action Button */}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+            <Award size={20} />
+            <span>
+              Puntuación actual: {score}/
+              {currentQuestion + (showResult ? 1 : 0)}
+            </span>
+          </div>
+          <button
+            onClick={handleNextQuestion}
+            disabled={selectedAnswer === null || showResult}
+            className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {currentQuestion === questions.length - 1
+              ? "Finalizar Quiz"
+              : "Siguiente Pregunta"}
+          </button>
         </div>
       </div>
     </div>

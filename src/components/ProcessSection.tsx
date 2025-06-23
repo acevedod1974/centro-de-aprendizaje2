@@ -462,21 +462,10 @@ const ProcessSection: React.FC = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-          📚 Procesos de Fabricación Industrial
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
-          Explora los principales procesos manufactureros clasificados por tipo
-          de operación, con información técnica detallada y simuladores
-          interactivos.
-        </p>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Categories Panel */}
-        <div className="space-y-4">
+    <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Category List (sidebar on desktop, top on mobile) */}
+        <div className="col-span-1">
           {Object.entries(processCategories).map(([categoryId, category]) => (
             <div
               key={categoryId}
@@ -544,8 +533,8 @@ const ProcessSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Process Detail Panel */}
-        <div className="lg:col-span-2">
+        {/* Process List */}
+        <div className="col-span-2">
           {selectedProcessData ? (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 animate-fade-in-up border border-blue-100 dark:border-blue-900/40">
               <div className="flex items-center space-x-4 mb-6">

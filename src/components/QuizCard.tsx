@@ -58,16 +58,16 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart, userProgress }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.03, boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden group focus-within:ring-2 focus-within:ring-blue-400"
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden group focus-within:ring-2 focus-within:ring-blue-400 w-full max-w-md mx-auto mb-6 sm:mb-0"
       tabIndex={0}
       role="region"
       aria-label={`Quiz: ${quiz.title}`}
     >
       <div
-        className={`bg-gradient-to-r ${color} p-6 text-white relative overflow-hidden`}
+        className={`bg-gradient-to-r ${color} p-6 text-white relative overflow-hidden flex flex-col sm:flex-row items-center sm:items-start gap-4`}
       >
         <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-        <div className="flex items-center justify-between mb-4 relative z-10">
+        <div className="flex items-center justify-between mb-4 relative z-10 w-full">
           <span className="text-4xl" aria-hidden>
             {icon}
           </span>
@@ -78,8 +78,12 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart, userProgress }) => {
             </span>
           </div>
         </div>
-        <h3 className="text-xl font-bold mb-2 relative z-10">{quiz.title}</h3>
-        <p className="text-sm opacity-90 relative z-10">{category}</p>
+        <h3 className="text-xl font-bold mb-2 relative z-10 text-center sm:text-left">
+          {quiz.title}
+        </h3>
+        <p className="text-sm opacity-90 relative z-10 text-center sm:text-left">
+          {category}
+        </p>
       </div>
       <div className="p-6">
         <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">

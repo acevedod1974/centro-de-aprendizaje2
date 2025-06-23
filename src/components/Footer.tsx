@@ -6,9 +6,9 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-white mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand Section */}
-          <div className="col-span-1">
+          <div className="col-span-1 flex flex-col h-full">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-2 rounded-lg">
                 <span className="text-2xl">⚙️</span>
@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/procesos"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-white transition-colors block w-full"
                 >
                   Procesos de Fabricación
                 </Link>
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/herramientas"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-white transition-colors block w-full"
                 >
                   Herramientas Interactivas
                 </Link>
@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/recursos"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-white transition-colors block w-full"
                 >
                   Recursos Multimedia
                 </Link>
@@ -137,42 +137,41 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-gray-400 text-sm">
-              © 2025 Centro de Aprendizaje de Ingeniería Mecánica. Todos los
-              derechos reservados.
-            </div>
-
-            <div className="flex space-x-4">
-              <a
-                href="https://github.com/yourprofile"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Github size={20} />
-              </a>
-              <a
-                href="https://linkedin.com/in/yourprofile"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Linkedin size={20} />
-              </a>
-              <a
-                href="https://twitter.com/yourprofile"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Twitter"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Twitter size={20} />
-              </a>
-            </div>
+        {/* Footer bottom bar for copyright/socials, responsive flex */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-800 pt-6 text-sm text-gray-400">
+          <span>
+            &copy; {new Date().getFullYear()} Centro de Aprendizaje. Todos los
+            derechos reservados.
+          </span>
+          <div className="flex space-x-4">
+            {/* Social icons, add aria-labels for a11y */}
+            <a
+              href="https://github.com/yourprofile"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="hover:text-white"
+            >
+              <Github size={20} />
+            </a>
+            <a
+              href="https://linkedin.com/in/yourprofile"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="hover:text-white"
+            >
+              <Linkedin size={20} />
+            </a>
+            <a
+              href="https://twitter.com/yourprofile"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+              className="hover:text-white"
+            >
+              <Twitter size={20} />
+            </a>
           </div>
         </div>
       </div>

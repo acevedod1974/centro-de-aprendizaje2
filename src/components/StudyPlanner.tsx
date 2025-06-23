@@ -32,8 +32,8 @@ const StudyPlanner: React.FC = () => {
     category: "Teoría",
     difficulty: "medium" as "easy" | "medium" | "hard",
   });
-  const [loading, setLoading] = useState(false); // For future backend integration
-  const [error, setError] = useState<string | null>(null); // For future backend integration
+  const [loading] = useState(false); // For future backend integration
+  const [error] = useState<string | null>(null); // For future backend integration
 
   const toggleTask = (id: string) => {
     setStudyTasks(
@@ -197,7 +197,7 @@ const StudyPlanner: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-8">
       {/* Header */}
       <motion.div
         className="text-center"
@@ -205,16 +205,16 @@ const StudyPlanner: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
           📅 Planificador de Estudios Gamificado
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">
           Organiza tu tiempo, gana puntos y alcanza tus objetivos académicos
         </p>
       </motion.div>
 
       {/* Gamification Stats */}
-      <div className="grid md:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
         <motion.div
           className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-2xl shadow-lg"
           initial={{ opacity: 0, scale: 0.9 }}
