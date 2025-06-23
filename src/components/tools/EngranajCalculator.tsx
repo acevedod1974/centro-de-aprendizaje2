@@ -41,7 +41,26 @@ const EngranajCalculator: React.FC = () => {
         setErrorMaterials("No se pudieron cargar los materiales.");
         console.error("Supabase materials fetch error:", error);
       } else {
-        setMaterials(data || []);
+        // Convertir a número los campos relevantes
+        setMaterials(
+          (data || []).map((mat) => ({
+            ...mat,
+            density: Number(mat.density),
+            yield_strength:
+              mat.yield_strength !== null && mat.yield_strength !== undefined
+                ? Number(mat.yield_strength)
+                : undefined,
+            ultimate_strength:
+              mat.ultimate_strength !== null &&
+              mat.ultimate_strength !== undefined
+                ? Number(mat.ultimate_strength)
+                : undefined,
+            hardness:
+              mat.hardness !== null && mat.hardness !== undefined
+                ? Number(mat.hardness)
+                : undefined,
+          }))
+        );
         console.log("Supabase connection OK. Materials:", data);
       }
       setLoadingMaterials(false);
@@ -61,7 +80,18 @@ const EngranajCalculator: React.FC = () => {
         setErrorApplications("No se pudieron cargar los tipos de aplicación.");
         console.error("Supabase gear_applications fetch error:", error);
       } else {
-        setApplications(data || []);
+        // Compatibilidad: acepta service_factor o servicefactor
+        setApplications(
+          (data || []).map((app) => ({
+            ...app,
+            service_factor:
+              app.service_factor !== null && app.service_factor !== undefined
+                ? Number(app.service_factor)
+                : app.servicefactor !== null && app.servicefactor !== undefined
+                ? Number(app.servicefactor)
+                : undefined,
+          }))
+        );
         console.log("Supabase connection OK. Gear Applications:", data);
       }
       setLoadingApplications(false);
@@ -78,6 +108,28 @@ const EngranajCalculator: React.FC = () => {
   const [materialId, setMaterialId] = useState<string>("");
   const [applicationId, setApplicationId] = useState<string>("");
 
+  // --- Find selected material/application ---
+  const materialData = materials.find((m) => m.id === materialId);
+  const appData = applications.find((a) => a.id === applicationId);
+
+  // Debug: log types and values for diagnosis (debe ir después de la declaración de materialData y appData)
+  useEffect(() => {
+    if (materialData) {
+      console.log(
+        "Material yield_strength:",
+        materialData.yield_strength,
+        typeof materialData.yield_strength
+      );
+    }
+    if (appData) {
+      console.log(
+        "Application service_factor:",
+        appData.service_factor,
+        typeof appData.service_factor
+      );
+    }
+  }, [materialData, appData]);
+
   // Set default materialId and applicationId after data loads
   useEffect(() => {
     if (materials.length && !materialId) {
@@ -90,10 +142,6 @@ const EngranajCalculator: React.FC = () => {
       setApplicationId(applications[0].id);
     }
   }, [applications, applicationId]);
-
-  // --- Find selected material/application ---
-  const materialData = materials.find((m) => m.id === materialId);
-  const appData = applications.find((a) => a.id === applicationId);
 
   // --- Calculations (only if materialData exists) ---
   const validYield =
@@ -474,6 +522,14 @@ const EngranajCalculator: React.FC = () => {
                   Análisis de Resistencia
                 </h3>
 
+                {/* Debug visual: muestra los datos crudos para diagnóstico */}
+                <div className="mb-4 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-700 dark:text-gray-300">
+                  <strong>DEBUG:</strong>
+                  <pre>
+                    {JSON.stringify({ materialData, appData }, null, 2)}
+                  </pre>
+                </div>
+
                 <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
@@ -516,6 +572,8 @@ const EngranajCalculator: React.FC = () => {
                         Factor de Servicio:{" "}
                         {validService
                           ? appData.service_factor
+                          : appData && appData.service_factor === undefined
+                          ? "(Dato no encontrado en BD)"
                           : "No disponible"}
                       </span>
                     </div>
