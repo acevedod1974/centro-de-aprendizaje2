@@ -26,11 +26,10 @@ const EvaluationSection: React.FC = () => {
     async function fetchQuizzes() {
       setLoading(true);
       setError(null);
+      // Only select columns that exist in the Supabase table
       const { data, error } = await supabase
         .from("quizzes")
-        .select(
-          "id, title, description, category, icon, color, available, questions, duration, difficulty, completed, avgScore"
-        )
+        .select("id, title, description, process_id, created_at")
         .order("id");
       if (error) {
         setError(
