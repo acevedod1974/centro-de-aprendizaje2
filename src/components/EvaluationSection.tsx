@@ -79,7 +79,9 @@ const EvaluationSection: React.FC = () => {
   }
 
   if (activeQuiz) {
-    if (activeQuiz === "soldadura") {
+    // Find the quiz object for the activeQuiz id
+    const quizObj = quizzes.find((q) => q.id.toString() === activeQuiz);
+    if (activeQuiz === "soldadura" && quizObj && quizObj.available !== false) {
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-6">
