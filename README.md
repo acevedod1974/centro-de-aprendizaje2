@@ -16,6 +16,7 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - **Integración con Supabase:** Recursos y datos clave gestionados desde una base de datos cloud.
 - **Tema Claro/Oscuro:** Interfaz adaptable a las preferencias del usuario.
 - **Accesibilidad y Responsividad:** UI optimizada para todos los dispositivos y usuarios.
+- **Home Modernizada:** Página de inicio rediseñada, visualmente atractiva y coherente con el resto de la plataforma.
 
 ## 🧭 Navegación Principal
 
@@ -106,6 +107,7 @@ Si la clave fue expuesta, rota la clave en el panel de Supabase después de desp
 - **Categorías**: Por defecto siguen siendo estáticas, pero pueden migrarse a Supabase si se requiere mayor flexibilidad.
 - **Hooks y Contextos**: El estado de progreso, log de actividad y logros está modularizado en hooks/contextos separados.
 - **Accesibilidad**: Se están implementando mejoras continuas (focus, roles, ARIA, etc).
+- **Home Modernizada**: La página de inicio fue rediseñada para mayor atractivo visual y coherencia con el resto de la plataforma.
 
 ### Materials Data
 
@@ -120,6 +122,7 @@ Si la clave fue expuesta, rota la clave en el panel de Supabase después de desp
 - Se agregó logging para diagnosticar la conectividad y los datos recibidos de Supabase.
 - Se corrigió el mapeo de campos para aceptar tanto `service_factor` como `servicefactor` en la tabla `gear_applications`.
 - Se recomienda renombrar la columna en Supabase a `service_factor` (ver instrucciones en el Developer Manual).
+- Se modernizó y mejoró la Home para una mejor experiencia de usuario.
 
 ## 📝 Instrucciones para migrar/ajustar Supabase
 

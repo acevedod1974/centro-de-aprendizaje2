@@ -20,10 +20,9 @@ root/
 │   ├── supabaseClient.ts      # Supabase client config
 │   ├── vite-env.d.ts          # Vite/TS types
 │   ├── components/            # Main UI components
-│   │   ├── App.tsx            # (Legacy, can be removed)
 │   │   ├── Header.tsx         # Top navigation
 │   │   ├── Footer.tsx         # Footer
-│   │   ├── Home.tsx           # Landing page
+│   │   ├── Home.tsx           # Landing page (modern, visual, responsive)
 │   │   ├── ProcessSection.tsx # Dynamic process explorer
 │   │   ├── ToolsSection.tsx   # Tool/simulator/calculator hub
 │   │   ├── ResourcesSection.tsx # Dynamic resources
@@ -31,27 +30,8 @@ root/
 │   │   ├── ProgressTracker.tsx   # User progress dashboard
 │   │   ├── StudyPlanner.tsx      # Study/task planner
 │   │   ├── QuizCard.tsx         # Quiz card UI
-│   │   ├── fallbackQuizzes.ts   # Fallback quiz data
 │   │   └── tools/               # All calculators/simulators/quizzes
-│   │       ├── MaterialesCalculator.tsx
-│   │       ├── MecanizadoSimulator.tsx
-│   │       ├── ForjadoSimulator.tsx
-│   │       ├── EngranajCalculator.tsx
-│   │       ├── VelocidadCorteCalculator.tsx
-│   │       ├── SoldaduraQuiz.tsx
-│   │       ├── ToleranciaCalculator.tsx
-│   │       └── CalidadInspector.tsx
 │   └── contexts/               # Context providers (state management)
-│       ├── QuizProgressContext.tsx
-│       ├── TasksContext.tsx
-│       ├── AchievementsContext.tsx
-│       ├── ActivityLogContext.tsx
-│       ├── ThemeContext.tsx
-│       ├── ToastContext.tsx
-│       ├── useQuizProgress.ts
-│       ├── useTasks.ts
-│       ├── useAchievements.ts
-│       └── useToast.ts
 ├── public/                     # Static assets (if any)
 ├── package.json                # Dependencies, scripts
 ├── vite.config.ts              # Vite config
@@ -59,8 +39,8 @@ root/
 ├── postcss.config.js           # PostCSS config
 ├── eslint.config.js            # ESLint config
 ├── README.md                   # Project intro (user-facing)
-├── PLANNING.md                 # Planning/roadmap (partial)
-├── TODO.md                     # Task list (partial)
+├── PLANNING.md                 # Planning/roadmap
+├── TODO.md                     # Task list
 └── ...
 ```
 
@@ -70,7 +50,7 @@ root/
 
 - **Dynamic Content:**
 
-  - All processes, resources, categories, tools, quizzes, and (soon) material properties are fetched from Supabase.
+  - All processes, resources, categories, tools, quizzes, and material properties are fetched from Supabase.
   - Fallbacks (e.g., quizzes) are provided for offline/empty states.
   - TypeScript interfaces strictly define all data shapes.
 
@@ -93,7 +73,7 @@ root/
 
 ---
 
-## 3. Supabase Integration & Data Model
+## 4. Supabase Integration & Data Model
 
 - **Todos los datos clave** (materiales, procesos, recursos, aplicaciones de engranajes, herramientas, quizzes) se gestionan en Supabase.
 - El frontend obtiene los datos dinámicamente y los mapea con validación de tipo y manejo de errores.
@@ -111,55 +91,28 @@ root/
 
 ---
 
-## 4. Current State of Development
+## 5. Current State of Development
 
 - **Completed:**
 
-  - All process, resource, category, and quiz data migrated to Supabase.
-  - Frontend fetches and renders all above data dynamically.
-  - Robust error/loading UI and logging for all Supabase fetches.
-  - All hardcoded data for processes/resources/quizzes removed.
-  - TypeScript enforced everywhere (no `any`).
-  - ESLint and code style enforced.
-  - Contexts fully refactored and modularized.
-  - Fallbacks for quizzes ensure UI always works.
+  - Todos los datos de procesos, recursos, materiales, herramientas, aplicaciones de engranajes y quizzes migrados a Supabase.
+  - Frontend obtiene y renderiza todos los datos dinámicamente desde Supabase.
+  - Calculadoras y simuladores refactorizados para consumir datos dinámicos, con manejo robusto de errores/loading y tipado estricto.
+  - Eliminados todos los arrays hardcodeados.
+  - TypeScript estricto en todo el código (sin `any`).
+  - ESLint y estilos de código aplicados.
+  - Contextos refactorizados y modularizados.
+  - Fallbacks para quizzes aseguran UI siempre funcional.
+  - Home y páginas principales modernizadas y responsivas.
+  - Documentación y SQL de migración actualizados.
 
 - **Pending:**
-  - Migrate all hardcoded material/tool data from calculators/simulators to Supabase (see `src/components/tools/`).
-  - Refactor calculators/simulators to fetch and use dynamic material/tool data.
-  - (Optional) Migrate other hardcoded data (tool/material options, achievements, study tasks) to Supabase.
-  - Add more tests, documentation, and polish.
-  - Address any remaining Supabase query errors.
-  - Finalize and maintain this Developer Manual.
-
----
-
-### Example: Materials Table
-
-```sql
-CREATE TABLE materials (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  category TEXT,
-  density FLOAT,
-  young_modulus FLOAT,
-  yield_strength FLOAT,
-  ultimate_strength FLOAT,
-  elongation FLOAT,
-  hardness FLOAT,
-  thermal_conductivity FLOAT,
-  specific_heat FLOAT,
-  melting_point FLOAT,
-  cost FLOAT,
-  applications TEXT[],
-  advantages TEXT[],
-  disadvantages TEXT[]
-);
-```
-
-**Other tables:**
-
-- `processes`, `resources`, `resource_categories`, `tools`, `quizzes`, `quiz_questions` (see previous migration scripts).
+  - Persistencia de datos de usuario en StudyPlanner/ProgressTracker (localStorage o backend).
+  - Mejoras de accesibilidad (a11y) y pulido UI.
+  - Pruebas unitarias, integración y E2E.
+  - Internacionalización (i18n).
+  - Backend para progreso/autenticación (opcional).
+  - Expansión de contenido y documentación de usuario/API.
 
 ---
 
@@ -167,79 +120,61 @@ CREATE TABLE materials (
 
 ### Short-Term
 
-- [ ] Migrate all hardcoded material/tool data in calculators/simulators to Supabase.
-- [ ] Refactor all relevant components to fetch and use this data dynamically.
-- [ ] Add robust error/loading UI to all calculators/simulators.
-- [ ] Ensure all TypeScript types are enforced and no `any` remains.
-- [ ] Polish UI/UX, accessibility, and responsiveness.
+- [x] Migrar y consumir todos los datos dinámicamente desde Supabase.
+- [x] Refactor de calculadoras/simuladores para datos dinámicos y robusto manejo de errores/loading.
+- [x] Modernización visual y responsiva de la Home y secciones principales.
+- [ ] Persistencia de datos de usuario (StudyPlanner/ProgressTracker).
+- [ ] Mejoras de accesibilidad y pulido UI.
+- [ ] Pruebas unitarias/integración/E2E.
 
 ### Medium-Term
 
-- [ ] Migrate additional hardcoded data (tool/material options, achievements, study tasks) to Supabase as needed.
-- [ ] Add more quizzes, questions, and resources.
-- [ ] Implement user authentication (if required).
-- [ ] Add internationalization (i18n) support.
-- [ ] Add more tests (unit/integration).
-
-### Long-Term
-
-- [ ] Expand to more manufacturing processes and tools.
-- [ ] Add analytics, reporting, and advanced progress tracking.
-- [ ] Enable user-generated content (if desired).
+- [ ] Backend para progreso/autenticación (opcional).
+- [ ] Internacionalización (i18n).
+- [ ] Expansión de contenido y documentación.
 
 ---
 
 ## 7. TODO & Task List
 
-See `TODO.md` and `PLANNING.md` for detailed tasks. Key items:
+Ver `TODO.md` y `PLANNING.md` para tareas detalladas. Principales pendientes:
 
-- Complete migration of all hardcoded data to Supabase.
-- Refactor calculators/simulators for dynamic data.
-- Improve accessibility and UI polish.
-- Add more content (quizzes, resources, tools).
-- Expand documentation and testing.
+- Persistencia de datos de usuario.
+- Mejoras de accesibilidad y UI.
+- Pruebas y documentación de usuario/API.
 
 ---
 
 ## 8. How to Continue Development
 
 1. **Supabase Data Migration:**
-
-   - Identify any remaining hardcoded data (see `src/components/tools/`).
-   - Add corresponding tables/fields in Supabase (see example schemas).
-   - Migrate data and update frontend fetch logic.
-
+   - Identifica cualquier dato hardcodeado restante (ver `src/components/tools/`).
+   - Agrega tablas/campos en Supabase según los esquemas de ejemplo.
+   - Migra datos y actualiza lógica de fetch en frontend.
 2. **Frontend Refactor:**
-
-   - Remove hardcoded data from components.
-   - Fetch data from Supabase using the client in `src/supabaseClient.ts`.
-   - Add robust error/loading UI and logging.
-   - Enforce strict TypeScript types.
-
+   - Elimina datos hardcodeados de componentes.
+   - Obtén datos desde Supabase usando el cliente en `src/supabaseClient.ts`.
+   - Añade manejo robusto de errores/loading y logging.
+   - Aplica tipado estricto TypeScript.
 3. **Testing & QA:**
-
-   - Run `npm run lint` to check code style.
-   - Add/expand tests as needed.
-
-4. **Documentation:**
-
-   - Update this manual as the project evolves.
-   - Keep `README.md`, `TODO.md`, and `PLANNING.md` up to date.
-
+   - Ejecuta `npm run lint` para revisar estilos.
+   - Añade/amplía pruebas según sea necesario.
+4. **Documentación:**
+   - Mantén este manual, `README.md`, `TODO.md` y `PLANNING.md` actualizados.
 5. **Deployment:**
-   - Build with `npm run build`.
-   - Deploy static files as needed (see Vite docs).
+   - Build con `npm run build`.
+   - Despliega archivos estáticos según sea necesario (ver docs de Vite).
 
 ---
 
 ## 9. Best Practices
 
-- Use context providers for all global state.
-- Never use `any` in TypeScript; always define interfaces.
-- Always provide fallback data for critical UI (e.g., quizzes).
-- Use robust error/loading UI for all async fetches.
-- Keep Supabase credentials secure (move to env vars for production).
-- Keep documentation and planning up to date.
+- Usa context providers para todo estado global.
+- Nunca uses `any` en TypeScript; define siempre interfaces.
+- Provee datos fallback para UI crítica (ej: quizzes).
+- Usa manejo robusto de errores/loading para todo fetch asíncrono.
+- Mantén las credenciales de Supabase seguras (mueve a vars de entorno para producción).
+- Mantén la documentación y planificación actualizadas.
 
 ---
 

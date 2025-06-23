@@ -2,16 +2,17 @@
 
 ## 🔥 Prioridad Alta
 
-- [ ] **Migración Completa a SPA:** ✅ Navegación React Router, scroll-to-top automático, enlaces internos actualizados.
+- [x] **Migración Completa a SPA:** ✅ Navegación React Router, scroll-to-top automático, enlaces internos actualizados.
 - [ ] **Persistencia de Datos del Planificador:** Guardar y cargar planes de estudio (localStorage o backend).
 - [ ] **Accesibilidad (a11y):** Mejorar la accesibilidad de todos los componentes.
-- [ ] **Diseño Responsivo:** Asegurar que la aplicación se vea bien en todos los dispositivos.
-- [ ] **Autenticación de Usuarios:** Implementar sistema de registro e inicio de sesión (si aplica).
+- [x] **Diseño Responsivo:** Todos los componentes principales y páginas son responsivos y han sido revisados. (Pulido menor pendiente)
+- [ ] **Autenticación de Usuarios (opcional):** Implementar sistema de registro e inicio de sesión si se requiere.
 - [x] **Migración total de datos a Supabase:** Todos los datos de procesos, recursos, materiales, aplicaciones de engranajes, herramientas y quizzes migrados y consumidos dinámicamente desde Supabase. Eliminados arrays hardcodeados.
 - [x] **Refactor de calculadoras y simuladores:** Materiales, aplicaciones y parámetros ahora se obtienen de Supabase. Manejo robusto de errores y loading.
 - [x] **Eliminación de any:** Todo el código usa tipado estricto TypeScript.
 - [x] **Logging y diagnóstico Supabase:** Se agregó logging para diagnosticar conectividad y datos recibidos.
 - [x] **Compatibilidad de campos Supabase:** El código acepta temporalmente `service_factor` y `servicefactor` en gear_applications. Se recomienda renombrar la columna a `service_factor` (ver README y Developer Manual).
+- [x] **Modernización Home:** Rediseño visual y mejora de la página de inicio para coherencia y atractivo visual.
 
 ## 🛠️ Funcionalidades y Mejoras
 
@@ -54,3 +55,4 @@
 - [x] Test MaterialesCalculator with new materials and edge cases.
 - [x] Review other calculators for hardcoded data.
 - [x] Update documentación tras migraciones Supabase.
+- [x] Rediseño y modernización de la Home para mayor atractivo visual y coherencia.

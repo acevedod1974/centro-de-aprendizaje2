@@ -57,10 +57,12 @@
 
 ## Milestones y Release Plan
 
-- **MVP SPA**: Navegación React Router, Home, una herramienta, theme.
-- **Herramientas completas**: Todas las calculadoras, simuladores y quizzes.
-- **Persistencia y pruebas**: Guardado de progreso, pruebas E2E, optimización.
-- **Despliegue**: CI/CD y publicación.
+- [x] MVP SPA: Navegación React Router, Home, una herramienta, theme.
+- [x] Herramientas completas: Todas las calculadoras, simuladores y quizzes migrados a Supabase y consumidos dinámicamente.
+- [x] Persistencia y pruebas: Refactor de contextos, robusto manejo de errores/loading, tipado estricto, documentación y migración Supabase.
+- [ ] QA final, pulido UI, y pruebas E2E.
+- [ ] Mejorar documentación de usuario y API.
+- [x] Rediseño y modernización de la Home para mayor atractivo visual y coherencia.
 
 ## Riesgos & Mitigaciones
 
@@ -81,5 +83,6 @@
 - [x] Expand dynamic content and improve error handling (robusto loading/error UI, fallback, validación de tipos, logging Supabase).
 - [x] Eliminar uso de `any` y forzar tipado estricto en todo el código.
 - [x] Documentar migración y SQL para renombrar columnas en Supabase (`service_factor`).
+- [x] Rediseño y modernización de la Home para mayor atractivo visual y coherencia.
 - [ ] QA final, pulido UI, y pruebas E2E.
 - [ ] Mejorar documentación de usuario y API.
