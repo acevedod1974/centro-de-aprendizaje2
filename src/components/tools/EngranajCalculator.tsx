@@ -11,57 +11,63 @@ interface Material {
   hardness?: number;
 }
 
+interface GearApplication {
+  id: string;
+  name: string;
+  service_factor: number;
+  description?: string;
+}
+
 const EngranajCalculator: React.FC = () => {
   // --- Dynamic Materials from Supabase ---
   const [materials, setMaterials] = useState<Material[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingMaterials, setLoadingMaterials] = useState(true);
+  const [errorMaterials, setErrorMaterials] = useState<string | null>(null);
+
+  // --- Dynamic Applications from Supabase ---
+  const [applications, setApplications] = useState<GearApplication[]>([]);
+  const [loadingApplications, setLoadingApplications] = useState(true);
+  const [errorApplications, setErrorApplications] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchMaterials = async () => {
-      setLoading(true);
-      setError(null);
+      setLoadingMaterials(true);
+      setErrorMaterials(null);
       console.log("Connecting to Supabase to fetch materials...");
       const { data, error } = await supabase.from("materials").select("*");
       if (error) {
-        setError("No se pudieron cargar los materiales.");
+        setErrorMaterials("No se pudieron cargar los materiales.");
         console.error("Supabase materials fetch error:", error);
       } else {
         setMaterials(data || []);
         console.log("Supabase connection OK. Materials:", data);
       }
-      setLoading(false);
+      setLoadingMaterials(false);
     };
     fetchMaterials();
   }, []);
 
-  // --- Application types (can be migrated to Supabase in the future) ---
-  const applications = [
-    {
-      id: "general",
-      name: "Uso General",
-      serviceFactor: 1.0,
-      description: "Aplicaciones estándar",
-    },
-    {
-      id: "pesado",
-      name: "Servicio Pesado",
-      serviceFactor: 1.5,
-      description: "Cargas altas continuas",
-    },
-    {
-      id: "intermitente",
-      name: "Servicio Intermitente",
-      serviceFactor: 0.8,
-      description: "Operación ocasional",
-    },
-    {
-      id: "precision",
-      name: "Alta Precisión",
-      serviceFactor: 1.2,
-      description: "Tolerancias estrechas",
-    },
-  ];
+  useEffect(() => {
+    const fetchApplications = async () => {
+      setLoadingApplications(true);
+      setErrorApplications(null);
+      console.log("Connecting to Supabase to fetch gear applications...");
+      const { data, error } = await supabase
+        .from("gear_applications")
+        .select("*");
+      if (error) {
+        setErrorApplications("No se pudieron cargar los tipos de aplicación.");
+        console.error("Supabase gear_applications fetch error:", error);
+      } else {
+        setApplications(data || []);
+        console.log("Supabase connection OK. Gear Applications:", data);
+      }
+      setLoadingApplications(false);
+    };
+    fetchApplications();
+  }, []);
 
   // --- UI State ---
   const [module, setModule] = useState<number>(2);
@@ -70,7 +76,7 @@ const EngranajCalculator: React.FC = () => {
   const [pressureAngle, setPressureAngle] = useState<number>(20);
   const [faceWidth, setFaceWidth] = useState<number>(25);
   const [materialId, setMaterialId] = useState<string>("");
-  const [applicationId, setApplicationId] = useState<string>("general");
+  const [applicationId, setApplicationId] = useState<string>("");
 
   // --- Find selected material/application ---
   const materialData =
@@ -89,13 +95,14 @@ const EngranajCalculator: React.FC = () => {
   const centerDistance = (pitchDiameterPinion + pitchDiameterGear) / 2;
   const circularPitch = Math.PI * module;
   const lewisFormFactor = 0.154 - 0.912 / teethPinion;
-  const allowableLoad = materialData
-    ? ((materialData.yield_strength || 200) *
-        faceWidth *
-        module *
-        lewisFormFactor) /
-      appData.serviceFactor
-    : 0;
+  const allowableLoad =
+    materialData && appData
+      ? ((materialData.yield_strength || 200) *
+          faceWidth *
+          module *
+          lewisFormFactor) /
+        appData.service_factor
+      : 0;
   const assumedRPM = 1000;
   const tangentialVelocity =
     (Math.PI * pitchDiameterPinion * assumedRPM) / (60 * 1000);
@@ -119,7 +126,7 @@ const EngranajCalculator: React.FC = () => {
     setPressureAngle(20);
     setFaceWidth(25);
     setMaterialId(materials[0]?.id || "");
-    setApplicationId("general");
+    setApplicationId(applications[0]?.id || "");
   };
 
   const getApplicationColor = (app: string) => {
@@ -152,13 +159,17 @@ const EngranajCalculator: React.FC = () => {
     if (teethGear <= teethPinion)
       return "El engranaje debe tener más dientes que el piñón.";
     if (!materialData) return "Selecciona un material válido.";
+    if (!appData) return "Selecciona un tipo de aplicación válido.";
     return null;
   };
   const inputError = validateInputs();
 
-  if (loading) return <div>Cargando materiales...</div>;
-  if (error) return <div>{error}</div>;
+  if (loadingMaterials || loadingApplications)
+    return <div>Cargando datos...</div>;
+  if (errorMaterials) return <div>{errorMaterials}</div>;
+  if (errorApplications) return <div>{errorApplications}</div>;
   if (!materialData) return <div>No hay materiales disponibles.</div>;
+  if (!appData) return <div>No hay tipos de aplicación disponibles.</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -481,7 +492,7 @@ const EngranajCalculator: React.FC = () => {
                           applicationId
                         )}`}
                       >
-                        Factor de Servicio: {appData.serviceFactor}
+                        Factor de Servicio: {appData.service_factor}
                       </span>
                     </div>
                   </div>
