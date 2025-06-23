@@ -3,18 +3,21 @@ import { CheckCircle, Users, Book } from "lucide-react";
 import { motion } from "framer-motion";
 
 export interface Quiz {
-  id: string;
+  id: string | number;
   title: string;
   description: string;
-  questions: number;
-  duration: number;
-  difficulty: string;
-  category: string;
-  icon: string;
-  color: string;
-  completed: number;
-  avgScore: number;
-  available: boolean;
+  // Optional/fallback fields for compatibility with old UI
+  questions?: number;
+  duration?: number;
+  difficulty?: string;
+  category?: string;
+  icon?: string;
+  color?: string;
+  completed?: number;
+  avgScore?: number;
+  available?: boolean;
+  process_id?: number;
+  created_at?: string;
 }
 
 interface QuizCardProps {
@@ -39,8 +42,18 @@ const getDifficultyIcon = (difficulty: string) => {
 const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart, userProgress }) => {
   const handleStart = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (quiz.available) onStart(quiz.id);
+    if (quiz.available ?? true) onStart(quiz.id.toString());
   };
+
+  // Fallbacks for missing fields
+  const icon = quiz.icon || "📘";
+  const color = quiz.color || "from-blue-400 to-blue-600";
+  const difficulty = quiz.difficulty || "Básico";
+  const category = quiz.category || "General";
+  const questions = quiz.questions ?? 10;
+  const completed = quiz.completed ?? 0;
+  const avgScore = quiz.avgScore ?? 0;
+  const available = quiz.available ?? true;
 
   return (
     <motion.div
@@ -51,24 +64,22 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart, userProgress }) => {
       aria-label={`Quiz: ${quiz.title}`}
     >
       <div
-        className={`bg-gradient-to-r ${quiz.color} p-6 text-white relative overflow-hidden`}
+        className={`bg-gradient-to-r ${color} p-6 text-white relative overflow-hidden`}
       >
         <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
         <div className="flex items-center justify-between mb-4 relative z-10">
           <span className="text-4xl" aria-hidden>
-            {quiz.icon}
+            {icon}
           </span>
           <div className="flex items-center space-x-2">
-            <span className="text-xs">
-              {getDifficultyIcon(quiz.difficulty)}
-            </span>
+            <span className="text-xs">{getDifficultyIcon(difficulty)}</span>
             <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white">
-              {quiz.difficulty}
+              {difficulty}
             </span>
           </div>
         </div>
         <h3 className="text-xl font-bold mb-2 relative z-10">{quiz.title}</h3>
-        <p className="text-sm opacity-90 relative z-10">{quiz.category}</p>
+        <p className="text-sm opacity-90 relative z-10">{category}</p>
       </div>
       <div className="p-6">
         <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
@@ -80,22 +91,20 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart, userProgress }) => {
               <Book size={16} />
               <span>Preguntas</span>
             </div>
-            <span className="font-medium">{quiz.questions}</span>
+            <span className="font-medium">{questions}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
               <Users size={16} />
               <span>Completado</span>
             </div>
-            <span className="font-medium">
-              {quiz.completed.toLocaleString()}
-            </span>
+            <span className="font-medium">{completed.toLocaleString()}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
               <span>Puntuación promedio</span>
             </div>
-            <span className="font-medium">{quiz.avgScore}%</span>
+            <span className="font-medium">{avgScore}%</span>
           </div>
           {userProgress && (
             <div className="flex items-center justify-between text-xs text-blue-600 dark:text-blue-400">
@@ -106,22 +115,22 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart, userProgress }) => {
         </div>
         <button
           onClick={handleStart}
-          disabled={!quiz.available}
+          disabled={!available}
           className={`w-full py-3 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-            quiz.available
-              ? `bg-gradient-to-r ${quiz.color} text-white hover:shadow-lg transform hover:scale-105`
+            available
+              ? `bg-gradient-to-r ${color} text-white hover:shadow-lg transform hover:scale-105`
               : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
           }`}
           aria-label={
-            quiz.available
+            available
               ? `Comenzar evaluación de ${quiz.title}`
               : `${quiz.title} próximamente`
           }
           role="button"
         >
-          {quiz.available ? "Comenzar Evaluación" : "Próximamente"}
+          {available ? "Comenzar Evaluación" : "Próximamente"}
         </button>
-        {quiz.available && (
+        {available && (
           <div className="mt-3 flex items-center justify-center space-x-2 text-green-600 dark:text-green-400 text-sm">
             <CheckCircle size={16} />
             <span>Disponible ahora</span>

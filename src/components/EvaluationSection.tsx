@@ -205,6 +205,27 @@ const EvaluationSection: React.FC = () => {
     );
   }
 
+  // Group quizzes by process_id for card layout
+  const groupedQuizzes: { [key: number]: Quiz[] } = {};
+  quizzes.forEach((quiz) => {
+    if (quiz.process_id) {
+      if (!groupedQuizzes[quiz.process_id])
+        groupedQuizzes[quiz.process_id] = [];
+      groupedQuizzes[quiz.process_id].push(quiz);
+    } else {
+      if (!groupedQuizzes[0]) groupedQuizzes[0] = [];
+      groupedQuizzes[0].push(quiz);
+    }
+  });
+
+  // Example process_id to section mapping (customize as needed)
+  const processSections = [
+    { id: 1, label: "Módulos de Ingeniería Fundamental", icon: "🔧" },
+    { id: 2, label: "Tecnologías Avanzadas y Especialización", icon: "🚀" },
+    { id: 3, label: "Ciencias Aplicadas y Gestión Industrial", icon: "🔬" },
+    { id: 0, label: "Otros", icon: "📝" },
+  ];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
@@ -212,8 +233,9 @@ const EvaluationSection: React.FC = () => {
           🏆 Centro de Evaluación Avanzado
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Sistema integral de evaluación con 12 módulos especializados en
-          ingeniería mecánica y tecnologías industriales modernas.
+          Sistema integral de evaluación con {quizzes.length} módulos
+          especializados en ingeniería mecánica y tecnologías industriales
+          modernas.
         </p>
       </div>
 
@@ -222,7 +244,7 @@ const EvaluationSection: React.FC = () => {
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <Book size={24} />
-            <span className="text-2xl font-bold">12</span>
+            <span className="text-2xl font-bold">{quizzes.length}</span>
           </div>
           <div className="text-sm opacity-90">Evaluaciones Disponibles</div>
           <div className="text-xs opacity-75 mt-1">+3 nuevas este mes</div>
@@ -256,82 +278,29 @@ const EvaluationSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Quiz Categories */}
+      {/* Quiz Sections by process_id */}
       <div className="space-y-8">
-        {/* Core Engineering Modules */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-            <span className="text-3xl mr-3">🔧</span>
-            Módulos de Ingeniería Fundamental
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quizzes
-              .filter((quiz) =>
-                ["soldadura", "mecanizado", "conformado", "fundicion"].includes(
-                  quiz.id
-                )
-              )
-              .map((quiz) => (
-                <QuizCard
-                  key={quiz.id}
-                  quiz={quiz}
-                  onStart={setActiveQuiz}
-                  userProgress={userProgress[quiz.id]}
-                />
-              ))}
-          </div>
-        </div>
-
-        {/* Advanced Technology Modules */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-            <span className="text-3xl mr-3">🚀</span>
-            Tecnologías Avanzadas y Especialización
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quizzes
-              .filter((quiz) =>
-                ["calidad", "materiales", "automatizacion", "diseno"].includes(
-                  quiz.id
-                )
-              )
-              .map((quiz) => (
-                <QuizCard
-                  key={quiz.id}
-                  quiz={quiz}
-                  onStart={setActiveQuiz}
-                  userProgress={userProgress[quiz.id]}
-                />
-              ))}
-          </div>
-        </div>
-
-        {/* Applied Sciences Modules */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-            <span className="text-3xl mr-3">🔬</span>
-            Ciencias Aplicadas y Gestión Industrial
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quizzes
-              .filter((quiz) =>
-                [
-                  "seguridad",
-                  "mantenimiento",
-                  "termodinamica",
-                  "fluidos",
-                ].includes(quiz.id)
-              )
-              .map((quiz) => (
-                <QuizCard
-                  key={quiz.id}
-                  quiz={quiz}
-                  onStart={setActiveQuiz}
-                  userProgress={userProgress[quiz.id]}
-                />
-              ))}
-          </div>
-        </div>
+        {processSections.map((section) =>
+          groupedQuizzes[section.id] &&
+          groupedQuizzes[section.id].length > 0 ? (
+            <div key={section.id}>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                <span className="text-3xl mr-3">{section.icon}</span>
+                {section.label}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {groupedQuizzes[section.id].map((quiz) => (
+                  <QuizCard
+                    key={quiz.id}
+                    quiz={quiz}
+                    onStart={setActiveQuiz}
+                    userProgress={userProgress[quiz.id]}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null
+        )}
       </div>
 
       {/* Enhanced Study Recommendations */}
@@ -340,7 +309,6 @@ const EvaluationSection: React.FC = () => {
           <Brain className="mr-3" size={28} />
           Sistema de Recomendaciones Inteligente
         </h3>
-
         <div className="grid md:grid-cols-4 gap-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
             <div className="text-3xl mb-3">🎯</div>
@@ -350,7 +318,6 @@ const EvaluationSection: React.FC = () => {
               específicas.
             </p>
           </div>
-
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
             <div className="text-3xl mb-3">⏱️</div>
             <h4 className="font-semibold mb-2">Gestión Inteligente</h4>
@@ -359,7 +326,6 @@ const EvaluationSection: React.FC = () => {
               descansos programados.
             </p>
           </div>
-
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
             <div className="text-3xl mb-3">🔄</div>
             <h4 className="font-semibold mb-2">Aprendizaje Continuo</h4>
@@ -368,7 +334,6 @@ const EvaluationSection: React.FC = () => {
               olvido.
             </p>
           </div>
-
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
             <div className="text-3xl mb-3">📊</div>
             <h4 className="font-semibold mb-2">Analytics Avanzado</h4>
