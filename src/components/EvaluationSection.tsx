@@ -6,6 +6,7 @@ import { useQuizProgress } from "../contexts/useQuizProgress";
 import { useAchievements } from "../contexts/useAchievements";
 import { useActivityLog } from "../contexts/ActivityLogContext";
 import { supabase } from "../supabaseClient";
+import { fallbackQuizzes } from "./fallbackQuizzes";
 
 const LOCAL_STORAGE_KEY = "quizUserProgress";
 
@@ -26,7 +27,6 @@ const EvaluationSection: React.FC = () => {
     async function fetchQuizzes() {
       setLoading(true);
       setError(null);
-      // Only select columns that exist in the Supabase table
       const { data, error } = await supabase
         .from("quizzes")
         .select("id, title, description, process_id, created_at")
@@ -35,9 +35,15 @@ const EvaluationSection: React.FC = () => {
         setError(
           "No se pudieron cargar las evaluaciones. Intenta de nuevo más tarde."
         );
-        setQuizzes([]);
+        setQuizzes(fallbackQuizzes); // Show all fallback quizzes if error
       } else {
-        setQuizzes(data || []);
+        // Merge Supabase quizzes with fallback quizzes (avoid duplicates by id)
+        const supabaseIds = new Set((data || []).map((q) => q.id));
+        const merged = [
+          ...(data || []),
+          ...fallbackQuizzes.filter((q) => !supabaseIds.has(q.id)),
+        ];
+        setQuizzes(merged);
         console.log("Supabase connection OK. Quizzes:", data);
       }
       setLoading(false);
