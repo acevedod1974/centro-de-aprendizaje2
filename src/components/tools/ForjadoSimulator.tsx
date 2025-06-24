@@ -9,6 +9,30 @@ import {
 } from "lucide-react";
 import { supabase } from "../../supabaseClient";
 import { Line } from "react-chartjs-2"; // If chart.js is available, otherwise fallback to SVG
+import {
+  Chart,
+  LineElement,
+  PointElement,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+Chart.register(
+  LineElement,
+  PointElement,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface ForgingMaterial {
   id: number;

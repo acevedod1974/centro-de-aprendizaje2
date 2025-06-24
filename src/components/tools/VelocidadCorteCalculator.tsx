@@ -1,40 +1,95 @@
-import React, { useState } from 'react';
-import { Calculator, Info, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Calculator, Info, RotateCcw } from "lucide-react";
+import { supabase } from "../../supabaseClient";
+
+interface CuttingMaterial {
+  id: string;
+  name: string;
+  key: string;
+  recommended_speed: number;
+  color: string;
+}
 
 const VelocidadCorteCalculator: React.FC = () => {
   const [diameter, setDiameter] = useState<number>(50);
   const [cutSpeed, setCutSpeed] = useState<number>(100);
   const [rpm, setRpm] = useState<number>(0);
   const [feedRate, setFeedRate] = useState<number>(0.1);
-  const [material, setMaterial] = useState<string>('acero');
-  
-  const materials = {
-    acero: { name: 'Acero al Carbono', speed: 100, color: 'bg-gray-500' },
-    inoxidable: { name: 'Acero Inoxidable', speed: 80, color: 'bg-blue-500' },
-    aluminio: { name: 'Aluminio', speed: 300, color: 'bg-green-500' },
-    cobre: { name: 'Cobre', speed: 150, color: 'bg-orange-500' },
-    hierro: { name: 'Hierro Fundido', speed: 120, color: 'bg-red-500' },
-  };
+  const [material, setMaterial] = useState<string>("");
+  const [materials, setMaterials] = useState<CuttingMaterial[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const calculateRPM = () => {
-    const calculatedRPM = (cutSpeed * 1000) / (Math.PI * diameter);
-    setRpm(Math.round(calculatedRPM));
-  };
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from("cutting_materials")
+          .select("*");
+        if (error || !data) throw error;
+        setMaterials(data);
+        if (data.length > 0) {
+          setMaterial(data[0].key);
+          setCutSpeed(data[0].recommended_speed);
+        }
+      } catch {
+        setError("Error al cargar materiales desde Supabase.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMaterials();
+  }, []);
+
+  useEffect(() => {
+    if (diameter > 0 && cutSpeed > 0) {
+      const calculatedRPM = (cutSpeed * 1000) / (Math.PI * diameter);
+      setRpm(Math.round(calculatedRPM));
+    } else {
+      setRpm(0);
+    }
+  }, [diameter, cutSpeed]);
+
+  useEffect(() => {
+    const mat = materials.find((m) => m.key === material);
+    if (mat) setCutSpeed(mat.recommended_speed);
+  }, [material, materials]);
 
   const resetCalculator = () => {
+    const mat = materials.find((m) => m.key === material);
     setDiameter(50);
-    setCutSpeed(materials[material as keyof typeof materials].speed);
+    setCutSpeed(mat ? mat.recommended_speed : 100);
     setRpm(0);
     setFeedRate(0.1);
   };
 
-  React.useEffect(() => {
-    calculateRPM();
-  }, [diameter, cutSpeed]);
-
-  React.useEffect(() => {
-    setCutSpeed(materials[material as keyof typeof materials].speed);
-  }, [material]);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="text-lg text-gray-600 dark:text-gray-300">
+          Cargando materiales de corte...
+        </span>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="text-lg text-red-600 dark:text-red-400">{error}</span>
+      </div>
+    );
+  }
+  if (materials.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="text-lg text-gray-600 dark:text-gray-300">
+          No hay materiales disponibles.
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -43,8 +98,12 @@ const VelocidadCorteCalculator: React.FC = () => {
           <div className="flex items-center space-x-3">
             <Calculator size={28} />
             <div>
-              <h2 className="text-2xl font-bold">Calculadora de Velocidad de Corte</h2>
-              <p className="opacity-90">Optimiza tus parámetros de mecanizado</p>
+              <h2 className="text-2xl font-bold">
+                Calculadora de Velocidad de Corte
+              </h2>
+              <p className="opacity-90">
+                Optimiza tus parámetros de mecanizado
+              </p>
             </div>
           </div>
         </div>
@@ -62,8 +121,10 @@ const VelocidadCorteCalculator: React.FC = () => {
                   onChange={(e) => setMaterial(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                 >
-                  {Object.entries(materials).map(([key, mat]) => (
-                    <option key={key} value={key}>{mat.name}</option>
+                  {materials.map((mat) => (
+                    <option key={mat.key} value={mat.key}>
+                      {mat.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -126,13 +187,13 @@ const VelocidadCorteCalculator: React.FC = () => {
                 <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-4">
                   🎯 Resultados del Cálculo
                 </h3>
-                
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-4 bg-white dark:bg-gray-700 rounded-lg">
                     <span className="font-medium">Velocidad del Husillo:</span>
-                    <span className="text-2xl font-bold text-blue-600">{rpm} RPM</span>
+                    <span className="text-2xl font-bold text-blue-600">
+                      {rpm} RPM
+                    </span>
                   </div>
-                  
                   <div className="flex justify-between items-center p-4 bg-white dark:bg-gray-700 rounded-lg">
                     <span className="font-medium">Avance por Minuto:</span>
                     <span className="text-xl font-bold text-green-600">
@@ -170,7 +231,9 @@ const VelocidadCorteCalculator: React.FC = () => {
                       Recomendaciones
                     </h4>
                     <ul className="text-sm text-yellow-700 dark:text-yellow-300 mt-2 space-y-1">
-                      <li>• Ajusta la velocidad según el tipo de herramienta</li>
+                      <li>
+                        • Ajusta la velocidad según el tipo de herramienta
+                      </li>
                       <li>• Considera la rigidez del sistema máquina-pieza</li>
                       <li>• Utiliza refrigeración adecuada</li>
                       <li>• Verifica las especificaciones del fabricante</li>
