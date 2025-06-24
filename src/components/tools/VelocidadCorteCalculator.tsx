@@ -106,14 +106,6 @@ const VelocidadCorteCalculator: React.FC = () => {
     // eslint-disable-next-line
   }, [material]);
 
-  const handleMaterialToggle = (matKey: string) => {
-    setSelectedMaterials((prev) =>
-      prev.includes(matKey)
-        ? prev.filter((k) => k !== matKey)
-        : [...prev, matKey]
-    );
-  };
-
   const handleCopyResults = () => {
     const mat = materials.find((m) => m.key === material);
     const text = `Material: ${
