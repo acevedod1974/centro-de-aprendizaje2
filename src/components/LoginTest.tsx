@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuthTest } from "../contexts/AuthTestContext";
+import { useAuthTest } from "../contexts/useAuthTest";
 
 const LoginTest: React.FC = () => {
   const { login, user, loading, logout } = useAuthTest();
