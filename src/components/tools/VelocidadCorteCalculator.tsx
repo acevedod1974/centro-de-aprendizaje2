@@ -51,6 +51,7 @@ const VelocidadCorteCalculator: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [showCheck, setShowCheck] = useState(false);
   const chartRef = React.useRef<HTMLDivElement>(null);
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -96,6 +97,22 @@ const VelocidadCorteCalculator: React.FC = () => {
     const mat = materials.find((m) => m.key === material);
     if (mat) setCutSpeed(mat.recommended_speed);
   }, [material, materials]);
+
+  // Add selected material to comparison if not already present
+  useEffect(() => {
+    if (material && !selectedMaterials.includes(material)) {
+      setSelectedMaterials((prev) => [...prev, material]);
+    }
+    // eslint-disable-next-line
+  }, [material]);
+
+  const handleMaterialToggle = (matKey: string) => {
+    setSelectedMaterials((prev) =>
+      prev.includes(matKey)
+        ? prev.filter((k) => k !== matKey)
+        : [...prev, matKey]
+    );
+  };
 
   const handleCopyResults = () => {
     const mat = materials.find((m) => m.key === material);
@@ -448,13 +465,25 @@ const VelocidadCorteCalculator: React.FC = () => {
           </h3>
           <Line
             data={{
-              labels: materials.map((mat) => mat.name),
+              labels: selectedMaterials.map(
+                (key) => materials.find((m) => m.key === key)?.name || key
+              ),
               datasets: [
                 {
                   label: "Velocidad Recomendada (m/min)",
-                  data: materials.map((mat) => mat.recommended_speed),
-                  backgroundColor: materials.map((mat) => mat.color),
-                  borderColor: materials.map((mat) => mat.color),
+                  data: selectedMaterials.map(
+                    (key) =>
+                      materials.find((m) => m.key === key)?.recommended_speed ||
+                      0
+                  ),
+                  backgroundColor: selectedMaterials.map(
+                    (key) =>
+                      materials.find((m) => m.key === key)?.color || "#2563EB"
+                  ),
+                  borderColor: selectedMaterials.map(
+                    (key) =>
+                      materials.find((m) => m.key === key)?.color || "#2563EB"
+                  ),
                   fill: true,
                   tension: 0.4,
                   pointRadius: 6,
@@ -478,7 +507,7 @@ const VelocidadCorteCalculator: React.FC = () => {
                 },
                 title: {
                   display: true,
-                  text: "Comparativa de Velocidades de Corte por Material",
+                  text: "Comparativa de Velocidades de Corte por Material (Selección)",
                   color: "#2563EB",
                   font: { family: "Inter", size: 16, weight: "bold" },
                 },
@@ -519,14 +548,20 @@ const VelocidadCorteCalculator: React.FC = () => {
                   },
                   min: 0,
                   max:
-                    Math.max(...materials.map((m) => m.recommended_speed)) + 50,
+                    Math.max(
+                      ...selectedMaterials.map(
+                        (key) =>
+                          materials.find((m) => m.key === key)
+                            ?.recommended_speed || 0
+                      )
+                    ) + 50,
                   ticks: {
                     color: "#64748B",
                   },
                 },
               },
             }}
-            aria-label="Comparativa de velocidades de corte por material"
+            aria-label="Comparativa de velocidades de corte por material (selección)"
             role="img"
           />
           <div className="flex mt-4 space-x-2">
