@@ -16,7 +16,10 @@ interface Question {
   options: string[];
   correct_option: number;
   explanation: string;
+  level: string; // Added level field
 }
+
+const LEVELS = ["Básico", "Intermedio", "Avanzado"];
 
 const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
   onComplete,
@@ -31,6 +34,7 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState<string>(LEVELS[0]);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -50,11 +54,14 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
           return;
         }
         setQuiz(quizData);
-        // Fetch questions for this quiz
+        // Fetch questions for this quiz and selected level
         const { data: questionsData, error: questionsError } = await supabase
           .from("quiz_questions")
-          .select("id, question_text, options, correct_option, explanation")
+          .select(
+            "id, question_text, options, correct_option, explanation, level"
+          )
           .eq("quiz_id", quizData.id)
+          .eq("level", selectedLevel)
           .order("created_at", { ascending: true });
         if (questionsError || !questionsData) {
           setError("No se pudieron cargar las preguntas del quiz.");
@@ -72,6 +79,12 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
           })
         );
         setQuestions(parsedQuestions);
+        setCurrentQuestion(0);
+        setSelectedAnswer(null);
+        setShowResult(false);
+        setScore(0);
+        setAnswers([]);
+        setQuizCompleted(false);
         console.log("Supabase connectivity: Quiz and questions loaded.");
       } catch (err) {
         setError("Error de conexión con Supabase.");
@@ -81,7 +94,7 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
       }
     };
     fetchQuiz();
-  }, []);
+  }, [selectedLevel]);
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
@@ -168,9 +181,26 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
   }
   if (!quiz || questions.length === 0) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex flex-col items-center justify-center h-64">
+        <div className="mb-4">
+          <label htmlFor="level-select" className="mr-2 font-semibold">
+            Nivel:
+          </label>
+          <select
+            id="level-select"
+            value={selectedLevel}
+            onChange={(e) => setSelectedLevel(e.target.value)}
+            className="border rounded px-2 py-1"
+          >
+            {LEVELS.map((level) => (
+              <option key={level} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
         <span className="text-lg text-gray-600 dark:text-gray-300">
-          No hay preguntas disponibles.
+          No hay preguntas disponibles para este nivel.
         </span>
       </div>
     );
@@ -224,6 +254,23 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
 
   return (
     <div className="max-w-lg w-full mx-auto p-4 sm:p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
+      <div className="flex justify-end mb-4">
+        <label htmlFor="level-select" className="mr-2 font-semibold">
+          Nivel:
+        </label>
+        <select
+          id="level-select"
+          value={selectedLevel}
+          onChange={(e) => setSelectedLevel(e.target.value)}
+          className="border rounded px-2 py-1"
+        >
+          {LEVELS.map((level) => (
+            <option key={level} value={level}>
+              {level}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="bg-gradient-to-r from-orange-600 to-red-600 p-6 text-white rounded-t-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">

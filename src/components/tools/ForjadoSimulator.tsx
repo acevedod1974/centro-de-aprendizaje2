@@ -1,5 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Thermometer, Gauge, Timer } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  Thermometer,
+  Gauge,
+  Timer,
+} from "lucide-react";
+import { supabase } from "../../supabaseClient";
+import { Line } from "react-chartjs-2"; // If chart.js is available, otherwise fallback to SVG
+
+interface ForgingMaterial {
+  id: number;
+  name: string;
+  key: string;
+  temp_min: number;
+  temp_max: number;
+  resistance: number;
+}
+
+interface ForgingProcess {
+  id: number;
+  name: string;
+  key: string;
+  efficiency: number;
+  uniformity: number;
+}
 
 const ForjadoSimulator: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
@@ -7,50 +33,99 @@ const ForjadoSimulator: React.FC = () => {
   const [force, setForce] = useState(500);
   const [time, setTime] = useState(0);
   const [deformation, setDeformation] = useState(0);
-  const [materialType, setMaterialType] = useState('acero');
-  const [forgeType, setForgeType] = useState('libre');
+  const [materialType, setMaterialType] = useState<string>("acero");
+  const [forgeType, setForgeType] = useState<string>("libre");
   const [simulationSpeed, setSimulationSpeed] = useState(1);
-
-  const materials = {
-    acero: { name: 'Acero al Carbono', tempMin: 1000, tempMax: 1300, resistance: 1.0 },
-    aluminio: { name: 'Aluminio', tempMin: 400, tempMax: 600, resistance: 0.3 },
-    cobre: { name: 'Cobre', tempMin: 700, tempMax: 1000, resistance: 0.5 },
-    titanio: { name: 'Titanio', tempMin: 900, tempMax: 1200, resistance: 1.5 },
-  };
-
-  const forgeTypes = {
-    libre: { name: 'Forjado Libre', efficiency: 0.7, uniformity: 0.6 },
-    matriz: { name: 'Forjado en Matriz', efficiency: 0.9, uniformity: 0.9 },
-    estampado: { name: 'Estampado', efficiency: 0.95, uniformity: 0.95 },
-  };
+  const [materials, setMaterials] = useState<ForgingMaterial[]>([]);
+  const [forgeTypes, setForgeTypes] = useState<ForgingProcess[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [history, setHistory] = useState<
+    {
+      time: number;
+      deformation: number;
+      temperature: number;
+    }[]
+  >([]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
-    if (isRunning) {
-      interval = setInterval(() => {
-        setTime(prev => prev + simulationSpeed);
-        
-        // Simulate deformation based on force, temperature, and material
-        const material = materials[materialType as keyof typeof materials];
-        const forge = forgeTypes[forgeType as keyof typeof forgeTypes];
-        
-        const tempFactor = Math.max(0, Math.min(1, (temperature - material.tempMin) / (material.tempMax - material.tempMin)));
-        const effectiveForce = force * tempFactor * forge.efficiency / material.resistance;
-        
-        setDeformation(prev => {
-          const newDeformation = prev + (effectiveForce * simulationSpeed * 0.01);
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data: matData, error: matError } = await supabase
+          .from("materials")
+          .select("*");
+        const { data: procData, error: procError } = await supabase
+          .from("forging_processes")
+          .select("*");
+        if (matError || !matData) throw matError;
+        if (procError || !procData) throw procError;
+        setMaterials(matData);
+        setForgeTypes(procData);
+        // Set defaults if not set
+        if (!materialType && matData.length > 0)
+          setMaterialType(matData[0].key);
+        if (!forgeType && procData.length > 0) setForgeType(procData[0].key);
+      } catch (err) {
+        setError("Error al cargar datos de Supabase.");
+        console.error("Supabase fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (isRunning && materials.length > 0 && forgeTypes.length > 0) {
+      const interval = setInterval(() => {
+        setTime((prev) => prev + simulationSpeed);
+        const material = materials.find((m) => m.key === materialType);
+        const forge = forgeTypes.find((f) => f.key === forgeType);
+        if (!material || !forge) return;
+        const tempFactor = Math.max(
+          0,
+          Math.min(
+            1,
+            (temperature - material.temp_min) /
+              (material.temp_max - material.temp_min)
+          )
+        );
+        const effectiveForce =
+          (force * tempFactor * forge.efficiency) / material.resistance;
+        setDeformation((prev) => {
+          const newDeformation = prev + effectiveForce * simulationSpeed * 0.01;
           return Math.min(newDeformation, 100);
         });
-        
-        // Temperature loss over time
-        setTemperature(prev => Math.max(20, prev - (simulationSpeed * 2)));
-        
+        setTemperature((prev) => Math.max(20, prev - simulationSpeed * 2));
+        setHistory((prev) => [
+          ...prev,
+          {
+            time: time + simulationSpeed,
+            deformation: Math.min(
+              deformation + effectiveForce * simulationSpeed * 0.01,
+              100
+            ),
+            temperature: Math.max(20, temperature - simulationSpeed * 2),
+          },
+        ]);
       }, 100);
+      return () => clearInterval(interval);
     }
-    
-    return () => clearInterval(interval);
-  }, [isRunning, temperature, force, materialType, forgeType, simulationSpeed]);
+  }, [
+    isRunning,
+    temperature,
+    force,
+    materialType,
+    forgeType,
+    simulationSpeed,
+    materials,
+    forgeTypes,
+    time,
+    deformation,
+  ]);
 
   const resetSimulation = () => {
     setIsRunning(false);
@@ -60,20 +135,77 @@ const ForjadoSimulator: React.FC = () => {
   };
 
   const getTemperatureColor = () => {
-    if (temperature > 1000) return 'text-red-500';
-    if (temperature > 700) return 'text-orange-500';
-    if (temperature > 400) return 'text-yellow-500';
-    return 'text-blue-500';
+    if (temperature > 1000) return "text-red-500";
+    if (temperature > 700) return "text-orange-500";
+    if (temperature > 400) return "text-yellow-500";
+    return "text-blue-500";
   };
 
   const getDeformationStage = () => {
-    if (deformation < 20) return { stage: 'Inicio', color: 'bg-blue-500' };
-    if (deformation < 50) return { stage: 'Deformación', color: 'bg-yellow-500' };
-    if (deformation < 80) return { stage: 'Conformado', color: 'bg-orange-500' };
-    return { stage: 'Terminado', color: 'bg-green-500' };
+    if (deformation < 20) return { stage: "Inicio", color: "bg-blue-500" };
+    if (deformation < 50)
+      return { stage: "Deformación", color: "bg-yellow-500" };
+    if (deformation < 80)
+      return { stage: "Conformado", color: "bg-orange-500" };
+    return { stage: "Terminado", color: "bg-green-500" };
   };
 
   const deformationStage = getDeformationStage();
+
+  // Warnings
+  const material = materials.find((m) => m.key === materialType);
+  let warning = "";
+  if (material) {
+    if (temperature < material.temp_min)
+      warning = "¡Temperatura demasiado baja para forjar este material!";
+    if (temperature > material.temp_max)
+      warning = "¡Temperatura demasiado alta para forjar este material!";
+    if (force < 200) warning = "¡Fuerza aplicada muy baja!";
+    if (force > 1800) warning = "¡Fuerza aplicada muy alta!";
+  }
+
+  // At the end of simulation, show summary analysis
+  let summary = "";
+  if (deformation >= 100) {
+    if (
+      material &&
+      temperature >= material.temp_min &&
+      temperature <= material.temp_max &&
+      force >= 200 &&
+      force <= 1800
+    ) {
+      summary = "Forjado exitoso: Parámetros dentro de rango recomendado.";
+    } else {
+      summary =
+        "Forjado completado, pero algunos parámetros estaban fuera de rango recomendado.";
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="text-lg text-gray-600 dark:text-gray-300">
+          Cargando datos de forjado...
+        </span>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="text-lg text-red-600 dark:text-red-400">{error}</span>
+      </div>
+    );
+  }
+  if (materials.length === 0 || forgeTypes.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="text-lg text-gray-600 dark:text-gray-300">
+          No hay materiales o procesos disponibles.
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -83,7 +215,9 @@ const ForjadoSimulator: React.FC = () => {
             <span className="text-3xl">🔨</span>
             <div>
               <h2 className="text-2xl font-bold">Simulador de Forjado</h2>
-              <p className="opacity-90">Experimenta con diferentes parámetros de forjado</p>
+              <p className="opacity-90">
+                Experimenta con diferentes parámetros de forjado
+              </p>
             </div>
           </div>
         </div>
@@ -102,8 +236,10 @@ const ForjadoSimulator: React.FC = () => {
                   disabled={isRunning}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500"
                 >
-                  {Object.entries(materials).map(([key, material]) => (
-                    <option key={key} value={key}>{material.name}</option>
+                  {materials.map((material) => (
+                    <option key={material.key} value={material.key}>
+                      {material.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -118,8 +254,10 @@ const ForjadoSimulator: React.FC = () => {
                   disabled={isRunning}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500"
                 >
-                  {Object.entries(forgeTypes).map(([key, forge]) => (
-                    <option key={key} value={key}>{forge.name}</option>
+                  {forgeTypes.map((forge) => (
+                    <option key={forge.key} value={forge.key}>
+                      {forge.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -173,15 +311,15 @@ const ForjadoSimulator: React.FC = () => {
                 <button
                   onClick={() => setIsRunning(!isRunning)}
                   className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${
-                    isRunning 
-                      ? 'bg-red-600 hover:bg-red-700 text-white' 
-                      : 'bg-green-600 hover:bg-green-700 text-white'
+                    isRunning
+                      ? "bg-red-600 hover:bg-red-700 text-white"
+                      : "bg-green-600 hover:bg-green-700 text-white"
                   }`}
                 >
                   {isRunning ? <Pause size={18} /> : <Play size={18} />}
-                  <span>{isRunning ? 'Pausar' : 'Iniciar'}</span>
+                  <span>{isRunning ? "Pausar" : "Iniciar"}</span>
                 </button>
-                
+
                 <button
                   onClick={resetSimulation}
                   className="flex items-center space-x-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
@@ -201,7 +339,9 @@ const ForjadoSimulator: React.FC = () => {
                     <Thermometer size={20} className={getTemperatureColor()} />
                     <span className="font-medium">Temperatura</span>
                   </div>
-                  <div className={`text-2xl font-bold ${getTemperatureColor()}`}>
+                  <div
+                    className={`text-2xl font-bold ${getTemperatureColor()}`}
+                  >
                     {Math.round(temperature)}°C
                   </div>
                 </div>
@@ -229,19 +369,24 @@ const ForjadoSimulator: React.FC = () => {
 
               {/* Visual Simulation */}
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
-                <h3 className="text-lg font-semibold mb-6">Estado del Material</h3>
-                
+                <h3 className="text-lg font-semibold mb-6">
+                  Estado del Material
+                </h3>
+
                 {/* Material Representation */}
-                <div className="relative mx-auto mb-6" style={{ width: '200px', height: '120px' }}>
-                  <div 
+                <div
+                  className="relative mx-auto mb-6"
+                  style={{ width: "200px", height: "120px" }}
+                >
+                  <div
                     className={`absolute top-0 left-1/2 transform -translate-x-1/2 ${deformationStage.color} rounded-lg transition-all duration-500`}
-                    style={{ 
-                      width: `${80 + (deformation * 0.4)}px`, 
-                      height: `${120 - (deformation * 0.8)}px`,
-                      borderRadius: `${Math.max(8, 20 - deformation * 0.2)}px`
+                    style={{
+                      width: `${80 + deformation * 0.4}px`,
+                      height: `${120 - deformation * 0.8}px`,
+                      borderRadius: `${Math.max(8, 20 - deformation * 0.2)}px`,
                     }}
                   ></div>
-                  
+
                   {/* Force arrows */}
                   {isRunning && (
                     <>
@@ -257,17 +402,23 @@ const ForjadoSimulator: React.FC = () => {
 
                 <div className="space-y-2">
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Estado: <span className="font-medium">{deformationStage.stage}</span>
+                    Estado:{" "}
+                    <span className="font-medium">
+                      {deformationStage.stage}
+                    </span>
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Deformación: <span className="font-medium">{Math.round(deformation)}%</span>
+                    Deformación:{" "}
+                    <span className="font-medium">
+                      {Math.round(deformation)}%
+                    </span>
                   </div>
                 </div>
 
                 {/* Progress Bar */}
                 <div className="mt-4">
                   <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3">
-                    <div 
+                    <div
                       className={`${deformationStage.color} h-3 rounded-full transition-all duration-300`}
                       style={{ width: `${deformation}%` }}
                     ></div>
@@ -282,25 +433,182 @@ const ForjadoSimulator: React.FC = () => {
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Material:</span>
-                    <span className="font-medium ml-2">{materials[materialType as keyof typeof materials].name}</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Material:
+                    </span>
+                    <span className="font-medium ml-2">
+                      {materials.find((m) => m.key === materialType)?.name}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Proceso:</span>
-                    <span className="font-medium ml-2">{forgeTypes[forgeType as keyof typeof forgeTypes].name}</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Proceso:
+                    </span>
+                    <span className="font-medium ml-2">
+                      {forgeTypes.find((f) => f.key === forgeType)?.name}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Eficiencia:</span>
-                    <span className="font-medium ml-2">{Math.round(forgeTypes[forgeType as keyof typeof forgeTypes].efficiency * 100)}%</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Eficiencia:
+                    </span>
+                    <span className="font-medium ml-2">
+                      {Math.round(
+                        (forgeTypes.find((f) => f.key === forgeType)
+                          ?.efficiency ?? 0) * 100
+                      )}
+                      %
+                    </span>
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Uniformidad:</span>
-                    <span className="font-medium ml-2">{Math.round(forgeTypes[forgeType as keyof typeof forgeTypes].uniformity * 100)}%</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Uniformidad:
+                    </span>
+                    <span className="font-medium ml-2">
+                      {Math.round(
+                        (forgeTypes.find((f) => f.key === forgeType)
+                          ?.uniformity ?? 0) * 100
+                      )}
+                      %
+                    </span>
                   </div>
+                </div>
+              </div>
+
+              {/* History Chart */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+                <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-4">
+                  📈 Historial de Deformación y Temperatura
+                </h4>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <Line
+                      data={{
+                        labels: history.map((h) => `${h.time}s`),
+                        datasets: [
+                          {
+                            label: "Deformación (%)",
+                            data: history.map((h) => h.deformation),
+                            borderColor: "rgb(34, 197, 94)",
+                            backgroundColor: "rgba(34, 197, 94, 0.2)",
+                            fill: true,
+                          },
+                          {
+                            label: "Temperatura (°C)",
+                            data: history.map((h) => h.temperature),
+                            borderColor: "rgb(239, 68, 68)",
+                            backgroundColor: "rgba(239, 68, 68, 0.2)",
+                            fill: true,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: {
+                            position: "top" as const,
+                          },
+                          tooltip: {
+                            mode: "index" as const,
+                            intersect: false,
+                          },
+                        },
+                        interaction: {
+                          mode: "index" as const,
+                          intersect: false,
+                        },
+                        scales: {
+                          x: {
+                            title: {
+                              display: true,
+                              text: "Tiempo (s)",
+                              color: "rgb(156, 163, 175)",
+                              font: {
+                                family: "Inter",
+                                size: 14,
+                                weight: "medium",
+                              },
+                            },
+                            y: {
+                              title: {
+                                display: true,
+                                text: "Valor",
+                                color: "rgb(156, 163, 175)",
+                                font: {
+                                  family: "Inter",
+                                  size: 14,
+                                  weight: "medium",
+                                },
+                              },
+                              min: 0,
+                              max: 100,
+                              ticks: {
+                                stepSize: 10,
+                                color: "rgb(156, 163, 175)",
+                                font: {
+                                  family: "Inter",
+                                  size: 12,
+                                },
+                              },
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Real-time Graphs */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6">
+                <h4 className="font-semibold mb-2">
+                  Gráfica de Deformación y Temperatura
+                </h4>
+                <svg width="100%" height="120" viewBox="0 0 400 120">
+                  {/* Deformation Line */}
+                  <polyline
+                    fill="none"
+                    stroke="#f59e42"
+                    strokeWidth="2"
+                    points={history
+                      .map((h, i) => `${i * 4},${120 - h.deformation}`)
+                      .join(" ")}
+                  />
+                  {/* Temperature Line */}
+                  <polyline
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="2"
+                    points={history
+                      .map((h, i) => `${i * 4},${120 - h.temperature / 15}`)
+                      .join(" ")}
+                  />
+                </svg>
+                <div className="flex justify-between text-xs mt-1">
+                  <span className="text-orange-600">Deformación</span>
+                  <span className="text-blue-600">Temperatura</span>
                 </div>
               </div>
             </div>
           </div>
+
+          {warning && (
+            <div
+              className="mb-4 p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded"
+              role="alert"
+            >
+              <strong>Advertencia:</strong> {warning}
+            </div>
+          )}
+
+          {summary && (
+            <div
+              className="mt-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-800 rounded"
+              role="status"
+            >
+              <strong>Resumen:</strong> {summary}
+            </div>
+          )}
         </div>
       </div>
     </div>
