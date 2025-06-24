@@ -9,14 +9,27 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - **SPA Moderna:** Navegación fluida con React Router y scroll-to-top automático.
 - **Simuladores Interactivos:** Herramientas prácticas como `ForjadoSimulator` y `MecanizadoSimulator`.
 - **Quizzes y Evaluaciones:** Módulos como `SoldaduraQuiz` para evaluar el conocimiento en soldadura.
-- **Calculadoras Técnicas:** Utilidades como `VelocidadCorteCalculator` y `ToleranciaCalculator`.
+- **Calculadoras Técnicas Avanzadas:** Utilidades como `VelocidadCorteCalculator` y `ToleranciaCalculator`, ahora con:
+  - Comparación de múltiples materiales en gráficos interactivos.
+  - Exportación de resultados y análisis a PDF.
+  - Botón de copiar resultados al portapapeles.
+  - Animaciones, badges y mejoras de accesibilidad.
 - **Planificador de Estudio:** Organiza tu ruta de aprendizaje y guarda tu progreso.
 - **Seguimiento de Progreso:** Visualización y log de avance en los diferentes módulos y temas.
 - **Recursos Multimedia:** Materiales de estudio, guías y enlaces externos.
-- **Integración con Supabase:** Recursos y datos clave gestionados desde una base de datos cloud.
+- **Integración total con Supabase:** Todos los datos clave (materiales, procesos, quizzes, recursos, etc.) se gestionan y consultan dinámicamente desde Supabase.
 - **Tema Claro/Oscuro:** Interfaz adaptable a las preferencias del usuario.
 - **Accesibilidad y Responsividad:** UI optimizada para todos los dispositivos y usuarios.
 - **Home Modernizada:** Página de inicio rediseñada, visualmente atractiva y coherente con el resto de la plataforma.
+
+## 🆕 Novedades y Mejoras Avanzadas
+
+- **Comparar Materiales:** Selecciona varios materiales y compáralos visualmente en la calculadora de velocidad de corte.
+- **Exportar PDF:** Descarga el análisis visual de parámetros como PDF.
+- **Copiar Resultados:** Copia los resultados del cálculo con un solo clic.
+- **Animaciones y Accesibilidad:** Mejoras visuales, animaciones sutiles y soporte ARIA.
+- **Migración completa a Supabase:** Todos los datos dinámicos se obtienen desde la nube.
+- **Próximamente:** Historial de cálculos, notas de usuario, modo experto y compartir resultados.
 
 ## 🧭 Navegación Principal
 

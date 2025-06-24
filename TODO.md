@@ -4,7 +4,7 @@
 
 - [x] **Migración Completa a SPA:** ✅ Navegación React Router, scroll-to-top automático, enlaces internos actualizados.
 - [ ] **Persistencia de Datos del Planificador:** Guardar y cargar planes de estudio (localStorage o backend).
-- [ ] **Accesibilidad (a11y):** Mejorar la accesibilidad de todos los componentes.
+- [ ] **Accesibilidad (a11y):** Mejorar la accesibilidad de todos los componentes. [En progreso: badges, ARIA, focus, roles, tooltips, etc.]
 - [x] **Diseño Responsivo:** Todos los componentes principales y páginas son responsivos y han sido revisados. (Pulido menor pendiente)
 - [ ] **Autenticación de Usuarios (opcional):** Implementar sistema de registro e inicio de sesión si se requiere.
 - [x] **Migración total de datos a Supabase:** Todos los datos de procesos, recursos, materiales, aplicaciones de engranajes, herramientas y quizzes migrados y consumidos dinámicamente desde Supabase. Eliminados arrays hardcodeados.
@@ -13,6 +13,8 @@
 - [x] **Logging y diagnóstico Supabase:** Se agregó logging para diagnosticar conectividad y datos recibidos.
 - [x] **Compatibilidad de campos Supabase:** El código acepta temporalmente `service_factor` y `servicefactor` en gear_applications. Se recomienda renombrar la columna a `service_factor` (ver README y Developer Manual).
 - [x] **Modernización Home:** Rediseño visual y mejora de la página de inicio para coherencia y atractivo visual.
+- [x] **Comparar Materiales en VelocidadCorteCalculator:** Selección múltiple y análisis comparativo en el gráfico.
+- [x] **Exportar PDF y Copiar Resultados:** Botones para exportar análisis y copiar resultados en calculadoras.
 
 ## 🛠️ Funcionalidades y Mejoras
 
@@ -22,9 +24,13 @@
   - [ ] Expandir parámetros y materiales en `ForjadoSimulator`.
   - [ ] Añadir más tipos de materiales y herramientas a `VelocidadCorteCalculator`.
 - [ ] **Internacionalización (i18n):** Preparar la aplicación para múltiples idiomas.
-- [ ] **Animaciones y Transiciones:** Añadir feedback visual sutil.
+- [x] **Animaciones y Transiciones:** Añadir feedback visual sutil (ya implementado en calculadoras y charts).
 - [ ] **Mejorar la interfaz del `ProgressTracker`:** Hacerlo más intuitivo.
 - [ ] **Personalización del Tema:** Permitir más opciones de temas además de claro/oscuro.
+- [ ] **Historial de Cálculos:** Mostrar y exportar historial de cálculos recientes en calculadoras.
+- [ ] **Notas de Usuario:** Permitir guardar notas por cálculo (localStorage).
+- [ ] **Modo Experto:** Campos avanzados y fórmulas personalizables.
+- [ ] **Compartir Resultados:** Generar link compartible con parámetros del cálculo.
 
 ## 🧪 Pruebas
 
@@ -35,6 +41,7 @@
 ## 📝 Documentación
 
 - [x] **Actualizar documentación tras migración Supabase:** README y Developer Manual actualizados con instrucciones y SQL para migrar/renombrar columnas.
+- [x] **Documentar nuevas features avanzadas:** Comparar materiales, exportar PDF, copiar resultados, mejoras de accesibilidad.
 - [ ] **Comentarios en Código:** Mejorar la documentación interna del código.
 - [ ] **Guía de Usuario:** Crear una guía básica para los usuarios finales.
 - [ ] **Documentación de API (si aplica):** Documentar los endpoints del backend.
@@ -56,3 +63,4 @@
 - [x] Review other calculators for hardcoded data.
 - [x] Update documentación tras migraciones Supabase.
 - [x] Rediseño y modernización de la Home para mayor atractivo visual y coherencia.
+- [x] Comparar materiales y exportar análisis en PDF/copia en calculadoras.

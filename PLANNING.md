@@ -60,8 +60,10 @@
 - [x] MVP SPA: Navegación React Router, Home, una herramienta, theme.
 - [x] Herramientas completas: Todas las calculadoras, simuladores y quizzes migrados a Supabase y consumidos dinámicamente.
 - [x] Persistencia y pruebas: Refactor de contextos, robusto manejo de errores/loading, tipado estricto, documentación y migración Supabase.
+- [x] Comparar materiales y análisis avanzado en calculadoras (PDF, copiar, selección múltiple, animaciones, accesibilidad).
 - [ ] QA final, pulido UI, y pruebas E2E.
 - [ ] Mejorar documentación de usuario y API.
+- [ ] Historial de cálculos, notas de usuario, modo experto y compartir resultados en calculadoras.
 - [x] Rediseño y modernización de la Home para mayor atractivo visual y coherencia.
 
 ## Riesgos & Mitigaciones
