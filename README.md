@@ -7,7 +7,7 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 ## 🚀 Características Principales
 
 - **SPA Moderna:** Navegación fluida con React Router y scroll-to-top automático.
-- **Simuladores Interactivos:** Herramientas prácticas como `ForjadoSimulator` y `MecanizadoSimulator`.
+- **Simuladores Interactivos:** Herramientas prácticas como `ForjadoSimulator`, `MecanizadoSimulator`, `EngranajCalculator` y `CalidadInspector`.
 - **Quizzes y Evaluaciones:** Módulos como `SoldaduraQuiz` para evaluar el conocimiento en soldadura.
 - **Calculadoras Técnicas Avanzadas:** Utilidades como `VelocidadCorteCalculator` y `ToleranciaCalculator`, ahora con:
   - Comparación de múltiples materiales en gráficos interactivos.
@@ -21,6 +21,7 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - **Tema Claro/Oscuro:** Interfaz adaptable a las preferencias del usuario.
 - **Accesibilidad y Responsividad:** UI optimizada para todos los dispositivos y usuarios.
 - **Home Modernizada:** Página de inicio rediseñada, visualmente atractiva y coherente con el resto de la plataforma.
+- **Cobertura de Pruebas:** Todos los componentes principales cuentan con pruebas unitarias básicas.
 
 ## 🆕 Novedades y Mejoras Avanzadas
 
@@ -29,7 +30,14 @@ Plataforma interactiva para el aprendizaje y desarrollo de habilidades en proces
 - **Copiar Resultados:** Copia los resultados del cálculo con un solo clic.
 - **Animaciones y Accesibilidad:** Mejoras visuales, animaciones sutiles y soporte ARIA.
 - **Migración completa a Supabase:** Todos los datos dinámicos se obtienen desde la nube.
+- **Nuevas herramientas:** `EngranajCalculator` y `CalidadInspector` ahora incluidas y con pruebas básicas.
 - **Próximamente:** Historial de cálculos, notas de usuario, modo experto y compartir resultados.
+
+## 🧪 Pruebas y Calidad
+
+- **Cobertura:** Todos los componentes de herramientas (`tools/`) tienen al menos una prueba unitaria básica.
+- **Pruebas recientes:** Se han añadido tests para `EngranajCalculator` y `CalidadInspector`.
+- **Mejoras pendientes:** Se recomienda ampliar la cobertura con pruebas de integración y E2E (ver [`TODO.md`](./TODO.md)).
 
 ## 🧭 Navegación Principal
 
