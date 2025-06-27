@@ -14,6 +14,11 @@ const ToleranciaCalculator: React.FC = () => {
   const [shaftDimension, setShaftDimension] = useState<number>(50);
   const [shaftTolerance, setShaftTolerance] = useState<string>("g6");
 
+  // Error/warning state for invalid input
+  const [inputError, setInputError] = useState<string | null>(null);
+  const [gradeError, setGradeError] = useState<string | null>(null);
+  const [deviationError, setDeviationError] = useState<string | null>(null);
+
   const toleranceGrades = {
     IT5: { factor: 7, description: "Precisión muy alta" },
     IT6: { factor: 10, description: "Precisión alta" },
@@ -111,6 +116,47 @@ const ToleranciaCalculator: React.FC = () => {
     setShaftTolerance("g6");
   };
 
+  // Validate nominal dimension
+  const handleNominalDimensionChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = Number(e.target.value);
+    if (isNaN(value) || value < 1 || value > 500) {
+      setInputError(
+        "Valor inválido o fuera de rango para la dimensión nominal."
+      );
+    } else {
+      setInputError(null);
+      setNominalDimension(value);
+    }
+  };
+
+  // Validate tolerance grade
+  const handleToleranceGradeChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const value = e.target.value;
+    if (!toleranceGrades[value as keyof typeof toleranceGrades]) {
+      setGradeError("Grado de tolerancia no soportado o inválido.");
+    } else {
+      setGradeError(null);
+      setToleranceGrade(value);
+    }
+  };
+
+  // Validate fundamental deviation
+  const handleFundamentalDeviationChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const value = e.target.value;
+    if (!fundamentalDeviations[value as keyof typeof fundamentalDeviations]) {
+      setDeviationError("Desviación fundamental no soportada o inválida.");
+    } else {
+      setDeviationError(null);
+      setFundamentalDeviation(value);
+    }
+  };
+
   return (
     <div className="max-w-lg w-full mx-auto p-4 sm:p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
@@ -146,24 +192,33 @@ const ToleranciaCalculator: React.FC = () => {
                   </label>
                   <input
                     id="nominal-dimension"
+                    aria-label="Dimensión nominal del agujero"
                     type="number"
                     value={nominalDimension}
-                    onChange={(e) =>
-                      setNominalDimension(Number(e.target.value))
-                    }
+                    onChange={handleNominalDimensionChange}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-indigo-500"
                     min="1"
                     max="500"
                   />
+                  {inputError && (
+                    <div className="text-red-600 text-sm mt-1" role="alert">
+                      {inputError}
+                    </div>
+                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    htmlFor="tolerance-grade-select"
+                  >
                     Grado de Tolerancia
                   </label>
                   <select
+                    id="tolerance-grade-select"
+                    aria-label="Grado de tolerancia"
                     value={toleranceGrade}
-                    onChange={(e) => setToleranceGrade(e.target.value)}
+                    onChange={handleToleranceGradeChange}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-indigo-500"
                   >
                     {Object.entries(toleranceGrades).map(([grade, info]) => (
@@ -172,15 +227,25 @@ const ToleranciaCalculator: React.FC = () => {
                       </option>
                     ))}
                   </select>
+                  {gradeError && (
+                    <div className="text-red-600 text-sm mt-1" role="alert">
+                      {gradeError}
+                    </div>
+                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    htmlFor="fundamental-deviation-select"
+                  >
                     Desviación Fundamental
                   </label>
                   <select
+                    id="fundamental-deviation-select"
+                    aria-label="Desviación fundamental"
                     value={fundamentalDeviation}
-                    onChange={(e) => setFundamentalDeviation(e.target.value)}
+                    onChange={handleFundamentalDeviationChange}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-indigo-500"
                   >
                     {Object.entries(fundamentalDeviations).map(
@@ -191,6 +256,11 @@ const ToleranciaCalculator: React.FC = () => {
                       )
                     )}
                   </select>
+                  {deviationError && (
+                    <div className="text-red-600 text-sm mt-1" role="alert">
+                      {deviationError}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -206,6 +276,7 @@ const ToleranciaCalculator: React.FC = () => {
                     Dimensión Nominal (mm)
                   </label>
                   <input
+                    aria-label="Dimensión nominal del eje"
                     type="number"
                     value={shaftDimension}
                     onChange={(e) => setShaftDimension(Number(e.target.value))}
@@ -216,10 +287,15 @@ const ToleranciaCalculator: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    htmlFor="shaft-tolerance-select"
+                  >
                     Tolerancia del Eje
                   </label>
                   <select
+                    id="shaft-tolerance-select"
+                    aria-label="Tolerancia del eje"
                     value={shaftTolerance}
                     onChange={(e) => setShaftTolerance(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-green-500"
@@ -239,6 +315,7 @@ const ToleranciaCalculator: React.FC = () => {
             </div>
 
             <button
+              aria-label="Reiniciar calculadora"
               onClick={resetCalculator}
               className="flex items-center space-x-2 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
@@ -322,7 +399,9 @@ const ToleranciaCalculator: React.FC = () => {
                 <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                   <div className="text-center mb-3">
                     <span className="text-2xl font-bold text-purple-600">
-                      {fit.fitType}
+                      {inputError || gradeError || deviationError
+                        ? "Error en los datos de entrada"
+                        : fit.fitType}
                     </span>
                   </div>
 
