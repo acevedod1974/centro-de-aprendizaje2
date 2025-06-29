@@ -1,0 +1,83 @@
+@startuml
+!define RECTANGLE class
+
+RECTANGLE App
+
+RECTANGLE Header
+RECTANGLE Footer
+RECTANGLE Home
+RECTANGLE ToolsSection
+RECTANGLE ProcessSection
+RECTANGLE ResourcesSection
+RECTANGLE EvaluationSection
+RECTANGLE StudyPlanner
+RECTANGLE ProgressTracker
+RECTANGLE AuthTestPage
+RECTANGLE QuizCard
+
+package "Tools" {
+  RECTANGLE VelocidadCorteCalculator
+  RECTANGLE ToleranciaCalculator
+  RECTANGLE EngranajCalculator
+  RECTANGLE MaterialesCalculator
+  RECTANGLE MecanizadoSimulator
+  RECTANGLE ForjadoSimulator
+  RECTANGLE CalidadInspector
+  RECTANGLE SoldaduraQuiz
+}
+
+package "Contexts" {
+  RECTANGLE ThemeContext
+  RECTANGLE TasksContext
+  RECTANGLE QuizProgressContext
+  RECTANGLE AchievementsContext
+  RECTANGLE ActivityLogContext
+  RECTANGLE AuthTestContext
+  RECTANGLE ToastContext
+}
+
+App --> Header
+App --> Footer
+App --> Home
+App --> ToolsSection
+App --> ProcessSection
+App --> ResourcesSection
+App --> EvaluationSection
+App --> StudyPlanner
+App --> ProgressTracker
+App --> AuthTestPage
+
+ToolsSection --> VelocidadCorteCalculator
+ToolsSection --> ToleranciaCalculator
+ToolsSection --> EngranajCalculator
+ToolsSection --> MaterialesCalculator
+ToolsSection --> MecanizadoSimulator
+ToolsSection --> ForjadoSimulator
+ToolsSection --> CalidadInspector
+ToolsSection --> SoldaduraQuiz
+
+EvaluationSection --> QuizCard
+EvaluationSection --> SoldaduraQuiz
+EvaluationSection ..> QuizProgressContext
+EvaluationSection ..> AchievementsContext
+EvaluationSection ..> ActivityLogContext
+
+StudyPlanner ..> TasksContext
+ProgressTracker ..> QuizProgressContext
+ProgressTracker ..> AchievementsContext
+ProgressTracker ..> ActivityLogContext
+
+AuthTestPage --> LoginTest
+AuthTestPage --> RegisterTest
+AuthTestPage ..> AuthTestContext
+
+Header ..> ThemeContext
+
+ProcessSection ..> supabaseClient
+ResourcesSection ..> supabaseClient
+EvaluationSection ..> supabaseClient
+
+ToolsSection ..> ToastContext
+ToolsSection ..> supabaseClient
+
+@enduml
