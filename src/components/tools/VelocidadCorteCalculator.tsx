@@ -53,6 +53,11 @@ const VelocidadCorteCalculator: React.FC = () => {
   const chartRef = React.useRef<HTMLDivElement>(null);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
 
+  // Error and warning states
+  const [diameterError, setDiameterError] = useState<string | null>(null);
+  const [copyError, setCopyError] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchMaterials = async () => {
       setLoading(true);
@@ -106,25 +111,47 @@ const VelocidadCorteCalculator: React.FC = () => {
     // eslint-disable-next-line
   }, [material]);
 
-  const handleCopyResults = () => {
+  const handleDiameterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (isNaN(value) || value <= 0) {
+      setDiameterError("Valor inválido para el diámetro.");
+    } else if (value > 1000) {
+      setDiameterError("Valor fuera de rango permitido para el diámetro.");
+    } else {
+      setDiameterError(null);
+      setDiameter(value);
+    }
+  };
+
+  const handleCopyResults = async () => {
     const mat = materials.find((m) => m.key === material);
     const text = `Material: ${
       mat?.name
     }\nDiámetro: ${diameter} mm\nVelocidad de Corte: ${cutSpeed} m/min\nRPM: ${rpm}\nAvance: ${feedRate} mm/rev\nAvance por Minuto: ${(
       feedRate * rpm
     ).toFixed(1)} mm/min`;
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1200);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setCopyError(null);
+      setTimeout(() => setCopied(false), 1200);
+    } catch {
+      setCopyError("No se pudo copiar los resultados.");
+    }
   };
 
   const handleDownloadPDF = async () => {
     if (!chartRef.current) return;
-    const canvas = await html2canvas(chartRef.current);
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({ orientation: "landscape" });
-    pdf.addImage(imgData, "PNG", 10, 10, 270, 80);
-    pdf.save("velocidades_corte_analisis.pdf");
+    try {
+      const canvas = await html2canvas(chartRef.current);
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "landscape" });
+      pdf.addImage(imgData, "PNG", 10, 10, 270, 80);
+      pdf.save("velocidades_corte_analisis.pdf");
+      setPdfError(null);
+    } catch {
+      setPdfError("No se pudo exportar el análisis a PDF.");
+    }
   };
 
   const resetCalculator = () => {
@@ -214,11 +241,20 @@ const VelocidadCorteCalculator: React.FC = () => {
                   aria-label="Diámetro de la pieza en milímetros"
                   type="number"
                   value={diameter}
-                  onChange={(e) => setDiameter(Number(e.target.value))}
+                  onChange={handleDiameterChange}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-md"
                   min="1"
                   max="1000"
                 />
+                {diameterError && (
+                  <div
+                    role="alert"
+                    aria-live="assertive"
+                    className="text-yellow-600 mt-1"
+                  >
+                    {diameterError}
+                  </div>
+                )}
               </div>
               <div>
                 <label
@@ -279,6 +315,15 @@ const VelocidadCorteCalculator: React.FC = () => {
                     <span>Copiar Resultados</span>
                   )}
                 </button>
+                {copyError && (
+                  <div
+                    role="alert"
+                    aria-live="assertive"
+                    className="text-red-600 mt-1"
+                  >
+                    {copyError}
+                  </div>
+                )}
               </div>
             </div>
             {/* Results Panel */}
@@ -564,6 +609,15 @@ const VelocidadCorteCalculator: React.FC = () => {
             >
               Descargar PDF
             </button>
+            {pdfError && (
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="text-red-600 mt-1"
+              >
+                {pdfError}
+              </div>
+            )}
           </div>
         </div>
       </div>
