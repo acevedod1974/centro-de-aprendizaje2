@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { safeSetItem, safeGetItem } from "../../utils/safeStorage";
 import { Award, CheckCircle, XCircle, RotateCcw, Zap } from "lucide-react";
 import { supabase } from "../../supabaseClient";
 
@@ -145,7 +146,7 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
   useEffect(() => {
     if (quizCompleted) {
       // Save best score and completion to localStorage
-      const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+      const stored = safeGetItem(LOCAL_STORAGE_KEY);
       let progress = {};
       try {
         progress = stored ? JSON.parse(stored) : {};
@@ -157,7 +158,7 @@ const SoldaduraQuiz: React.FC<{ onComplete?: (score: number) => void }> = ({
         ? Math.max(prev.bestScore, score * 20)
         : score * 20;
       progress[quiz?.id || "soldadura"] = { completed: true, bestScore };
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progress));
+      safeSetItem(LOCAL_STORAGE_KEY, JSON.stringify(progress));
       if (onComplete) onComplete(score * 20);
     }
     // eslint-disable-next-line

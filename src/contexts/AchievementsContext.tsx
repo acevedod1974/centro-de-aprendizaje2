@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
+import { safeGetItem, safeSetItem } from "../utils/safeStorage";
 
 export interface Achievement {
   id: string;
@@ -57,7 +58,7 @@ const AchievementsContext = createContext<AchievementsContextType | undefined>(
 );
 
 const getInitialAchievements = () => {
-  const stored = localStorage.getItem(ACHIEVEMENTS_STORAGE_KEY);
+  const stored = safeGetItem(ACHIEVEMENTS_STORAGE_KEY);
   if (stored) {
     try {
       return JSON.parse(stored);
@@ -121,10 +122,7 @@ export const AchievementsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    localStorage.setItem(
-      ACHIEVEMENTS_STORAGE_KEY,
-      JSON.stringify(achievements)
-    );
+    safeSetItem(ACHIEVEMENTS_STORAGE_KEY, JSON.stringify(achievements));
   }, [achievements]);
 
   return (

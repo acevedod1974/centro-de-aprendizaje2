@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
+import { safeGetItem, safeSetItem } from "../utils/safeStorage";
 
 export interface StudyTask {
   id: string;
@@ -24,7 +25,7 @@ const TASKS_STORAGE_KEY = "studyTasks";
 const TasksContext = createContext<TasksContextType | undefined>(undefined);
 
 const getInitialTasks = () => {
-  const stored = localStorage.getItem(TASKS_STORAGE_KEY);
+  const stored = safeGetItem(TASKS_STORAGE_KEY);
   if (stored) {
     try {
       return JSON.parse(stored);
@@ -39,7 +40,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
   const [studyTasks, setStudyTasks] = useState<StudyTask[]>(getInitialTasks());
 
   useEffect(() => {
-    localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(studyTasks));
+    safeSetItem(TASKS_STORAGE_KEY, JSON.stringify(studyTasks));
   }, [studyTasks]);
 
   return (

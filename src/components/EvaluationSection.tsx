@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { safeSetItem } from "../utils/safeStorage";
 import { Target, TrendingUp, Users, Book, Brain } from "lucide-react";
 import SoldaduraQuiz from "./tools/SoldaduraQuiz";
 import QuizCard, { Quiz } from "./QuizCard";
@@ -20,7 +21,7 @@ const EvaluationSection: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
+    safeSetItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
   }, [userProgress]);
 
   useEffect(() => {

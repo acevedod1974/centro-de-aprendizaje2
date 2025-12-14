@@ -5,6 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { safeGetItem, safeSetItem } from "../utils/safeStorage";
 
 interface ActivityLogContextType {
   activityLog: Record<string, number>;
@@ -25,7 +26,7 @@ export const useActivityLog = () => {
 };
 
 const getInitialActivityLog = () => {
-  const stored = localStorage.getItem(ACTIVITY_LOG_KEY);
+  const stored = safeGetItem(ACTIVITY_LOG_KEY);
   if (stored) {
     try {
       return JSON.parse(stored);
@@ -51,7 +52,7 @@ export const ActivityLogProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    localStorage.setItem(ACTIVITY_LOG_KEY, JSON.stringify(activityLog));
+    safeSetItem(ACTIVITY_LOG_KEY, JSON.stringify(activityLog));
   }, [activityLog]);
 
   return (

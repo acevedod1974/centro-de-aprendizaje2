@@ -165,19 +165,20 @@ const ProcessSection: React.FC = () => {
         setManualResource(null);
         return;
       }
+      const processName = (selectedProcess || "").trim();
+      console.log("Fetching manual for process:", processName);
       const { data, error } = await supabase
         .from("resources")
-        .select("id, title, download_url, view_url, process_name")
+        .select("id, title, download_url, view_url")
         .eq("type", "pdf")
-        .eq("process_name", selectedProcess)
         .limit(1)
-        .single();
+        .maybeSingle();
       if (error) {
         setManualResource(null);
-        console.log("No manual found for process:", selectedProcess);
+        console.log("No manual found for process:", processName, error);
       } else {
         setManualResource(data);
-        console.log("Manual resource for process:", selectedProcess, data);
+        console.log("Manual resource for process:", processName, data);
       }
     }
     async function fetchTools() {
@@ -187,8 +188,7 @@ const ProcessSection: React.FC = () => {
       }
       const { data, error } = await supabase
         .from("tools")
-        .select("id, title, type, process_name, url, icon, available")
-        .eq("process_name", selectedProcess)
+        .select("id, title, type, url, icon, available")
         .eq("available", true);
       if (error) {
         setToolResources([]);

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
+import { safeGetItem, safeSetItem } from "../utils/safeStorage";
 
 export interface QuizProgress {
   completed: boolean;
@@ -19,7 +20,7 @@ const QuizProgressContext = createContext<QuizProgressContextType | undefined>(
 );
 
 const getInitialUserProgress = () => {
-  const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const stored = safeGetItem(LOCAL_STORAGE_KEY);
   if (stored) {
     try {
       return JSON.parse(stored);
@@ -63,7 +64,7 @@ export const QuizProgressProvider = ({ children }: { children: ReactNode }) => {
   >(getInitialUserProgress());
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
+    safeSetItem(LOCAL_STORAGE_KEY, JSON.stringify(userProgress));
   }, [userProgress]);
 
   return (
