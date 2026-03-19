@@ -50,7 +50,7 @@ describe("VelocidadCorteCalculator (integración y casos avanzados)", () => {
     // Espera a que desaparezca el loading
     await waitFor(() => {
       expect(
-        screen.queryByText(/cargando materiales de corte/i)
+        screen.queryByText(/cargando materiales de corte/i),
       ).not.toBeInTheDocument();
     });
     // Imprime el HTML si falla
@@ -65,10 +65,12 @@ describe("VelocidadCorteCalculator (integración y casos avanzados)", () => {
     render(<VelocidadCorteCalculator />);
     await waitFor(() => {
       expect(
-        screen.getByLabelText(/diámetro de la pieza/i)
+        screen.getByLabelText("Diámetro de la pieza en milímetros"),
       ).toBeInTheDocument();
     });
-    const diameterInput = screen.getByLabelText(/diámetro de la pieza/i);
+    const diameterInput = screen.getByLabelText(
+      "Diámetro de la pieza en milímetros",
+    );
     fireEvent.change(diameterInput, { target: { value: -10 } });
     expect(screen.getByText(/valor inválido/i)).toBeInTheDocument();
     fireEvent.change(diameterInput, { target: { value: 10000 } });
@@ -77,7 +79,7 @@ describe("VelocidadCorteCalculator (integración y casos avanzados)", () => {
 
   it("muestra error si falla la copia al portapapeles", async () => {
     globalThis.navigator.clipboard.writeText = vi.fn(() =>
-      Promise.reject("error")
+      Promise.reject("error"),
     ) as unknown as (data: string) => Promise<void>;
     render(<VelocidadCorteCalculator />);
     await waitFor(() => {
@@ -98,7 +100,7 @@ describe("VelocidadCorteCalculator (integración y casos avanzados)", () => {
     render(<VelocidadCorteCalculator />);
     await waitFor(() => {
       expect(
-        screen.getByLabelText(/descargar análisis en pdf/i)
+        screen.getByLabelText(/descargar análisis en pdf/i),
       ).toBeInTheDocument();
     });
     const pdfBtn = screen.getByLabelText(/descargar análisis en pdf/i);
@@ -112,7 +114,7 @@ describe("VelocidadCorteCalculator (integración y casos avanzados)", () => {
     render(<VelocidadCorteCalculator />);
     await waitFor(() => {
       expect(
-        screen.getByLabelText(/material de la pieza/i)
+        screen.getByLabelText(/material de la pieza/i),
       ).toBeInTheDocument();
     });
     const select = screen.getByLabelText(/material de la pieza/i);
